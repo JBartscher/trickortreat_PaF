@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class MapGridElement {
 
     private Cell[][] cells;
-    private final int MAP_GRID_SIZE = 25; //uneven to center the street entrys
+    private final int MAP_GRID_SIZE = 25; //uneven to center the street entries
     private District district;
 
     public MapGridElement(District district) {
