@@ -2,9 +2,15 @@ package map;
 
 public class Map {
 
-    MapGridElement[][] gridElements;
+    int size_x;
+    int size_y;
 
-    public Map() {
-        gridElements = new MapGridElement[3][3];
+    Tile[][] map;
+
+    public Map(int size_x, int size_y) {
+        this.size_x = size_x;
+        this.size_y = size_y;
+
+        map = new Tile[size_x][size_y];
     }
 }
