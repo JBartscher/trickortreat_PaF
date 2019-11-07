@@ -5,6 +5,6 @@ public class Game {
     Map map;
 
     Game() {
-        this.map = new Map(40, 40);
+        // this.map = new Map(40, 40);
     }
 }

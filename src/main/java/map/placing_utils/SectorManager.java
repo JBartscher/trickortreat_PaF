@@ -57,22 +57,36 @@ public class SectorManager {
     }
 
     /**
-     * returns a list of sectors to which a placeble belongs.
+     * returns a list of sectors to which a already placed placeble belongs.  This method is NOT for new placebles.
      *
      * @param placeble placeble from which the lookup is done.
      * @return a list of sectors, normaly just holding one sector but it is possible that a placeble is part of more
      * than one sector.
      * @throws PlacebleBelongsToNoSectorException a placeble should always belong to a sector.
      */
-    public List<Sector> getSectorOfPlaceble(Placeble placeble) throws PlacebleBelongsToNoSectorException {
+    public List<Sector> belongsToSectors(Placeble placeble) throws PlacebleBelongsToNoSectorException {
         ArrayList<Sector> sectors = new ArrayList<>();
         for (Sector sector : mapSectors) {
-            if (placeble.intersects(sector))
+            if (sector.contains(placeble))
                 sectors.add(sector);
         }
         if (sectors.isEmpty())
             throw new PlacebleBelongsToNoSectorException("a placeble cannot belong to no sector");
         return sectors;
+    }
+
+    /**
+     * this method just returns the first available sector, in which further place checking is done.
+     *
+     * @param placeble the new placeble
+     * @return a sector in which the new placeble can possibly be placed.
+     */
+    public Sector getSector(Placeble placeble) throws PlacebleBelongsToNoSectorException {
+        for (Sector sector : mapSectors) {
+            if (placeble.intersects(sector))
+                return sector;
+        }
+        throw new PlacebleBelongsToNoSectorException("a placeble cannot intersect with no sector");
     }
 
 

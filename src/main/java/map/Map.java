@@ -1,5 +1,7 @@
 package map;
 
+import java.util.List;
+
 public class Map {
 
     int size_x;
@@ -7,9 +9,11 @@ public class Map {
 
     Tile[][] map;
 
-    public Map(int size_x, int size_y) {
-        this.size_x = size_x;
-        this.size_y = size_y;
+    List<Object> mapObjects;
+
+    public Map(int size) {
+        this.size_x = size;
+        this.size_y = size;
 
         map = new Tile[size_x][size_y];
     }
