@@ -3,13 +3,13 @@ package map.placing_utils;
 
 public class Placeble {
 
-    int x;
-    int y;
+    private int x;
+    private int y;
     // in tiles
-    int width;
-    int height;
+    private int width;
+    private int height;
     // in tiles
-    int offset = 1;
+    private int offset = 1;
 
     public Placeble(int x, int y, int width, int height, int offset) {
         this.x = x;
@@ -20,7 +20,11 @@ public class Placeble {
     }
 
     public Placeble(int x, int y, int width, int height) {
-        new Placeble(x, y, width, height, 1);
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.offset = 1;
     }
 
     public int getX() {

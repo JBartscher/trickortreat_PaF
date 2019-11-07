@@ -22,7 +22,7 @@ public class Sector extends Placeble {
      * @param placeble
      * @return true if the object intersects with other objects
      */
-    private boolean intersectsWithContainingItems(Placeble placeble) {
+    public boolean intersectsWithContainingItems(Placeble placeble) {
         for (Placeble p : containingPlacebles) {
             if (p.intersects(placeble))
                 return true;

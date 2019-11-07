@@ -60,7 +60,7 @@ public class SectorManager {
      * returns a list of sectors to which a already placed placeble belongs.  This method is NOT for new placebles.
      *
      * @param placeble placeble from which the lookup is done.
-     * @return a list of sectors, normaly just holding one sector but it is possible that a placeble is part of more
+     * @return a list of sectors, normally just holding one sector but it is possible that a placeble is part of more
      * than one sector.
      * @throws PlacebleBelongsToNoSectorException a placeble should always belong to a sector.
      */
