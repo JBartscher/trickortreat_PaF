@@ -13,7 +13,11 @@ class MapGenerator {
 
     private Map gameMap;
 
-
+    /**
+     * Queue of Objects that should be placed. The idea behind using a queue is that we place important Objects before
+     * other, more generic Objects. This is done to cushion long running spot finding methods. After a set time the
+     * Class stops finding new Spots for placebles and adds everything it got's to the gamemap.
+     */
     private Queue<House> transferQueue = new LinkedList<House>() {
     };
 
@@ -21,6 +25,10 @@ class MapGenerator {
         this.gameMap = map;
     }
 
+    /**
+     * Method which calls all the creation Objects and methods.
+     * TODO: Switch with Builder Pattern.
+     */
     void createMap() {
         // supply the center of the map
         createTownHall(gameMap.getSize_x() / 2, gameMap.getSize_y() / 2);
@@ -44,22 +52,34 @@ class MapGenerator {
         transferQueue.add(townHall);
     }
 
-
+    /**
+     * trys to place at max the number of small Houses
+     * @param numberOfHouses
+     */
     void createSmallHouses(int numberOfHouses) {
         // 2x2
         int width = 2, height = 2;
-        findHouseSpots(numberOfHouses, width, height);
+        findObjectSpots(numberOfHouses, width, height);
     }
 
 
     void createBigHouses(int numberOfHouses) {
         // 3x3
         int width = 3, height = 3;
-        findHouseSpots(numberOfHouses, width, height);
+        findObjectSpots(numberOfHouses, width, height);
     }
 
-    private void findHouseSpots(int numberOfHouses, int width, int height) {
-        for (int h = 0; h < numberOfHouses; h++) {
+    /**
+     * finds a place where the given Objecttype can be placed.
+     *
+     * TODO: implement a way to use generic Objects and assign a special Object type in a following method.
+     *
+     * @param numberOfObjects
+     * @param width width of the Objecttype that should be placed
+     * @param height height of the Objecttype that should be placed
+     */
+    private void findObjectSpots(int numberOfObjects, int width, int height) {
+        for (int h = 0; h < numberOfObjects; h++) {
             //TODO: potenzielle Endlosschleife
             while (true) {
                 Placeble placeble = new Placeble(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
@@ -73,13 +93,25 @@ class MapGenerator {
         }
     }
 
+    /**
+     * This method calculates how much place on the gamemap is left.
+     * @param tilecount
+     * @return
+     */
+    public int calculateFreeTilesCountAfterPlacing(int tilecount){
+        return 0;
+    }
+
+    /**
+     * transfers the tiles of a House object in the placing queue to the gamemap.
+     */
     void transferHouseTilesToTileMap() {
         while (!transferQueue.isEmpty()) {
             House currentHouse = transferQueue.remove();
             int houseWidth = currentHouse.getPlaceble().getWidth(), houseHeight = currentHouse.getPlaceble().getWidth();
             for (int x = 0; x < houseWidth; x++) {
                 for (int y = 0; y < houseHeight; y++) {
-                    gameMap.map[currentHouse.getPlaceble().getX() + x][currentHouse.getPlaceble().getY() + y] = currentHouse.getHouseTile(x, y);
+                    gameMap.map[currentHouse.getPlaceble().getX() + x][currentHouse.getPlaceble().getY() + y] = currentHouse.getTileByTileIndex(x, y);
                 }
             }
         }
