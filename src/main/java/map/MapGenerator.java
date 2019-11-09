@@ -32,8 +32,8 @@ class MapGenerator {
     void createMap() {
         // supply the center of the map
         createTownHall(gameMap.getSize_x() / 2, gameMap.getSize_y() / 2);
-        createSmallHouses(4);
-        createBigHouses(3);
+        createSmallHouses(16);
+        createBigHouses(30);
         transferHouseTilesToTileMap();
     }
 
@@ -53,8 +53,8 @@ class MapGenerator {
     }
 
     /**
-     * trys to place at max the number of small Houses
-     * @param numberOfHouses
+     * tries to place at max the number of small Houses
+     * @param numberOfHouses number of houses that will be placed to the map at max
      */
     void createSmallHouses(int numberOfHouses) {
         // 2x2
@@ -62,7 +62,10 @@ class MapGenerator {
         findObjectSpots(numberOfHouses, width, height);
     }
 
-
+    /**
+     * tries to place at max the number of big Houses
+     * @param numberOfHouses number of houses that will be placed to the map at max
+     */
     void createBigHouses(int numberOfHouses) {
         // 3x3
         int width = 3, height = 3;
@@ -79,6 +82,7 @@ class MapGenerator {
      * @param height height of the Objecttype that should be placed
      */
     private void findObjectSpots(int numberOfObjects, int width, int height) {
+        long startTime = System.currentTimeMillis();
         for (int h = 0; h < numberOfObjects; h++) {
             //TODO: potenzielle Endlosschleife
             while (true) {
@@ -91,6 +95,8 @@ class MapGenerator {
                 }
             }
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println(String.format("time needed for %s objects: %s",numberOfObjects, endTime-startTime));
     }
 
     /**
