@@ -32,6 +32,8 @@ class MapGeneratorTest {
         mapGenerator.transferHouseTilesToTileMap();
         assertEquals(gameMap.map[23][23], TileCollection.HOUSE_TILE);
         assertEquals(gameMap.map[25][27], TileCollection.HOUSE_TILE);
+
+        TestMapPrinter.printMap(gameMap);
     }
 
     @Test
