@@ -82,9 +82,9 @@ class MapGenerator {
      * @param height height of the Objecttype that should be placed
      */
     private void findObjectSpots(int numberOfObjects, int width, int height) {
+        final long MAX_TIME_PLACING = 10; //10 ms
         long startTime = System.currentTimeMillis();
         for (int h = 0; h < numberOfObjects; h++) {
-            //TODO: potenzielle Endlosschleife
             while (true) {
                 Placeble placeble = new Placeble(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
                 if (!gameMap.getMapSector().intersectsWithContainingItems(placeble) && gameMap.getMapSector().contains(placeble)) {
@@ -93,10 +93,11 @@ class MapGenerator {
                     transferQueue.add(bigHouse);
                     break;
                 }
+                //ensure that the loop does not run forever
+                if(startTime - System.currentTimeMillis() >= MAX_TIME_PLACING)
+                    break;
             }
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println(String.format("time needed for %s objects: %s",numberOfObjects, endTime-startTime));
     }
 
     /**

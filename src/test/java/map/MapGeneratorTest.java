@@ -17,13 +17,13 @@ class MapGeneratorTest {
     }
 
     @Test
-    void createMap() {
-    }
-
-    //TODO Erstmal die einzelnen Methoden
-    @Test
     void testCreateMap() {
+        long startTime = System.currentTimeMillis();
         mapGenerator.createMap();
+        long endTime = System.currentTimeMillis();
+        System.out.println(String.format("time needed %s for map creation", endTime-startTime));
+        TestMapPrinter.printMap(gameMap);
+
     }
 
     @Test
@@ -33,13 +33,14 @@ class MapGeneratorTest {
         assertEquals(gameMap.map[23][23], TileCollection.HOUSE_TILE);
         assertEquals(gameMap.map[25][27], TileCollection.HOUSE_TILE);
 
-        TestMapPrinter.printMap(gameMap);
     }
 
     @Test
     void createSmallHouses() {
+
         mapGenerator.createSmallHouses(3);
         mapGenerator.transferHouseTilesToTileMap();
+
     }
 
     @Test

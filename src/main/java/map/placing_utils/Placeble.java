@@ -49,7 +49,7 @@ public class Placeble {
 
     /**
      * checks whether this placeble intersects with anotehr one. It is important to note that the offset is only
-     * computed from this object.
+     * computed from this object, not both.
      *
      * @param other
      * @return
