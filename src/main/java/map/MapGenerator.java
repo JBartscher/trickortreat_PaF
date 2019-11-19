@@ -62,7 +62,7 @@ class MapGenerator {
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeble will be overridden in the findObjectSpot method
             House smallHouse = new House(new Placeble(0, 0, width, height));
-            findObjectSpot(width, height, smallHouse);
+            findObjectSpot(smallHouse);
         }
     }
 
@@ -76,19 +76,22 @@ class MapGenerator {
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeble will be overridden in the findObjectSpot method
             House bigHouse = new House(new Placeble(0, 0, width, height));
-            findObjectSpot(width, height, bigHouse);
+            findObjectSpot(bigHouse);
         }
     }
 
     /**
      * finds a place where the given Object type can be placed.
      *
-     * @param width width of the Objecttype that should be placed
-     * @param height height of the Objecttype that should be placed
+     * @param placingObject a MapObject which is more a more abstract form of every Object that should be placed on the map.
      */
-    private void findObjectSpot(int width, int height, MapObject placingObject) {
+    private void findObjectSpot(MapObject placingObject) {
         final long MAX_TIME_PLACING = 10; //10 ms
         long startTime = System.currentTimeMillis();
+
+        int width = placingObject.getPlaceble().getWidth();
+        int height = placingObject.getPlaceble().getHeight();
+
         while (true) {
             Placeble placeble = new Placeble(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
             if (!gameMap.getMapSector().intersectsWithContainingItems(placeble) && gameMap.getMapSector().contains(placeble)) {
