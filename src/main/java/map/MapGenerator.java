@@ -1,6 +1,7 @@
 package map;
 
 import gameobjects.House;
+import gameobjects.TownHall;
 import map.placing_utils.Placeble;
 
 import java.util.LinkedList;
@@ -34,7 +35,7 @@ class MapGenerator {
         createTownHall(gameMap.getSize_x() / 2, gameMap.getSize_y() / 2);
         createSmallHouses(16);
         createBigHouses(30);
-        transferHouseTilesToTileMap();
+        transferPlacedObjectsTilesToTileMap();
     }
 
     /**
@@ -45,8 +46,7 @@ class MapGenerator {
      */
     void createTownHall(int x, int y) {
         // 5x5
-        int width = 5, height = 5;
-        House townHall = new House(x - (width / 2), y - (height / 2), width, height);
+        TownHall townHall = new TownHall(x, y);
         // the first item cannot intersect with other items because its new.
         gameMap.getMapSector().addPlaceable(townHall.getPlaceble());
         transferQueue.add(townHall);
@@ -106,13 +106,14 @@ class MapGenerator {
      * @return
      */
     public int calculateFreeTilesCountAfterPlacing(int tilecount){
+        //TODO implement
         return 0;
     }
 
     /**
      * transfers the tiles of a House object in the placing queue to the gamemap.
      */
-    void transferHouseTilesToTileMap() {
+    void transferPlacedObjectsTilesToTileMap() {
         while (!transferQueue.isEmpty()) {
             House currentHouse = transferQueue.remove();
             int houseWidth = currentHouse.getPlaceble().getWidth(), houseHeight = currentHouse.getPlaceble().getWidth();

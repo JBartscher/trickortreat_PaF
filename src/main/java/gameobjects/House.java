@@ -19,6 +19,8 @@ public class House {
 
     private Tile doorTile;
 
+    private District district = null;
+
     /**
      * House constructor.
      *
@@ -83,5 +85,17 @@ public class House {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * method that should be called when a player visits a house. Special houses like the town hall or witch house
+     * override this method.
+     *
+     * @param player the player entity that visits the current house instance
+     * @see TownHall
+     */
+    public void visit(Player player) {
+        int new_candy = (int) this.district.getCandy_multiplikator() * player.getChildrenCount();
+        player.addCandy(new_candy);
     }
 }
