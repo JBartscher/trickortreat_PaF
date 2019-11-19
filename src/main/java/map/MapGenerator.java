@@ -60,7 +60,9 @@ class MapGenerator {
         // 2x2
         int width = 2, height = 2;
         for (int i = 0; i < numberOfHouses; i++) {
-            findObjectSpot(width, height);
+            // stub Object, the placeble will be overridden in the findObjectSpot method
+            House smallHouse = new House(new Placeble(0, 0, width, height));
+            findObjectSpot(width, height, smallHouse);
         }
     }
 
@@ -72,7 +74,9 @@ class MapGenerator {
         // 3x3
         int width = 3, height = 3;
         for (int i = 0; i < numberOfHouses; i++) {
-            findObjectSpot(width, height);
+            // stub Object, the placeble will be overridden in the findObjectSpot method
+            House bigHouse = new House(new Placeble(0, 0, width, height));
+            findObjectSpot(width, height, bigHouse);
         }
     }
 
@@ -82,15 +86,16 @@ class MapGenerator {
      * @param width width of the Objecttype that should be placed
      * @param height height of the Objecttype that should be placed
      */
-    private void findObjectSpot(int width, int height) {
+    private void findObjectSpot(int width, int height, MapObject placingObject) {
         final long MAX_TIME_PLACING = 10; //10 ms
         long startTime = System.currentTimeMillis();
         while (true) {
             Placeble placeble = new Placeble(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
             if (!gameMap.getMapSector().intersectsWithContainingItems(placeble) && gameMap.getMapSector().contains(placeble)) {
                 gameMap.getMapSector().addPlaceable(placeble);
-                House bigHouse = new House(placeble);
-                transferQueue.add(bigHouse);
+                placingObject.setPlaceble(placeble);
+
+                transferQueue.add(placingObject);
                 break;
             }
             //ensure that the loop does not run forever
@@ -98,6 +103,7 @@ class MapGenerator {
                 break;
         }
     }
+
 
     /**
      * This method calculates how much place on the gamemap is left.

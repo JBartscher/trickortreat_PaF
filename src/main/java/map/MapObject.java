@@ -10,5 +10,11 @@ public abstract class MapObject {
         return placeble;
     }
 
+    public void setPlaceble(Placeble placeble) {
+        this.placeble = placeble;
+    }
+
     public abstract Tile getTileByTileIndex(int x, int y);
+
+
 }
