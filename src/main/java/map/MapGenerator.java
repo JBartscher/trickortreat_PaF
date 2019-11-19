@@ -59,7 +59,9 @@ class MapGenerator {
     void createSmallHouses(int numberOfHouses) {
         // 2x2
         int width = 2, height = 2;
-        findObjectSpots(numberOfHouses, width, height);
+        for (int i = 0; i < numberOfHouses; i++) {
+            findObjectSpot(width, height);
+        }
     }
 
     /**
@@ -69,34 +71,31 @@ class MapGenerator {
     void createBigHouses(int numberOfHouses) {
         // 3x3
         int width = 3, height = 3;
-        findObjectSpots(numberOfHouses, width, height);
+        for (int i = 0; i < numberOfHouses; i++) {
+            findObjectSpot(width, height);
+        }
     }
 
     /**
      * finds a place where the given Object type can be placed.
      *
-     * TODO: implement a way to use generic Objects and assign a special Object type in a following method.
-     *
-     * @param numberOfObjects
      * @param width width of the Objecttype that should be placed
      * @param height height of the Objecttype that should be placed
      */
-    private void findObjectSpots(int numberOfObjects, int width, int height) {
+    private void findObjectSpot(int width, int height) {
         final long MAX_TIME_PLACING = 10; //10 ms
         long startTime = System.currentTimeMillis();
-        for (int h = 0; h < numberOfObjects; h++) {
-            while (true) {
-                Placeble placeble = new Placeble(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
-                if (!gameMap.getMapSector().intersectsWithContainingItems(placeble) && gameMap.getMapSector().contains(placeble)) {
-                    gameMap.getMapSector().addPlaceable(placeble);
-                    House bigHouse = new House(placeble);
-                    transferQueue.add(bigHouse);
-                    break;
-                }
-                //ensure that the loop does not run forever
-                if(startTime - System.currentTimeMillis() >= MAX_TIME_PLACING)
-                    break;
+        while (true) {
+            Placeble placeble = new Placeble(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
+            if (!gameMap.getMapSector().intersectsWithContainingItems(placeble) && gameMap.getMapSector().contains(placeble)) {
+                gameMap.getMapSector().addPlaceable(placeble);
+                House bigHouse = new House(placeble);
+                transferQueue.add(bigHouse);
+                break;
             }
+            //ensure that the loop does not run forever
+            if (startTime - System.currentTimeMillis() >= MAX_TIME_PLACING)
+                break;
         }
     }
 
