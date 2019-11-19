@@ -19,7 +19,7 @@ class MapGenerator {
      * other, more generic Objects. This is done to cushion long running spot finding methods. After a set time the
      * Class stops finding new Spots for placebles and adds everything it got's to the gamemap.
      */
-    private Queue<House> transferQueue = new LinkedList<House>() {
+    private Queue<MapObject> transferQueue = new LinkedList<MapObject>() {
     };
 
     MapGenerator(Map map) {
@@ -73,7 +73,7 @@ class MapGenerator {
     }
 
     /**
-     * finds a place where the given Objecttype can be placed.
+     * finds a place where the given Object type can be placed.
      *
      * TODO: implement a way to use generic Objects and assign a special Object type in a following method.
      *
@@ -115,11 +115,11 @@ class MapGenerator {
      */
     void transferPlacedObjectsTilesToTileMap() {
         while (!transferQueue.isEmpty()) {
-            House currentHouse = transferQueue.remove();
-            int houseWidth = currentHouse.getPlaceble().getWidth(), houseHeight = currentHouse.getPlaceble().getWidth();
+            MapObject currentMapObject = transferQueue.remove();
+            int houseWidth = currentMapObject.getPlaceble().getWidth(), houseHeight = currentMapObject.getPlaceble().getWidth();
             for (int x = 0; x < houseWidth; x++) {
                 for (int y = 0; y < houseHeight; y++) {
-                    gameMap.map[currentHouse.getPlaceble().getX() + x][currentHouse.getPlaceble().getY() + y] = currentHouse.getTileByTileIndex(x, y);
+                    gameMap.map[currentMapObject.getPlaceble().getX() + x][currentMapObject.getPlaceble().getY() + y] = currentMapObject.getTileByTileIndex(x, y);
                 }
             }
         }

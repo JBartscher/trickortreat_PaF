@@ -1,12 +1,13 @@
 package gameobjects;
 
+import map.MapObject;
 import map.Tile;
 import map.TileCollection;
 import map.placing_utils.Placeble;
 
 import java.util.Arrays;
 
-public class House {
+public class House extends MapObject {
 
     /**
      Offset of Object to other Objects @see Placeble
