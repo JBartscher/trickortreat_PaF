@@ -11,7 +11,9 @@ public class Map {
 
     Tile[][] map;
 
-    private Sector mapSector;
+    Sector mapSector;
+
+    DistrictManager sectorManager;
 
     public Map(int size) {
         this.size_x = size;

@@ -1,5 +1,7 @@
 package gameobjects;
 
+import gameobjects.mapobjects.House;
+
 import java.util.List;
 import java.util.Stack;
 
@@ -15,7 +17,7 @@ public class Player {
     }
 
     /**
-     * retuns the number of kids on the children stack. This is needed to calculate how much candy a player gets when
+     * returns the number of kids on the children stack. This is needed to calculate how much candy a player gets when
      * he visits the a house.
      * The maximum number of children is 3. The Minimum 1.
      *

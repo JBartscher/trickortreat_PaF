@@ -1,4 +1,6 @@
-package gameobjects;
+package gameobjects.mapobjects;
+
+import gameobjects.Player;
 
 public class GingerbreadHouse extends House {
 

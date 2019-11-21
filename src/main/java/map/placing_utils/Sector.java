@@ -1,6 +1,9 @@
 package map.placing_utils;
 
+import map.MapObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Sector is a bigger chunk of the map which holds placed Objects.
@@ -38,5 +41,16 @@ public class Sector extends Placeble {
     public void addPlaceable(Placeble placeble) {
         if (!intersectsWithContainingItems(placeble))
             containingPlacebles.add(placeble);
+    }
+
+    List<MapObject> sectorObjects;
+
+    /**
+     * returns the list of all placed mapObjects which are within this district
+     *
+     * @return a List of all MapObjects which are part of this district.
+     */
+    List<MapObject> getAllContainingMapObjects() {
+        return this.sectorObjects;
     }
 }

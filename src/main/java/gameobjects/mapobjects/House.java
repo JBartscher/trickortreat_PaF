@@ -1,5 +1,7 @@
-package gameobjects;
+package gameobjects.mapobjects;
 
+import gameobjects.Player;
+import gameobjects.mapobjects.districts.District;
 import map.MapObject;
 import map.Tile;
 import map.TileCollection;
@@ -15,8 +17,6 @@ public class House extends MapObject {
     final int OFFSET = 1;
 
     private Tile[][] tileset;
-
-    private Placeble placeble;
 
     private Tile doorTile;
 
@@ -86,6 +86,10 @@ public class House extends MapObject {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void setDistrict(District district) {
+        this.district = district;
     }
 
     /**

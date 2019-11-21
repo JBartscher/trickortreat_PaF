@@ -1,7 +1,10 @@
 package map;
 
-import gameobjects.House;
-import gameobjects.TownHall;
+import exceptions.PlacebleBelongsToNoSectorException;
+import exceptions.SectorOverlappingException;
+import gameobjects.mapobjects.House;
+import gameobjects.mapobjects.TownHall;
+import gameobjects.mapobjects.districts.District;
 import map.placing_utils.Placeble;
 
 import java.util.LinkedList;
@@ -11,6 +14,8 @@ import java.util.Random;
 class MapGenerator {
 
     private static Random r = new Random();
+
+    DistrictManager districtManager;
 
     private Map gameMap;
 
@@ -24,6 +29,12 @@ class MapGenerator {
 
     MapGenerator(Map map) {
         this.gameMap = map;
+        DistrictDecider districtDecider = new DistrictDecider(map);
+        try {
+            this.districtManager = new DistrictManager(districtDecider.generateDistricts());
+        } catch (SectorOverlappingException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -50,6 +61,14 @@ class MapGenerator {
         // the first item cannot intersect with other items because its new.
         gameMap.getMapSector().addPlaceable(townHall.getPlaceble());
         transferQueue.add(townHall);
+        // put the right district to the house object
+        try {
+            District districtOfHouse = districtManager.getDistrict(townHall.placeble);
+            townHall.setDistrict(districtOfHouse);
+        } catch (PlacebleBelongsToNoSectorException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -63,6 +82,14 @@ class MapGenerator {
             // stub Object, the placeble will be overridden in the findObjectSpot method
             House smallHouse = new House(new Placeble(0, 0, width, height));
             findObjectSpot(smallHouse);
+            // put the right district to the house object
+            try {
+                District districtOfHouse = districtManager.getDistrict(smallHouse.placeble);
+                // WORKS System.out.println(districtOfHouse);
+                smallHouse.setDistrict(districtOfHouse);
+            } catch (PlacebleBelongsToNoSectorException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -77,6 +104,13 @@ class MapGenerator {
             // stub Object, the placeble will be overridden in the findObjectSpot method
             House bigHouse = new House(new Placeble(0, 0, width, height));
             findObjectSpot(bigHouse);
+            // put the right district to the house object
+            try {
+                District districtOfHouse = districtManager.getDistrict(bigHouse.placeble);
+                bigHouse.setDistrict(districtOfHouse);
+            } catch (PlacebleBelongsToNoSectorException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -110,6 +144,8 @@ class MapGenerator {
 
     /**
      * This method calculates how much place on the gamemap is left.
+     * Convenience method, not yet implemented.
+     *
      * @param tilecount
      * @return
      */
@@ -124,7 +160,8 @@ class MapGenerator {
     void transferPlacedObjectsTilesToTileMap() {
         while (!transferQueue.isEmpty()) {
             MapObject currentMapObject = transferQueue.remove();
-            int houseWidth = currentMapObject.getPlaceble().getWidth(), houseHeight = currentMapObject.getPlaceble().getWidth();
+            int houseWidth = currentMapObject.getPlaceble().getWidth();
+            int houseHeight = currentMapObject.getPlaceble().getHeight();
             for (int x = 0; x < houseWidth; x++) {
                 for (int y = 0; y < houseHeight; y++) {
                     gameMap.map[currentMapObject.getPlaceble().getX() + x][currentMapObject.getPlaceble().getY() + y] = currentMapObject.getTileByTileIndex(x, y);

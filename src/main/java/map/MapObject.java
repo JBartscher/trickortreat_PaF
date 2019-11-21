@@ -4,7 +4,7 @@ import map.placing_utils.Placeble;
 
 public abstract class MapObject {
 
-    private Placeble placeble;
+    protected Placeble placeble;
 
     public Placeble getPlaceble() {
         return placeble;
