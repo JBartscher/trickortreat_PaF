@@ -47,6 +47,12 @@ public class DistrictDecider {
         return districts;
     }
 
+    /**
+     * creates a random District
+     *
+     * @param sector the place where the District will lay
+     * @return a random sector of the type NormalDistrict, RichDistrict or PoorDistrict
+     */
     private District randomDistrict(Sector sector) {
         District randomDistrict = null;
         Random r = new Random();
@@ -67,6 +73,11 @@ public class DistrictDecider {
         return randomDistrict;
     }
 
+    /**
+     * For a rectangle map this method creates 4 evenly big sectors.
+     *
+     * @return a list of 4 evenly spaced sectors
+     */
     private List<Sector> partionateIntoMapSectors() {
         ArrayList<Sector> sectors = new ArrayList<>();
         int map_half_width = width / 2;

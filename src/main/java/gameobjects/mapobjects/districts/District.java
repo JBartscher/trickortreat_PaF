@@ -2,7 +2,9 @@ package gameobjects.mapobjects.districts;
 
 import map.placing_utils.Sector;
 
-//poor, civilian, rich
+/**
+ * Abstract class for Districts
+ */
 public abstract class District {
 
     protected double candy_multiplikator = 0;

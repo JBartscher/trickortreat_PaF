@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The SectorManager is a class to manage n Sectors, so that not all placeble objects have to be consulted, just the
- * ones of the sector that is returned by the SectorManager.
+ * The DistrictManager is a class to manage n Districts, so that not all placeble objects have to be consulted, just the
+ * ones of the sector that is returned by the DistrictManager.
  */
 public class DistrictManager {
 
