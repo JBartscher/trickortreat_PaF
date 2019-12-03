@@ -22,5 +22,4 @@ public abstract class MapObject {
 
     public abstract Tile getTileByTileIndex(int x, int y);
 
-
 }
