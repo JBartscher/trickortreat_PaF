@@ -1,3 +1,7 @@
+package main.java;
+
+import main.java.map.Tile;
+
 public class GameCamera {
 
     private int xOffSet, yOffSet;
@@ -7,6 +11,7 @@ public class GameCamera {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
     }
+
     public void centerOnEntity(final Entity e){
         xOffSet = (int) (e.getxPos() - Window.WIDTH / 2 + e.getSize() / 2);
         if(xOffSet < 0) {

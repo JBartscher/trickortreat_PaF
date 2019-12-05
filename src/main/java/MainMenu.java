@@ -1,3 +1,5 @@
+package main.java;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -6,7 +8,7 @@ import javafx.stage.Stage;
 public class MainMenu {
 
 
-    public static void showMainMenu(Stage stage){
+    public static void showMainMenu(Stage stage) {
 
         VBox root = new VBox();
         Button buttonStart = new Button("Start a new Game");

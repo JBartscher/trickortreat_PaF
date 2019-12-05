@@ -1,6 +1,12 @@
+package main.java;
+
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import main.java.gameobjects.Player;
+import main.java.map.Map;
+import main.java.map.MapGenerator;
+import main.java.map.Tile;
 
 import java.util.ArrayList;
 
@@ -80,6 +86,7 @@ public class Game {
     public GameCamera getGameCamera() {
         return gameCamera;
     }
+
     public MapRenderer getMapRenderer() {
         return mapRenderer;
     }

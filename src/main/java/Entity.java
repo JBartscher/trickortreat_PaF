@@ -1,3 +1,7 @@
+package main.java;
+
+import main.java.map.Tile;
+
 public class Entity {
 
     protected double xPos;
@@ -5,7 +9,7 @@ public class Entity {
     protected double size;
 
     // Default-Werte
-    protected Entity(){
+    protected Entity() {
         xPos = 64;
         yPos = 64;
         size = Tile.TILE_SIZE;

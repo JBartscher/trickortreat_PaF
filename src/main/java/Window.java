@@ -1,6 +1,9 @@
+package main.java;
+
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import main.java.map.Map;
 
 public class Window {
 
