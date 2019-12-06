@@ -50,24 +50,23 @@ public class DistrictDecider {
      * @param sector the place where the District will lay
      * @return a random sector of the type NormalDistrict, RichDistrict or PoorDistrict
      */
-    private District randomDistrict(Sector sector) {
+    protected District randomDistrict(Sector sector) {
         District randomDistrict = null;
         Random r = new Random();
         // picks a random number in the range of 1-3 and decides a district based on that value.
-        switch (r.nextInt(3)) {
-            case 1:
+        switch (r.nextInt(2)) {
+            case 0:
                 randomDistrict = new NormalDistrict(sector);
                 break;
-            case 2:
+            case 1:
                 randomDistrict = new RichDistrict(sector);
                 break;
-            case 3:
+            case 2:
                 randomDistrict = new PoorDistrict(sector);
                 break;
-
-            //test:
-            //   randomDistrict = new NormalDistrict(sector);
-
+            default:
+                randomDistrict = new NormalDistrict(sector);
+                break;
         }
         return randomDistrict;
     }

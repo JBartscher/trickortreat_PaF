@@ -23,7 +23,7 @@ public class DistrictManager {
      */
     public DistrictManager(List<District> districts) throws SectorOverlappingException {
         if (districts.isEmpty()) {
-            throw new IllegalArgumentException("sectors cant be empty");
+            throw new IllegalArgumentException("districts cant be empty");
         }
         // TODO: Sectoren besser abtrennen damit sie sich nciht mehr überschneiden und dann wieder einkommentieren
         // check that sectors not overlap.
