@@ -1,4 +1,6 @@
-package main.java.map;
+package main.java.gameobjects.mapobjects.districts;
+
+import main.java.map.Sector;
 
 /**
  * Abstract class for Districts

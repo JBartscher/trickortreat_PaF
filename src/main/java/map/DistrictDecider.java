@@ -1,5 +1,6 @@
 package main.java.map;
 
+import main.java.gameobjects.mapobjects.districts.District;
 import main.java.gameobjects.mapobjects.districts.NormalDistrict;
 import main.java.gameobjects.mapobjects.districts.PoorDistrict;
 import main.java.gameobjects.mapobjects.districts.RichDistrict;

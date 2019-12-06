@@ -4,6 +4,7 @@ import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.TownHall;
+import main.java.gameobjects.mapobjects.districts.District;
 
 import java.util.LinkedList;
 import java.util.Queue;

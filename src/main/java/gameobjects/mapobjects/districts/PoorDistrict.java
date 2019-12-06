@@ -1,6 +1,5 @@
 package main.java.gameobjects.mapobjects.districts;
 
-import main.java.map.District;
 import main.java.map.Sector;
 
 public class PoorDistrict extends District {

@@ -1,6 +1,6 @@
 package map;
 
-import main.java.map.District;
+import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.DistrictDecider;
 import main.java.map.Map;
 import org.junit.jupiter.api.Assertions;

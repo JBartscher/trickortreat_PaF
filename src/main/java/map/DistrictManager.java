@@ -2,6 +2,7 @@ package main.java.map;
 
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
+import main.java.gameobjects.mapobjects.districts.District;
 
 import java.util.ArrayList;
 import java.util.List;

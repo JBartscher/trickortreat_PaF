@@ -1,7 +1,11 @@
 package main.java.gameobjects.mapobjects;
 
 import main.java.gameobjects.Player;
-import main.java.map.*;
+import main.java.gameobjects.mapobjects.districts.District;
+import main.java.map.MapObject;
+import main.java.map.Placeable;
+import main.java.map.Tile;
+import main.java.map.TileCollection;
 
 import java.util.Arrays;
 
