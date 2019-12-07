@@ -8,6 +8,7 @@ import main.java.map.Sector;
 public abstract class District {
 
     protected double candy_multiplikator = 0;
+    protected int houseColorKey = 5;
     private Sector sector;
 
     public District(Sector sector) {
@@ -22,5 +23,7 @@ public abstract class District {
         return candy_multiplikator;
     }
 
-
+    public int getHouseColorKey() {
+        return houseColorKey;
+    }
 }

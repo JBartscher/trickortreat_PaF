@@ -31,6 +31,7 @@ public class MapRenderer {
                         Tile.TILE_SIZE, Tile.TILE_SIZE);
 
                 // HARDGECODET , nur zum test
+                /*
                 Color color = null;
                 if (tileMap[y][x].getTileNr() == 1) {
                     color = Color.GREEN;
@@ -39,7 +40,9 @@ public class MapRenderer {
                 } else if (tileMap[y][x].getTileNr() == 8) {
                     color = Color.BROWN;
                 }
-                rect.setFill(color);
+                */
+
+                rect.setFill(tileMap[x][y].getTileColor());
                 root.getChildren().add(rect);
             }
         }

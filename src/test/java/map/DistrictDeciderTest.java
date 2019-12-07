@@ -19,5 +19,7 @@ class DistrictDeciderTest {
         Assertions.assertEquals(4, districts.size());
         // test that all districts are created
         districts.forEach(district -> Assertions.assertNotNull(district));
+
+        TestMapPrinter.printDistrictSectors(districts);
     }
 }

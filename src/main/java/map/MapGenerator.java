@@ -85,7 +85,7 @@ public class MapGenerator {
             // put the right district to the house object
             try {
                 District districtOfHouse = districtManager.getDistrict(smallHouse.getPlaceable());
-                // WORKS System.out.println(districtOfHouse);
+                System.out.println(districtOfHouse);
                 smallHouse.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();

@@ -4,7 +4,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class GameLauncher extends Application {
+public class
+GameLauncher extends Application {
 
     private Game game;
     GameLoop gameLoop = new GameLoop();
