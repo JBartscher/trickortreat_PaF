@@ -54,7 +54,7 @@ public class MapGenerator {
      * @param x pos x on map
      * @param y pos y on map
      */
-    public void createTownHall(int x, int y) {
+    private void createTownHall(int x, int y) {
         // 5x5
         TownHall townHall = new TownHall(x, y);
         // the first item cannot intersect with other items because its new.
@@ -75,7 +75,7 @@ public class MapGenerator {
      *
      * @param numberOfHouses number of houses that will be placed to the map at max
      */
-    public void createSmallHouses(int numberOfHouses) {
+    private void createSmallHouses(int numberOfHouses) {
         // 2x2
         int width = 2, height = 2;
         for (int i = 0; i < numberOfHouses; i++) {
@@ -98,7 +98,7 @@ public class MapGenerator {
      *
      * @param numberOfHouses number of houses that will be placed to the map at max
      */
-    public void createBigHouses(int numberOfHouses) {
+    private void createBigHouses(int numberOfHouses) {
         // 3x3
         int width = 3, height = 3;
         for (int i = 0; i < numberOfHouses; i++) {
@@ -142,23 +142,10 @@ public class MapGenerator {
         }
     }
 
-
-    /**
-     * This method calculates how much place on the gamemap is left.
-     * Convenience method, not yet implemented.
-     *
-     * @param tilecount
-     * @return
-     */
-    public int calculateFreeTilesCountAfterPlacing(int tilecount){
-        //TODO implement
-        return 0;
-    }
-
     /**
      * transfers the tiles of a House object in the placing queue to the gamemap.
      */
-    public void transferPlacedObjectsTilesToTileMap() {
+    private void transferPlacedObjectsTilesToTileMap() {
         while (!transferQueue.isEmpty()) {
             MapObject currentMapObject = transferQueue.remove();
             int houseWidth = currentMapObject.getPlaceable().getWidth();

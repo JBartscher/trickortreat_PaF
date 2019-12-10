@@ -11,8 +11,6 @@ public class Map {
 
     Sector mapSector;
 
-    DistrictManager sectorManager;
-
     public Map(int size) {
         this.size_x = size;
         this.size_y = size;

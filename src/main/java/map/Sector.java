@@ -11,6 +11,7 @@ import java.util.List;
 public class Sector extends Placeable {
 
     private ArrayList<Placeable> containingPlacebles;
+    private List<MapObject> sectorObjects;
 
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
@@ -40,8 +41,6 @@ public class Sector extends Placeable {
         if (!intersectsWithContainingItems(placeable))
             containingPlacebles.add(placeable);
     }
-
-    List<MapObject> sectorObjects;
 
     /**
      * returns the list of all placed mapObjects which are within this district
