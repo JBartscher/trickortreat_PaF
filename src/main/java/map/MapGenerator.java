@@ -46,6 +46,7 @@ public class MapGenerator {
         createSmallHouses(16);
         createBigHouses(30);
         transferPlacedObjectsTilesToTileMap();
+        disableHouseOffsets();
     }
 
     /**
@@ -58,11 +59,11 @@ public class MapGenerator {
         // 5x5
         TownHall townHall = new TownHall(x, y);
         // the first item cannot intersect with other items because its new.
-        gameMap.getMapSector().addPlaceable(townHall.getPlaceable());
+        gameMap.getMapSector().addPlaceable(townHall);
         transferQueue.add(townHall);
         // put the right district to the house object
         try {
-            District districtOfHouse = districtManager.getDistrict(townHall.getPlaceable());
+            District districtOfHouse = districtManager.getDistrict(townHall);
             townHall.setDistrict(districtOfHouse);
         } catch (PlaceableBelongsToNoSectorException e) {
             e.printStackTrace();
@@ -84,7 +85,7 @@ public class MapGenerator {
             findObjectSpot(smallHouse);
             // put the right district to the house object
             try {
-                District districtOfHouse = districtManager.getDistrict(smallHouse.getPlaceable());
+                District districtOfHouse = districtManager.getDistrict(smallHouse);
                 System.out.println(districtOfHouse);
                 smallHouse.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
@@ -107,7 +108,7 @@ public class MapGenerator {
             findObjectSpot(bigHouse);
             // put the right district to the house object
             try {
-                District districtOfHouse = districtManager.getDistrict(bigHouse.getPlaceable());
+                District districtOfHouse = districtManager.getDistrict(bigHouse);
                 bigHouse.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();
@@ -124,14 +125,18 @@ public class MapGenerator {
         final long MAX_TIME_PLACING = 10; //10 ms
         long startTime = System.currentTimeMillis();
 
-        int width = placingObject.getPlaceable().getWidth();
-        int height = placingObject.getPlaceable().getHeight();
+        int width = placingObject.getWidth();
+        int height = placingObject.getHeight();
 
         while (true) {
             Placeable placeable = new Placeable(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
+            // not colliding and sector contains Placeable
             if (!gameMap.getMapSector().intersectsWithContainingItems(placeable) && gameMap.getMapSector().contains(placeable)) {
-                gameMap.getMapSector().addPlaceable(placeable);
-                placingObject.setPlaceable(placeable);
+                gameMap.getMapSector().addPlaceable(placingObject);
+                gameMap.getMapSector().addMapObject(placingObject);
+                // convey x and y pos to object
+                placingObject.setX(placeable.getX());
+                placingObject.setY(placeable.getY());
 
                 transferQueue.add(placingObject);
                 break;
@@ -148,13 +153,20 @@ public class MapGenerator {
     private void transferPlacedObjectsTilesToTileMap() {
         while (!transferQueue.isEmpty()) {
             MapObject currentMapObject = transferQueue.remove();
-            int houseWidth = currentMapObject.getPlaceable().getWidth();
-            int houseHeight = currentMapObject.getPlaceable().getHeight();
+            int houseWidth = currentMapObject.getWidth();
+            int houseHeight = currentMapObject.getHeight();
             for (int x = 0; x < houseWidth; x++) {
                 for (int y = 0; y < houseHeight; y++) {
-                    gameMap.map[currentMapObject.getPlaceable().getX() + x][currentMapObject.getPlaceable().getY() + y] = currentMapObject.getTileByTileIndex(x, y);
+                    gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y] = currentMapObject.getTileByTileIndex(x, y);
                 }
             }
         }
+    }
+
+    /**
+     * disable house offset to ensure collision detection works correct
+     */
+    private void disableHouseOffsets() {
+        gameMap.getMapSector().getAllcontainingPlacebles().forEach(mapObject -> mapObject.disableOffset());
     }
 }

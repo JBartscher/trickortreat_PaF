@@ -26,7 +26,7 @@ GameLauncher extends Application {
             game.update();
             game.getMapRenderer().drawMap();
             long endTime = System.currentTimeMillis();
-            System.out.println("NEEDED TIME :" + (endTime - startTime));
+            // System.out.println("NEEDED TIME :" + (endTime - startTime));
         }
     }
 

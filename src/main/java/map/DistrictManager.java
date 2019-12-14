@@ -26,16 +26,14 @@ public class DistrictManager {
         if (districts.isEmpty()) {
             throw new IllegalArgumentException("districts cant be empty");
         }
-        // TODO: Sectoren besser abtrennen damit sie sich nciht mehr überschneiden und dann wieder einkommentieren
         // check that sectors not overlap.
-        /*
         for (District district : districts) {
             for (District other_district : districts) {
-                if (district.getSector().intersects(other_district.getSector()))
+                // NOT the Same District and intersecting -> Exception
+                if (!district.equals(other_district) && district.getSector().intersects(other_district.getSector()))
                     throw new SectorOverlappingException("Sectors cannot Overlap each other");
             }
         }
-        */
         // sector manager has all sectors.
         this.mapDistircts.addAll(districts);
     }
@@ -47,6 +45,7 @@ public class DistrictManager {
      */
     public void assignDistrict(Placeable placeable) {
         for (District district : this.mapDistircts) {
+            // is fully enclosed in Sector
             if (district.getSector().contains(placeable)) {
                 district.getSector().addPlaceable(placeable);
                 // placeble is fully contained by a sector. No further checkin necessary.
@@ -71,7 +70,7 @@ public class DistrictManager {
     public List<District> belongsToDistricts(Placeable placeble) throws PlaceableBelongsToNoSectorException {
         ArrayList<District> districts = new ArrayList<>();
         for (District district : mapDistircts) {
-            if (district.getSector().contains(placeble))
+            if (district.getSector().getAllcontainingPlacebles().contains(placeble))
                 districts.add(district);
         }
         if (districts.isEmpty())

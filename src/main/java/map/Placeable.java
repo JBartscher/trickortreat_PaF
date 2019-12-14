@@ -33,6 +33,27 @@ public class Placeable {
         return y;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    /**
+     * Method to change the offset of an Placeble to zero.
+     * <p>
+     * It is intentionally not named "setOffset" because this method should only be called to change the offset
+     * while the map is created. This change in off set is necessary to ensure that objects like houses are placed
+     * with a offset of 1 and later have no offset so the player-collision is detected right.
+     *
+     * @see main.java.map.MapGenerator -> findObjectSpot(MapObject)
+     */
+    public void disableOffset() {
+        this.offset = 0;
+    }
+
     public int getWidth() {
         return width;
     }

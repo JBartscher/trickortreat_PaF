@@ -2,6 +2,10 @@ package main.java;
 
 import main.java.map.Tile;
 
+import java.awt.*;
+
+import static java.lang.Math.round;
+
 public class Entity {
 
     protected double xPos;
@@ -10,8 +14,8 @@ public class Entity {
 
     // Default-Werte
     protected Entity() {
-        xPos = 64;
-        yPos = 64;
+        xPos = 0;
+        yPos = 0;
         size = Tile.TILE_SIZE;
     }
 
@@ -37,6 +41,10 @@ public class Entity {
 
     public void setSize(double size) {
         this.size = size;
+    }
+
+    public Point getEntityPos() {
+        return new Point((int) round(xPos / Tile.TILE_SIZE), (int) round(yPos / Tile.TILE_SIZE));
     }
 
 }

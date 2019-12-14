@@ -12,13 +12,16 @@ public class Player extends Entity {
 
     private int candy = 0;
 
+    public static final int SPEED = 64;
+
     public Player(List children) {
+        super();
         this.children = new Stack();
         this.children.addAll(children);
     }
 
-    public Player(){
-
+    public Player() {
+        super();
     }
 
     /**

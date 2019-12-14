@@ -36,7 +36,7 @@ public class Map {
         return size_y;
     }
 
-    Sector getMapSector() {
+    public Sector getMapSector() {
         return mapSector;
     }
 

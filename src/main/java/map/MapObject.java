@@ -6,16 +6,14 @@ package main.java.map;
  *
  * @see MapGenerator
  */
-public abstract class MapObject {
+public abstract class MapObject extends Placeable {
 
-    protected Placeable placeable;
-
-    public Placeable getPlaceable() {
-        return placeable;
+    public MapObject(int x, int y, int width, int height, int offset) {
+        super(x, y, width, height, offset);
     }
 
-    public void setPlaceable(Placeable placeable) {
-        this.placeable = placeable;
+    public MapObject(int x, int y, int width, int height) {
+        super(x, y, width, height);
     }
 
     public abstract Tile getTileByTileIndex(int x, int y);

@@ -32,10 +32,12 @@ public class House extends MapObject {
      * @param tileHeight height
      */
     public House(int x, int y, int tileWidth, int tileHeight) {
+
+        super(x, y, tileWidth, tileHeight);
+
         this.tileset = new Tile[tileWidth][tileHeight];
         for (Tile[] row : this.tileset)
             Arrays.fill(row, TileCollection.HOUSE_TILE);
-        this.placeable = new Placeable(x, y, tileWidth, tileHeight);
         setHouseDoorPosition();
     }
 
@@ -45,20 +47,12 @@ public class House extends MapObject {
      * @param placeable Placeble
      */
     public House(Placeable placeable) {
+        super(placeable.getX(), placeable.getY(), placeable.getWidth(), placeable.getHeight());
+
         this.tileset = new Tile[placeable.getWidth()][placeable.getHeight()];
         for (Tile[] row : this.tileset)
             Arrays.fill(row, TileCollection.HOUSE_TILE);
-        this.placeable = placeable;
         setHouseDoorPosition();
-    }
-
-    /**
-     * gets the placeble of the House instance.
-     *
-     * @return Placeble
-     */
-    public Placeable getPlaceable() {
-        return placeable;
     }
 
     /**
@@ -107,7 +101,8 @@ public class House extends MapObject {
      * @see TownHall
      */
     public void visit(Player player) {
-        int new_candy = (int) this.district.getCandy_multiplikator() * player.getChildrenCount();
-        player.addCandy(new_candy);
+        System.out.println("VISITED THIS HOUSE! " + this);
+        //int new_candy = (int) this.district.getCandy_multiplikator() * player.getChildrenCount();
+        //player.addCandy(new_candy);
     }
 }

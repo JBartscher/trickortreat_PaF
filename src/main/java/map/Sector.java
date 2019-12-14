@@ -16,6 +16,7 @@ public class Sector extends Placeable {
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
         containingPlacebles = new ArrayList<>();
+        sectorObjects = new ArrayList<>();
     }
 
     /**
@@ -43,11 +44,29 @@ public class Sector extends Placeable {
     }
 
     /**
+     * adds a new mapObject to the sector.
+     *
+     * @param mapObject
+     */
+    public void addMapObject(MapObject mapObject) {
+        sectorObjects.add(mapObject);
+    }
+
+    /**
      * returns the list of all placed mapObjects which are within this district
      *
      * @return a List of all MapObjects which are part of this district.
      */
-    List<MapObject> getAllContainingMapObjects() {
+    public List<MapObject> getAllContainingMapObjects() {
         return this.sectorObjects;
+    }
+
+    /**
+     * returns the list of all placed mapObjects which are within this district
+     *
+     * @return a List of all MapObjects which are part of this district.
+     */
+    public ArrayList<Placeable> getAllcontainingPlacebles() {
+        return this.containingPlacebles;
     }
 }

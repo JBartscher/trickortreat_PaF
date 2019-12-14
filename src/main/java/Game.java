@@ -4,9 +4,8 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import main.java.gameobjects.Player;
-import main.java.map.Map;
-import main.java.map.MapGenerator;
-import main.java.map.Tile;
+import main.java.gameobjects.mapobjects.House;
+import main.java.map.*;
 
 import java.util.ArrayList;
 
@@ -51,12 +50,28 @@ public class Game {
         window.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                System.out.println(gameCamera.getXOffset());
+
+                // player.getPlaceable().intersects(map.getMapSector().intersectsWithContainingItems())
+
+                // System.out.println(gameCamera.getXOffset());
                 switch (event.getCode()) {
-                    case UP:    player.setyPos(player.getyPos() - 64); break;
-                    case DOWN:  player.setyPos(player.getyPos() + 64); break;
-                    case LEFT:  player.setxPos(player.getxPos() - 64); break;
-                    case RIGHT:  player.setxPos(player.getxPos() + 64); break;
+
+                    case UP:
+                        moveVertical(-Player.SPEED);
+                        //player.setyPos(player.getyPos() - Player.SPEED);
+                        break;
+                    case DOWN:
+                        moveVertical(Player.SPEED);
+                        //player.setyPos(player.getyPos() + Player.SPEED);
+                        break;
+                    case LEFT:
+                        moveHorizontal(-Player.SPEED);
+                        //player.setxPos(player.getxPos() - Player.SPEED);
+                        break;
+                    case RIGHT:
+                        moveHorizontal(Player.SPEED);
+                        //player.setxPos(player.getxPos() + Player.SPEED);
+                        break;
                 }
             }
         });
@@ -71,15 +86,98 @@ public class Game {
 
     }
 
-    public Game(int size){
+    public Game(int size) {
         this.map = new Map(size);
         this.gameMode = GameMode.LOCAL;
     }
 
-    public void startGame(){
+    /**
+     * moves the player vertical
+     *
+     * @param range
+     */
+    private void moveVertical(int range) {
+        player.setyPos(player.getyPos() + range);
+
+        // check out of bounds
+        if (outOfBounds()) {
+            // revert movement
+            player.setyPos(player.getyPos() - range);
+            return;
+        }
+
+        Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
+
+        if (map.getMapSector().intersectsWithContainingItems(p)) {
+            //collision with door
+            if (map.getMap()[player.getEntityPos().y][player.getEntityPos().x].getTileNr() == 8) {
+
+                System.out.println("COLLIDE WITH DOOR!");
+
+                for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
+                    try {
+                        House h = (House) obj;
+                        if (h.intersects(p)) {
+                            h.visit(player);
+                        }
+                    } catch (ClassCastException ex) {
+                        // the Object is not a House
+                        continue;
+                    }
+                }
+
+            }
+            System.out.println("COLLIDE!");
+            // revert movement
+            player.setyPos(player.getyPos() - range);
+        }
     }
 
-    public void update(){
+    /**
+     * moves the player horizontal
+     *
+     * @param range
+     */
+    private void moveHorizontal(int range) {
+        player.setxPos(player.getxPos() + range);
+        // check out of bounds
+        if (outOfBounds()) {
+            // revert movement
+            player.setxPos(player.getxPos() - range);
+            return;
+        }
+
+        Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
+
+        if (map.getMapSector().intersectsWithContainingItems(p)) {
+            System.out.println("COLLIDE!");
+            // revert movement
+            player.setxPos(player.getxPos() - range);
+        }
+    }
+
+    /**
+     * checks if the new player position would be out of bounds
+     *
+     * @return true if out of bounds failing which false
+     */
+    private boolean outOfBounds() {
+        Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
+        if (!map.getMapSector().intersects(p)) {
+            // mapSector does not contain player anymore
+            System.out.println("out");
+            return true;
+        } else {
+            System.out.println("in");
+            return false;
+        }
+    }
+
+    public void startGame() {
+    }
+
+    public void update() {
+        // System.out.println(player.getEntityPos());
         gameCamera.centerOnEntity(player);
     }
 
