@@ -87,7 +87,7 @@ public class House extends MapObject {
         // repaint Tiles
         for( int x=0; x < this.tileset.length; x++){
             for( int y=0; y < this.tileset[0].length; y++){
-                tileset[x][y] = new Tile(district.getHouseColorKey(), false);//.replaceTileNr(district.getHouseColorKey());
+                tileset[x][y] = new Tile(district.getHouseColorKey(), false);
             }
         }
         this.setHouseDoorPosition();

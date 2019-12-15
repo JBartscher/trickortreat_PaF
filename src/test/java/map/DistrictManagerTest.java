@@ -2,11 +2,12 @@ package map;
 
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
+import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.DistrictDecider;
 import main.java.map.DistrictManager;
 import main.java.map.Map;
-import main.java.map.Placeable;
+import main.java.map.MapObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,14 +41,13 @@ class DistrictManagerTest {
         Map gameMap_uneven = new Map(55);
 
         DistrictDecider districtDecider;
-        DistrictManager districtManager;
         try {
             // even and valid map
             districtDecider = new DistrictDecider(gameMap_even);
-            districtManager = new DistrictManager(districtDecider.generateDistricts());
+            new DistrictManager(districtDecider.generateDistricts());
             // uneven but valid map
             districtDecider = new DistrictDecider(gameMap_uneven);
-            districtManager = new DistrictManager(districtDecider.generateDistricts());
+            new DistrictManager(districtDecider.generateDistricts());
         } catch (SectorOverlappingException e) {
             e.printStackTrace();
             Assertions.fail();
@@ -56,15 +56,15 @@ class DistrictManagerTest {
 
     @Test
     void assignDistrict() {
-        Placeable p = new Placeable(1, 1, 5, 5);
+        MapObject p = new House(1, 1, 5, 5);
         this.districtManager.assignDistrict(p);
     }
 
     @Test
     void belongsToDistricts() {
-        Placeable p_oneDistrict = new Placeable(1, 1, 5, 5);
+        MapObject p_oneDistrict = new House(1, 1, 5, 5);
         this.districtManager.assignDistrict(p_oneDistrict);
-        Placeable p_multipleDistricts = new Placeable(0, 0, 50, 50);
+        MapObject p_multipleDistricts = new House(0, 0, 50, 50);
         this.districtManager.assignDistrict(p_multipleDistricts);
         List<District> belongsToDistricts;
         try {
@@ -72,8 +72,7 @@ class DistrictManagerTest {
             Assertions.assertEquals(1, belongsToDistricts.size());
 
             belongsToDistricts = this.districtManager.belongsToDistricts(p_multipleDistricts);
-            // intersects with p_oneDistrict so it is not assigned to that sector, so it is 3 not 4
-            Assertions.assertEquals(3, belongsToDistricts.size());
+            Assertions.assertEquals(4, belongsToDistricts.size());
         } catch (PlaceableBelongsToNoSectorException e) {
             e.printStackTrace();
             Assertions.fail();
@@ -82,7 +81,8 @@ class DistrictManagerTest {
 
     @Test
     void getDistrict() {
-        Placeable p = new Placeable(1, 1, 5, 5);
+        MapObject p = new House(1, 1, 5, 5);
+
         this.districtManager.assignDistrict(p);
 
         try {

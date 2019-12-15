@@ -8,7 +8,7 @@ import java.util.Properties;
 public class Tile {
     boolean walkable;
     int tileNr;
-    static Properties tileColors = new Properties();
+    static final Properties tileColors = new Properties();
     public static final int TILE_SIZE = 64;
 
 
@@ -31,12 +31,11 @@ public class Tile {
         return this.tileNr;
     }
 
-    public void replaceTileNr(int newTileNr){
-            //only House Tiles are replaceble
-            this.tileNr = newTileNr;
-            return;
-    }
-
+    /**
+     * return Color of Tile
+     *
+     * @return Color of Tile
+     */
     public Color getTileColor() {
         return (Color) tileColors.getOrDefault(this.tileNr, Color.WHITE);
     }

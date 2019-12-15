@@ -4,8 +4,8 @@ public class Placeable {
     private int x;
     private int y;
     // in tiles
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
     // in tiles
     private int offset = 1;
 
@@ -22,7 +22,7 @@ public class Placeable {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.offset = 1;
+        // offset is already set to one
     }
 
     public int getX() {
@@ -70,8 +70,8 @@ public class Placeable {
      * checks whether this placeble intersects with anotehr one. It is important to note that the offset is only
      * computed from this object, not both.
      *
-     * @param other
-     * @return
+     * @param other the other placeble
+     * @return true if intersects otherwise false
      */
     public boolean intersects(Placeable other) {
         return (this.x - this.offset < other.x + other.width &&
@@ -83,18 +83,13 @@ public class Placeable {
     /**
      * checks whether this placeble contains another one.
      *
-     * @param other
-     * @return
+     * @param other the other placeble
+     * @return true if object is contained otherwise false
      */
     public boolean contains(Placeable other) {
-        if ((other.x + other.width) < (this.x + this.width)
+        return (other.x + other.width) < (this.x + this.width)
                 && (other.x) > (this.x)
                 && (other.y) > (this.y)
-                && (other.y + other.height) < (this.y + this.height)
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+                && (other.y + other.height) < (this.y + this.height);
     }
 }

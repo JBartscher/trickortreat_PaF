@@ -4,12 +4,10 @@ import java.util.Arrays;
 
 public class Map {
 
-    private int size_x;
-    private int size_y;
-
-    Tile[][] map;
-
-    Sector mapSector;
+    final Tile[][] map;
+    final Sector mapSector;
+    private final int size_x;
+    private final int size_y;
 
     public Map(int size) {
         this.size_x = size;

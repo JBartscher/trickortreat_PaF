@@ -12,18 +12,18 @@ import java.util.Random;
 
 public class MapGenerator {
 
-    private static Random r = new Random();
+    private static final Random r = new Random();
 
     DistrictManager districtManager;
 
-    private Map gameMap;
+    final private Map gameMap;
 
     /**
      * Queue of Objects that should be placed. The idea behind using a queue is that we place important Objects before
      * other, more generic Objects. This is done to cushion long running spot finding methods. After a set time the
      * Class stops finding new Spots for placebles and adds everything it got's to the gamemap.
      */
-    private Queue<MapObject> transferQueue = new LinkedList<MapObject>() {
+    final private Queue<MapObject> transferQueue = new LinkedList<MapObject>() {
     };
 
     public MapGenerator(Map map) {
@@ -59,7 +59,7 @@ public class MapGenerator {
         // 5x5
         TownHall townHall = new TownHall(x, y);
         // the first item cannot intersect with other items because its new.
-        gameMap.getMapSector().addPlaceable(townHall);
+        gameMap.getMapSector().addMapObject(townHall);
         transferQueue.add(townHall);
         // put the right district to the house object
         try {
@@ -132,7 +132,6 @@ public class MapGenerator {
             Placeable placeable = new Placeable(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
             // not colliding and sector contains Placeable
             if (!gameMap.getMapSector().intersectsWithContainingItems(placeable) && gameMap.getMapSector().contains(placeable)) {
-                gameMap.getMapSector().addPlaceable(placingObject);
                 gameMap.getMapSector().addMapObject(placingObject);
                 // convey x and y pos to object
                 placingObject.setX(placeable.getX());
@@ -167,6 +166,6 @@ public class MapGenerator {
      * disable house offset to ensure collision detection works correct
      */
     private void disableHouseOffsets() {
-        gameMap.getMapSector().getAllcontainingPlacebles().forEach(mapObject -> mapObject.disableOffset());
+        gameMap.getMapSector().getAllContainingMapObjects().forEach(Placeable::disableOffset);
     }
 }

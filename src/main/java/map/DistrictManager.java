@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DistrictManager {
 
-    private ArrayList<District> mapDistircts = new ArrayList<>();
+    private final ArrayList<District> mapDistircts = new ArrayList<>();
 
     /**
      * the constructor of the SectorManger takes a list of sectors and checks that they dont overlap.
@@ -41,18 +41,18 @@ public class DistrictManager {
     /**
      * takes a placeable and assign it to a district.
      *
-     * @param placeable placeable which will be assigned to a sector.
+     * @param obj placeable which will be assigned to a sector.
      */
-    public void assignDistrict(Placeable placeable) {
+    public void assignDistrict(MapObject obj) {
         for (District district : this.mapDistircts) {
             // is fully enclosed in Sector
-            if (district.getSector().contains(placeable)) {
-                district.getSector().addPlaceable(placeable);
+            if (district.getSector().contains(obj)) {
                 // placeble is fully contained by a sector. No further checkin necessary.
+                district.getSector().addMapObject(obj);
                 break;
             } else {
-                if (placeable.intersects(district.getSector())) {
-                    district.getSector().addPlaceable(placeable);
+                if (obj.intersects(district.getSector())) {
+                    district.getSector().addMapObject(obj);
                     // No need to break/end the loop. A placeble can be part of multiple sectors.
                 }
             }
@@ -62,15 +62,14 @@ public class DistrictManager {
     /**
      * returns a list of districts to which a already placed placeble belongs. This method is NOT for new placebles.
      *
-     * @param placeble placeble from which the lookup is done.
      * @return a list of districts, normally just holding one sector but it is possible that a placeble is part of more
      * than one district.
      * @throws PlaceableBelongsToNoSectorException a placeble should always belong to a sector.
      */
-    public List<District> belongsToDistricts(Placeable placeble) throws PlaceableBelongsToNoSectorException {
+    public List<District> belongsToDistricts(MapObject obj) throws PlaceableBelongsToNoSectorException {
         ArrayList<District> districts = new ArrayList<>();
         for (District district : mapDistircts) {
-            if (district.getSector().getAllcontainingPlacebles().contains(placeble))
+            if (district.getSector().getAllContainingMapObjects().contains(obj))
                 districts.add(district);
         }
         if (districts.isEmpty())

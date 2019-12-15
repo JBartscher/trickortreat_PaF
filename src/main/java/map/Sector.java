@@ -10,23 +10,22 @@ import java.util.List;
  */
 public class Sector extends Placeable {
 
-    private ArrayList<Placeable> containingPlacebles;
-    private List<MapObject> sectorObjects;
+    //private ArrayList<Placeable> containingPlacebles;
+    private final List<MapObject> sectorObjects;
 
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
-        containingPlacebles = new ArrayList<>();
         sectorObjects = new ArrayList<>();
     }
 
     /**
      * checks every item in containingPlacebles if it intersects with the given placeble.
      *
-     * @param placeble
+     * @param placeble the placeble that is checked wherater it intersects with any item in the sector
      * @return true if the object intersects with other objects
      */
     public boolean intersectsWithContainingItems(Placeable placeble) {
-        for (Placeable p : containingPlacebles) {
+        for (Placeable p : sectorObjects) {
             if (p.intersects(placeble))
                 return true;
         }
@@ -34,19 +33,9 @@ public class Sector extends Placeable {
     }
 
     /**
-     * adds a new placeble to the sector.
-     *
-     * @param placeable
-     */
-    public void addPlaceable(Placeable placeable) {
-        if (!intersectsWithContainingItems(placeable))
-            containingPlacebles.add(placeable);
-    }
-
-    /**
      * adds a new mapObject to the sector.
      *
-     * @param mapObject
+     * @param mapObject the new MapObject that is appended to the list of MapObjects in this Sector
      */
     public void addMapObject(MapObject mapObject) {
         sectorObjects.add(mapObject);
@@ -59,14 +48,5 @@ public class Sector extends Placeable {
      */
     public List<MapObject> getAllContainingMapObjects() {
         return this.sectorObjects;
-    }
-
-    /**
-     * returns the list of all placed mapObjects which are within this district
-     *
-     * @return a List of all MapObjects which are part of this district.
-     */
-    public ArrayList<Placeable> getAllcontainingPlacebles() {
-        return this.containingPlacebles;
     }
 }

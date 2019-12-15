@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Random;
 
 public class DistrictDecider {
-    int width;
-    int height;
+    final int width;
+    final int height;
 
     public DistrictDecider(Map map) {
         width = map.getSize_x();
@@ -52,7 +52,7 @@ public class DistrictDecider {
      * @return a random sector of the type NormalDistrict, RichDistrict or PoorDistrict
      */
     protected District randomDistrict(Sector sector) {
-        District randomDistrict = null;
+        District randomDistrict;
         Random r = new Random();
         // picks a random number in the range of 1-3 and decides a district based on that value.
         switch (r.nextInt(2)) {
@@ -83,9 +83,9 @@ public class DistrictDecider {
         int map_half_height = height / 2;
         // create sectors
         Sector sector_left_bottom = new Sector(0, 0, map_half_width, map_half_height);
-        Sector sector_right_bottom = new Sector(0 + map_half_width, 0, map_half_width, map_half_height);
-        Sector sector_left_top = new Sector(0, 0 + map_half_height, map_half_width, map_half_height);
-        Sector sector_right_top = new Sector(0 + map_half_width, 0 + map_half_height, map_half_width, map_half_height);
+        Sector sector_right_bottom = new Sector(map_half_width, 0, map_half_width, map_half_height);
+        Sector sector_left_top = new Sector(0, map_half_height, map_half_width, map_half_height);
+        Sector sector_right_top = new Sector(map_half_width, map_half_height, map_half_width, map_half_height);
         // add to list
         sectors.add(sector_left_bottom);
         sectors.add(sector_right_bottom);
