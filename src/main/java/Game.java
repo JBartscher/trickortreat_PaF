@@ -3,6 +3,7 @@ package main.java;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.*;
@@ -56,22 +57,22 @@ public class Game {
                 // System.out.println(gameCamera.getXOffset());
                 switch (event.getCode()) {
 
-                    case UP:
-                        moveVertical(-Player.SPEED);
-                        //player.setyPos(player.getyPos() - Player.SPEED);
-                        break;
-                    case DOWN:
-                        moveVertical(Player.SPEED);
-                        //player.setyPos(player.getyPos() + Player.SPEED);
-                        break;
-                    case LEFT:
-                        moveHorizontal(-Player.SPEED);
-                        //player.setxPos(player.getxPos() - Player.SPEED);
-                        break;
-                    case RIGHT:
-                        moveHorizontal(Player.SPEED);
-                        //player.setxPos(player.getxPos() + Player.SPEED);
-                        break;
+                case UP:
+                    moveVertical(-Player.SPEED);
+                    // player.setyPos(player.getyPos() - Player.SPEED);
+                    break;
+                case DOWN:
+                    moveVertical(Player.SPEED);
+                    // player.setyPos(player.getyPos() + Player.SPEED);
+                    break;
+                case LEFT:
+                    moveHorizontal(-Player.SPEED);
+                    // player.setxPos(player.getxPos() - Player.SPEED);
+                    break;
+                case RIGHT:
+                    moveHorizontal(Player.SPEED);
+                    // player.setxPos(player.getxPos() + Player.SPEED);
+                    break;
                 }
             }
         });
@@ -84,6 +85,7 @@ public class Game {
         enemy.setxPos(Tile.TILE_SIZE * 5);
         enemy.setyPos(Tile.TILE_SIZE * 5);
 
+        Sound.playMusic();
     }
 
     public Game(int size) {
@@ -109,10 +111,12 @@ public class Game {
         Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
 
         if (map.getMapSector().intersectsWithContainingItems(p)) {
-            //collision with door
+            // collision with door
             if (map.getMap()[player.getEntityPos().y][player.getEntityPos().x].getTileNr() == 8) {
 
                 System.out.println("COLLIDE WITH DOOR!");
+
+                Sound.playRing();
 
                 for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                     try {
