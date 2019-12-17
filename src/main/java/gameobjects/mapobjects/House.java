@@ -56,7 +56,7 @@ public class House extends MapObject {
     }
 
     /**
-     * Sets the Tile at the last Row in the relative center of the House to a House Tile Object and sets a refrence
+     * Sets the Tile at the last Row in the relative center of the House to a House Tile Object and sets a reference
      * to this Tile.
      */
     private void setHouseDoorPosition() {

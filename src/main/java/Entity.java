@@ -6,7 +6,7 @@ import java.awt.*;
 
 import static java.lang.Math.round;
 
-public class Entity {
+public abstract class Entity {
 
     protected double xPos;
     protected double yPos;
