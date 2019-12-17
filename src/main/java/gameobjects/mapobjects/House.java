@@ -60,8 +60,8 @@ public class House extends MapObject {
      * to this Tile.
      */
     private void setHouseDoorPosition() {
-        int center_cell = tileset.length / 2;
-        int last_row = tileset[0].length - 1;
+        int last_row = tileset.length - 1;
+        int center_cell = tileset[0].length / 2;
 
         tileset[last_row][center_cell] = TileCollection.DOOR_TILE;
         this.doorTile = tileset[last_row][center_cell];
