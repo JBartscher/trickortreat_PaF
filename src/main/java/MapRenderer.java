@@ -60,7 +60,7 @@ public class MapRenderer {
         for(Entity obj : game.getListOfEntities()){
             //Rectangle rect = new Rectangle(obj.getxPos() - game.getGameCamera().getXOffset(), obj.getyPos() - game.getGameCamera().getYOffset(), obj.getSize(), obj.getSize());
             Image img = new Image(MapRenderer.class.getResourceAsStream("player.png"));
-            Image tileImage =  new WritableImage(img.getPixelReader(), 64, 64, Tile.TILE_SIZE, Tile.TILE_SIZE);
+            Image tileImage =  new WritableImage(img.getPixelReader(), 64, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
             ImageView rect = new ImageView(tileImage);
             double xPos = obj.getxPos() - game.getGameCamera().getXOffset();
             double yPos = obj.getyPos() - game.getGameCamera().getYOffset();
