@@ -16,7 +16,7 @@ public class TileCollection {
     private final static int STREET = 2;
     public final static Tile STREET_TILE = new Tile(STREET, true);
 
-    public final static Tile[][] getSmallHouseTiles() {
+    public static Tile[][] getSmallHouseUnvisitedTiles() {
         Tile[][] smallHouse = new Tile[2][2];
         smallHouse[0][0] = new Tile(51);
         smallHouse[0][1] = new Tile(52);
@@ -26,7 +26,13 @@ public class TileCollection {
         return smallHouse;
     }
 
-    public final static Tile[][] getBigHouseTiles() {
+    public final static Tile[][] getSmallHouseVisitedTiles() {
+        Tile[][] smallHouse = getSmallHouseUnvisitedTiles();
+        smallHouse[1][0] = new Tile(51);
+        return smallHouse;
+    }
+
+    public static Tile[][] getBigHouseUnvisitedTiles() {
         Tile[][] bigHouse = new Tile[2][3];
         bigHouse[0][0] = new Tile(61);
         bigHouse[0][1] = new Tile(62);
@@ -36,6 +42,13 @@ public class TileCollection {
         bigHouse[1][1] = new Tile(65, true);
         bigHouse[1][2] = new Tile(66);
 
+        return bigHouse;
+    }
+
+    public final static Tile[][] getBigHouseVisitedTiles() {
+        Tile[][] bigHouse = getBigHouseUnvisitedTiles();
+        bigHouse[1][0] = new Tile(61);
+        bigHouse[1][2] = new Tile(63);
         return bigHouse;
     }
 

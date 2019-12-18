@@ -12,12 +12,22 @@ public class NormalDistrict extends District {
     }
 
     @Override
-    public Tile[][] getSmallHouseTileset() {
-        return TileCollection.getSmallHouseTiles();
+    public Tile[][] getSmallHouseUnvisitedTileset() {
+        return TileCollection.getSmallHouseUnvisitedTiles();
     }
 
     @Override
-    public Tile[][] getBigHouseTileset() {
-        return TileCollection.getBigHouseTiles();
+    public Tile[][] getSmallHouseVisitedTileset() {
+        return TileCollection.getSmallHouseVisitedTiles();
+    }
+
+    @Override
+    public Tile[][] getBigHouseUnvisitedTileset() {
+        return TileCollection.getBigHouseUnvisitedTiles();
+    }
+
+    @Override
+    public Tile[][] getBigHouseVisitedTileset() {
+        return TileCollection.getBigHouseVisitedTiles();
     }
 }

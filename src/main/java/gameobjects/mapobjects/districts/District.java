@@ -24,7 +24,11 @@ public abstract class District {
         return candy_multiplikator;
     }
 
-    public abstract Tile[][] getSmallHouseTileset();
+    public abstract Tile[][] getSmallHouseUnvisitedTileset();
 
-    public abstract Tile[][] getBigHouseTileset();
+    public abstract Tile[][] getSmallHouseVisitedTileset();
+
+    public abstract Tile[][] getBigHouseUnvisitedTileset();
+
+    public abstract Tile[][] getBigHouseVisitedTileset();
 }

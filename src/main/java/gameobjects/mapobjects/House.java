@@ -2,6 +2,7 @@ package main.java.gameobjects.mapobjects;
 
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
+import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Tile;
 
@@ -18,7 +19,7 @@ public class House extends MapObject {
 
     boolean isUnvisited = true;
 
-    private District district = null;
+    protected District district = null;
 
     /**
      * House constructor.
@@ -33,20 +34,6 @@ public class House extends MapObject {
         super(x, y, tileWidth, tileHeight);
         this.tileset = new Tile[tileWidth][tileHeight];
     }
-
-
-    /**
-     * Sets the Tile at the last Row in the relative center of the House to a House Tile Object and sets a reference
-     * to this Tile.
-     *
-    private void setHouseDoorPosition() {
-        int last_row = tileset.length - 1;
-        int center_cell = tileset[0].length / 2;
-
-        tileset[last_row][center_cell] = TileCollection.DOOR_TILE;
-        this.doorTile = tileset[last_row][center_cell];
-    }
-     */
 
     /**
      * gets an Tile of the House by its row and column index
@@ -81,5 +68,18 @@ public class House extends MapObject {
         }
         System.out.println(player.getCandy());
         this.isUnvisited = false;
+    }
+
+    protected void updateMap() {
+
+        Tile[][] map = Map.getInstance().getMap();
+
+        for (int y = 0; y < tileset[0].length; y++) {
+            for (int x = 0; x < tileset.length; x++) {
+                map[x + this.getX()][y + this.getY()] = tileset[x][y];
+            }
+        }
+
+        Map.getInstance().setMap(map);
     }
 }

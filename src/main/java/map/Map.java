@@ -4,16 +4,16 @@ import java.util.Arrays;
 
 public class Map {
 
-    final Tile[][] map;
+    private static Map instance;
     final Sector mapSector;
-    private final int size_x;
-    private final int size_y;
+    private final int size;
+    Tile[][] map;
 
     public Map(int size) {
-        this.size_x = size;
-        this.size_y = size;
 
-        map = new Tile[size_x][size_y];
+        this.size = size;
+
+        map = new Tile[size][size];
         try {
             // 2D Arrays throw ArrayStoreException if one tryes to fill them just with Arrays.fill([],val)
             for (Tile[] row : this.map)
@@ -22,16 +22,19 @@ public class Map {
             ex.printStackTrace();
         }
 
-        mapSector = new Sector(0, 0, size_x, size_y);
-        // TODO vielleicht so? mapSector = new Sector(0, size_y, size_x, size_y);
+        mapSector = new Sector(0, 0, size, size);
+
+        Map.instance = this;
     }
 
-    public int getSize_x() {
-        return size_x;
+    public static Map getInstance() {
+        if (Map.instance == null)
+            Map.instance = new Map(Map.getInstance().getSize());
+        return Map.instance;
     }
 
-    public int getSize_y() {
-        return size_y;
+    public int getSize() {
+        return size;
     }
 
     public Sector getMapSector() {
@@ -40,5 +43,9 @@ public class Map {
 
     public Tile[][] getMap() {
         return map;
+    }
+
+    public void setMap(Tile[][] newMap) {
+        this.map = newMap;
     }
 }

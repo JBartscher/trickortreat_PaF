@@ -41,10 +41,10 @@ public class Game {
         gameMode = GameMode.LOCAL;
 
         // GUI-Bereich
-        window = new Window(this, stage, map);
+        window = new Window(this, stage);
         window.showGUI();
         mapRenderer = new MapRenderer(map, window, this);
-        gameCamera = new GameCamera(map.getSize_x(), map.getSize_y());
+        gameCamera = new GameCamera(map.getSize(), map.getSize());
 
         for(int y = 0; y < map.getMap().length; y++){
             for(int x = 0; x < map.getMap()[y].length; x++){

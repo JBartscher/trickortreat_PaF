@@ -1,27 +1,19 @@
 package main.java;
 
 import javafx.scene.Group;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.TilePane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import main.java.map.Map;
 import main.java.map.Tile;
 
-import java.awt.image.TileObserver;
-
 public class MapRenderer {
 
-    private Map map;
     private Window window;
     private Tile[][] tileMap;
     private Game game;
 
     public MapRenderer(Map map, Window window, Game game){
-        this.map = map;
         this.tileMap = map.getMap();
         this.window = window;
         this.game = game;
