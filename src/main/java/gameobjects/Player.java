@@ -22,6 +22,11 @@ public class Player extends Entity {
 
     public Player() {
         super();
+        //TODO: BEHELFSMÄSSIG SOLANGE ES NOCH KEINE MOVEMENT-QUEUE GIBT!
+        children = new Stack();
+        children.add(new Object());
+        children.add(new Object());
+        children.add(new Object());
     }
 
     /**

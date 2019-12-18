@@ -3,7 +3,6 @@ package main.java;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.*;
@@ -51,7 +50,7 @@ public class Game {
             for(int x = 0; x < map.getMap()[y].length; x++){
                 System.out.print(map.getMap()[y][x].getTileNr() + " ");
             }
-            System.out.println("");
+            System.out.println();
         }
 
 
@@ -120,7 +119,7 @@ public class Game {
 
         if (map.getMapSector().intersectsWithContainingItems(p)) {
             // collision with door
-            if (map.getMap()[player.getEntityPos().y][player.getEntityPos().x].getTileNr() == 8) {
+            if (map.getMap()[player.getEntityPos().y][player.getEntityPos().x].isDoorTile()) {
 
                 System.out.println("COLLIDE WITH DOOR!");
 
@@ -176,14 +175,8 @@ public class Game {
      */
     private boolean outOfBounds() {
         Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
-        if (!map.getMapSector().intersects(p)) {
-            // mapSector does not contain player anymore
-            System.out.println("out");
-            return true;
-        } else {
-            System.out.println("in");
-            return false;
-        }
+        // mapSector does not contain player anymore
+        return !map.getMapSector().intersects(p);
     }
 
     public void startGame() {

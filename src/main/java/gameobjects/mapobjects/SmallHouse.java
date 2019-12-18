@@ -1,6 +1,6 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.map.Placeable;
+import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
 public class SmallHouse extends House {
@@ -9,8 +9,10 @@ public class SmallHouse extends House {
         this.tileset = TileCollection.getSmallHouseTiles();
     }
 
-    public SmallHouse(Placeable placeable) {
-        super(placeable);
-        this.tileset = TileCollection.getSmallHouseTiles();
+    @Override
+    public void setDistrict(District district) {
+        super.setDistrict(district);
+
+        this.tileset = district.getSmallHouseTileset();
     }
 }
