@@ -1,6 +1,7 @@
 package main.java.gameobjects;
 
 import main.java.Entity;
+import main.java.GameCamera;
 import main.java.gameobjects.mapobjects.House;
 
 import java.util.List;
@@ -20,9 +21,11 @@ public class Player extends Entity {
         this.children.addAll(children);
     }
 
-    public Player() {
+    public Player()
+    {
         super();
     }
+
 
     /**
      * returns the number of kids on the children stack. This is needed to calculate how much candy a player gets when
@@ -53,4 +56,6 @@ public class Player extends Entity {
     public void addCandy(int candy) {
         this.candy += candy;
     }
+
+
 }

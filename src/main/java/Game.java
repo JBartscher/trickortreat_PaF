@@ -12,8 +12,11 @@ import java.util.ArrayList;
 
 public class Game {
     public static final int FRAMES = 50;
-    public int width = 960;
-    public int height = 640;
+    public final int TIME = 180000;
+
+    public int gameTime = TIME;
+    public static int WIDTH = Window.WIDTH;
+    public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
     public GameMode gameMode;
 
     // decide between LOCAL and REMOTE
@@ -23,75 +26,90 @@ public class Game {
 
     private Map map;
     private MapGenerator generator;
+
     public Player player;
     public Player otherPlayer;
-    private ArrayList<Entity> listOfEntities = new ArrayList<>();
+    private ArrayList<Player> listOfPlayers = new ArrayList<>();
 
     private Window window;
     private GameCamera gameCamera;
+    private GameCamera gameCameraEnemy;
     private MapRenderer mapRenderer;
 
     private GameLauncher launcher;
 
     // constructor with test map size
-    public Game(GameLauncher launcher, Stage stage) {
-        launcher = launcher;
+    public Game(GameLauncher launcher, Stage stage, GameMode gameMode) {
+        this.launcher = launcher;
         map = new Map(40);
         generator = new MapGenerator(map);
         generator.createMap();
-        gameMode = GameMode.LOCAL;
+        this.gameMode = gameMode;
+
+        // NUR TESTCODE FÜR DAS RENDERN DER PLAYEROBJEKTE
+        this.player = new Player();
+        this.otherPlayer = new Player();
+        otherPlayer.setxPos(Tile.TILE_SIZE * 5);
+        otherPlayer.setyPos(Tile.TILE_SIZE * 5);
+        listOfPlayers.add(player);
+
+        // Sofern LOKAL gespielt wird, gibt es eine zweite Kamera
+        // Liste an zeichenbaren Objekten erweitert sich
+        if(gameMode == GameMode.LOCAL) {
+            listOfPlayers.add(otherPlayer);
+            gameCameraEnemy = new GameCamera(map.getSize_x(), map.getSize_y(), otherPlayer);
+            Game.WIDTH /= 2;
+        }
 
         // GUI-Bereich
         window = new Window(this, stage, map);
         window.showGUI();
         mapRenderer = new MapRenderer(map, window, this);
-        gameCamera = new GameCamera(map.getSize_x(), map.getSize_y());
-
-        for(int y = 0; y < map.getMap().length; y++){
-            for(int x = 0; x < map.getMap()[y].length; x++){
-                System.out.print(map.getMap()[y][x].getTileNr() + " ");
-            }
-            System.out.println("");
-        }
-
+        gameCamera = new GameCamera(map.getSize_x(), map.getSize_y(), player);
 
         // NUR TESTCODE - WIRD IN EINE EXTRA-KLASSE AUSGELAGERT
         window.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
 
-                // player.getPlaceable().intersects(map.getMapSector().intersectsWithContainingItems())
-
-                // System.out.println(gameCamera.getXOffset());
                 switch (event.getCode()) {
 
                 case UP:
-                    moveVertical(-Player.SPEED);
+                    moveVertical(-Player.SPEED, player);
                     // player.setyPos(player.getyPos() - Player.SPEED);
                     break;
                 case DOWN:
-                    moveVertical(Player.SPEED);
+                    moveVertical(Player.SPEED, player);
                     // player.setyPos(player.getyPos() + Player.SPEED);
                     break;
                 case LEFT:
-                    moveHorizontal(-Player.SPEED);
+                    moveHorizontal(-Player.SPEED, player);
                     // player.setxPos(player.getxPos() - Player.SPEED);
                     break;
                 case RIGHT:
-                    moveHorizontal(Player.SPEED);
+                    moveHorizontal(Player.SPEED, player);
                     // player.setxPos(player.getxPos() + Player.SPEED);
                     break;
+
+                    case W:
+                        moveVertical(-Player.SPEED, otherPlayer);
+                        // player.setyPos(player.getyPos() - Player.SPEED);
+                        break;
+                    case S:
+                        moveVertical(Player.SPEED, otherPlayer);
+                        // player.setyPos(player.getyPos() + Player.SPEED);
+                        break;
+                    case A:
+                        moveHorizontal(-Player.SPEED, otherPlayer);
+                        // player.setxPos(player.getxPos() - Player.SPEED);
+                        break;
+                    case D:
+                        moveHorizontal(Player.SPEED, otherPlayer);
+                        // player.setxPos(player.getxPos() + Player.SPEED);
+                        break;
                 }
             }
         });
-
-        // NUR TESTCODE FÜR DAS RENDERN DER PLAYEROBJEKTE
-        this.player = new Player();
-        Player enemy = new Player();
-        listOfEntities.add(player);
-        listOfEntities.add(enemy);
-        enemy.setxPos(Tile.TILE_SIZE * 5);
-        enemy.setyPos(Tile.TILE_SIZE * 5);
 
         Sound.playMusic();
     }
@@ -106,11 +124,11 @@ public class Game {
      *
      * @param range
      */
-    private void moveVertical(int range) {
+    private void moveVertical(int range, Player player) {
         player.setyPos(player.getyPos() + range);
 
         // check out of bounds
-        if (outOfBounds()) {
+        if (outOfBounds(player)) {
             // revert movement
             player.setyPos(player.getyPos() - range);
             return;
@@ -137,7 +155,6 @@ public class Game {
                         continue;
                     }
                 }
-
             }
             System.out.println("COLLIDE!");
             // revert movement
@@ -150,10 +167,10 @@ public class Game {
      *
      * @param range
      */
-    private void moveHorizontal(int range) {
+    private void moveHorizontal(int range, Player player) {
         player.setxPos(player.getxPos() + range);
         // check out of bounds
-        if (outOfBounds()) {
+        if (outOfBounds(player)) {
             // revert movement
             player.setxPos(player.getxPos() - range);
             return;
@@ -174,7 +191,7 @@ public class Game {
      *
      * @return true if out of bounds failing which false
      */
-    private boolean outOfBounds() {
+    private boolean outOfBounds(Player player) {
         Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
         if (!map.getMapSector().intersects(p)) {
             // mapSector does not contain player anymore
@@ -186,24 +203,36 @@ public class Game {
         }
     }
 
-    public void startGame() {
+    public void update() {
+
+        gameCamera.centerOnPlayer();
+        if(gameMode == GameMode.LOCAL) {
+            gameCameraEnemy.centerOnPlayer();
+        }
     }
 
-    public void update() {
-        // System.out.println(player.getEntityPos());
-        gameCamera.centerOnEntity(player);
-    }
+    public Player getPlayer() { return player; }
+
+    public Player getOtherPlayer() { return otherPlayer; }
+
+    public int getGameTime() { return gameTime; }
+
+    public void setGameTime(int gameTime) { this.gameTime = gameTime; }
 
     public GameCamera getGameCamera() {
         return gameCamera;
+    }
+
+    public GameCamera getGameCameraEnemy() {
+        return gameCameraEnemy;
     }
 
     public MapRenderer getMapRenderer() {
         return mapRenderer;
     }
 
-    public ArrayList<Entity> getListOfEntities() {
-        return listOfEntities;
+    public ArrayList<Player> getListOfPlayers() {
+        return listOfPlayers;
     }
 
 }

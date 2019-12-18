@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import main.java.map.Tile;
 
+import java.util.Random;
+
 
 // Constructor of MapRenderer calls initGraphics
 public class GraphicsUtility {
@@ -38,7 +40,10 @@ public class GraphicsUtility {
         }
          */
 
-        if(nr == 1) { return tileImages[6]; }
+        if(nr == 1) {
+
+            return tileImages[6];
+        }
 
         // SmallHOUSE
 
