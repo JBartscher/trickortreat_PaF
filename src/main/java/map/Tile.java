@@ -2,29 +2,27 @@ package main.java.map;
 
 import javafx.scene.paint.Color;
 
-import java.util.HashMap;
 import java.util.Properties;
 
 public class Tile {
-    boolean walkable;
+    boolean isDoorTile;
     int tileNr;
     static final Properties tileColors = new Properties();
     public static final int TILE_SIZE = 64;
 
 
-    public Tile(int n, boolean walkable) {
+    public Tile(int n, boolean isDoorTile) {
         this.tileNr = n;
-        this.walkable = walkable;
+        this.isDoorTile = isDoorTile;
+    }
 
-        HashMap<Integer, Color> colorProperties = new HashMap<>();
-        colorProperties.put(1, Color.GREEN); //Grass
-        colorProperties.put(5, Color.DARKRED); //House
-        colorProperties.put(6, Color.ORANGERED); //RichHouse
-        colorProperties.put(7, Color.INDIANRED); //PoorHouse
-        colorProperties.put(8, Color.BROWN); //Door
-        tileColors.putAll(colorProperties);
+    public Tile(int n) {
+        this.tileNr = n;
+        this.isDoorTile = false;
+    }
 
-        // tileColors.loadFromXML();
+    public boolean isDoorTile() {
+        return this.isDoorTile;
     }
 
     public int getTileNr() {

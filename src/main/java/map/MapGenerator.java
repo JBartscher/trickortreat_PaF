@@ -1,5 +1,6 @@
 package main.java.map;
 
+import main.java.Configuration;
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
 import main.java.gameobjects.mapobjects.BigHouse;
@@ -43,10 +44,12 @@ public class MapGenerator {
      * TODO: Switch with Builder Pattern.
      */
     public void createMap() {
+        Configuration<Object> config = new Configuration<Object>();
+
         // supply the center of the map
-        createTownHall(gameMap.getSize_x() / 2, gameMap.getSize_y() / 2);
-        createSmallHouses(16);
-        createBigHouses(30); //TODO: Hier bitte aus der Config
+        createTownHall(gameMap.getSize() / 2, gameMap.getSize() / 2);
+        createSmallHouses(((Number) config.getParam("smallHouses")).intValue());
+        createBigHouses(((Number) config.getParam("bigHouses")).intValue());
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
     }
@@ -83,13 +86,13 @@ public class MapGenerator {
         int width = 2, height = 2;
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
-            House smallHouse = new SmallHouse(new Placeable(0, 0, width, height));
+            House smallHouse = new SmallHouse(0, 0, width, height);
             findObjectSpot(smallHouse);
             // put the right district to the house object
             try {
                 District districtOfHouse = districtManager.getDistrict(smallHouse);
                 System.out.println(districtOfHouse);
-                // smallHouse.setDistrict(districtOfHouse);
+                smallHouse.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();
             }
@@ -106,12 +109,12 @@ public class MapGenerator {
         int width = 2, height = 3;
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
-            House bigHouse = new BigHouse(new Placeable(0, 0, width, height));
+            House bigHouse = new BigHouse(0, 0, width, height);
             findObjectSpot(bigHouse);
             // put the right district to the house object
             try {
                 District districtOfHouse = districtManager.getDistrict(bigHouse);
-                // bigHouse.setDistrict(districtOfHouse);
+                bigHouse.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();
             }
@@ -131,7 +134,7 @@ public class MapGenerator {
         int height = placingObject.getHeight();
 
         while (true) {
-            Placeable placeable = new Placeable(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
+            Placeable placeable = new Placeable(r.nextInt(gameMap.getSize()), r.nextInt(gameMap.getSize()), width, height);
             // not colliding and sector contains Placeable
             if (!gameMap.getMapSector().intersectsWithContainingItems(placeable) && gameMap.getMapSector().contains(placeable)) {
                 gameMap.getMapSector().addMapObject(placingObject);

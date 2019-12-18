@@ -15,8 +15,8 @@ public class DistrictDecider {
     final int height;
 
     public DistrictDecider(Map map) {
-        width = map.getSize_x();
-        height = map.getSize_y();
+        width = map.getSize();
+        height = map.getSize();
     }
 
     /**
