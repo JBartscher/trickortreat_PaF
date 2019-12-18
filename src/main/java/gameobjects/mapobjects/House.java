@@ -32,12 +32,18 @@ public class House extends MapObject {
      * @param tileHeight height
      */
     public House(int x, int y, int tileWidth, int tileHeight) {
-
         super(x, y, tileWidth, tileHeight);
 
         this.tileset = new Tile[tileWidth][tileHeight];
-        for (Tile[] row : this.tileset)
-            Arrays.fill(row, TileCollection.HOUSE_TILE);
+
+        if(tileWidth == 2 && tileHeight == 2){
+            this.tileset = TileCollection.getSmallHouse();
+        } else if(tileWidth == 3 && tileHeight == 2){
+            this.tileset = TileCollection.getBigHouse();
+        } else {
+            for (Tile[] row : this.tileset)
+                Arrays.fill(row, TileCollection.HOUSE_TILE);
+        }
         setHouseDoorPosition();
     }
 
@@ -60,8 +66,8 @@ public class House extends MapObject {
      * to this Tile.
      */
     private void setHouseDoorPosition() {
-        int center_cell = tileset.length / 2;
-        int last_row = tileset[0].length - 1;
+        int last_row = tileset.length - 1;
+        int center_cell = tileset[0].length / 2;
 
         tileset[last_row][center_cell] = TileCollection.DOOR_TILE;
         this.doorTile = tileset[last_row][center_cell];

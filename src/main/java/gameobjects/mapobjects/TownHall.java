@@ -8,7 +8,7 @@ public class TownHall extends House {
     private static final int TOWN_HALL_HEIGHT = 4;
 
     public TownHall(int x, int y) {
-        super(x, y, TownHall.TOWN_HALL_WIDTH, TownHall.TOWN_HALL_HEIGHT);
+        super(x, y, TownHall.TOWN_HALL_HEIGHT, TownHall.TOWN_HALL_WIDTH);
     }
 
     @Override

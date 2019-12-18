@@ -51,7 +51,6 @@ public class MapRenderer {
                     root.getChildren().add(rect);
                 }
 
-
                 //rect.setFill(tileMap[x][y].getTileColor());
                 //root.getChildren().add(rect);
             }

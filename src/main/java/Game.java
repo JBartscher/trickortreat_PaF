@@ -47,6 +47,14 @@ public class Game {
         mapRenderer = new MapRenderer(map, window, this);
         gameCamera = new GameCamera(map.getSize_x(), map.getSize_y());
 
+        for(int y = 0; y < map.getMap().length; y++){
+            for(int x = 0; x < map.getMap()[y].length; x++){
+                System.out.print(map.getMap()[y][x].getTileNr() + " ");
+            }
+            System.out.println("");
+        }
+
+
         // NUR TESTCODE - WIRD IN EINE EXTRA-KLASSE AUSGELAGERT
         window.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -150,6 +158,7 @@ public class Game {
             player.setxPos(player.getxPos() - range);
             return;
         }
+
 
         Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
 

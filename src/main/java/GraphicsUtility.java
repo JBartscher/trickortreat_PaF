@@ -10,7 +10,7 @@ public class GraphicsUtility {
 
 
     // tileset 12x12 => 144 tiles
-    public static Image[] tileImages = new Image[144];
+    public static Image[] tileImages = new Image[14];
 
     public static void initGraphics(){
 
@@ -21,9 +21,9 @@ public class GraphicsUtility {
     {
         Image image = new Image(GraphicsUtility.class.getResourceAsStream("tileset.png"));
 
-        for(int y = 0; y < 12; y++){
-            for(int x = 0; x < 12; x++){
-                tileImages[y * 12 + x] = new WritableImage(image.getPixelReader(), x * (Tile.TILE_SIZE + 3), y * (Tile.TILE_SIZE + 3), Tile.TILE_SIZE, Tile.TILE_SIZE);
+        for(int y = 0; y < 2; y++){
+            for(int x = 0; x < 7; x++){
+                tileImages[y * 7 + x] = new WritableImage(image.getPixelReader(), x * (Tile.TILE_SIZE), y * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
             }
         }
     }
@@ -38,10 +38,30 @@ public class GraphicsUtility {
         }
          */
 
-        if(nr == 1) { return tileImages[22]; }
-        if(nr == 5 || nr == 6 || nr == 7 ) { return tileImages[13]; }
-        if(nr == 8) { return tileImages[47]; }
-        else { return tileImages[nr];  }
+        if(nr == 1) { return tileImages[6]; }
+
+        // SmallHOUSE
+
+        if(nr == 51) { return tileImages[0]; }
+        if(nr == 52) { return tileImages[1]; }
+        if(nr == 53) { return tileImages[7]; }
+        if(nr == 54) { return tileImages[8]; }
+
+        // BigHouse
+        if(nr == 61) { return tileImages[2]; }
+        if(nr == 62) { return tileImages[3]; }
+        if(nr == 63) { return tileImages[4]; }
+        if(nr == 64) { return tileImages[9]; }
+        if(nr == 65) { return tileImages[10]; }
+        if(nr == 66) { return tileImages[11]; }
+
+        //if(nr >= 51 && nr <= 66) {return tileImages[10]; }
+        //if(nr == 5 || nr == 6 || nr == 7) { return tileImages[0]; }
+
+
+        if(nr == 8) { return tileImages[10]; }
+
+        else { return tileImages[9];  }
 
 
     }

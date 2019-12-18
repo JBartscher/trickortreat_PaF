@@ -101,7 +101,7 @@ public class MapGenerator {
      */
     private void createBigHouses(int numberOfHouses) {
         // 3x3
-        int width = 3, height = 3;
+        int width = 2, height = 3;
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
             House bigHouse = new House(new Placeable(0, 0, width, height));
