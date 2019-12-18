@@ -3,22 +3,20 @@ package main.java.gameobjects.mapobjects;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.MapObject;
-import main.java.map.Placeable;
 import main.java.map.Tile;
-import main.java.map.TileCollection;
-
-import java.util.Arrays;
 
 public class House extends MapObject {
 
     /**
-     Offset of Object to other Objects @see Placeble
+     * Offset of Object to other Objects @see Placeble
      */
     final int OFFSET = 1;
 
     protected Tile[][] tileset;
 
     private Tile doorTile;
+
+    boolean isUnvisited = true;
 
     private District district = null;
 
@@ -33,35 +31,9 @@ public class House extends MapObject {
      */
     public House(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
-
         this.tileset = new Tile[tileWidth][tileHeight];
-
-        /*
-        if(tileWidth == 2 && tileHeight == 2){
-            this.tileset = TileCollection.getSmallHouse();
-        } else if(tileWidth == 3 && tileHeight == 2){
-            this.tileset = TileCollection.getBigHouse();
-        } else {
-            for (Tile[] row : this.tileset)
-                Arrays.fill(row, TileCollection.HOUSE_TILE);
-        }
-        //setHouseDoorPosition();
-        */
     }
 
-    /**
-     * House constructor in which all coordiantes are set by its placeble Object.
-     *
-     * @param placeable Placeble
-     */
-    public House(Placeable placeable) {
-        super(placeable.getX(), placeable.getY(), placeable.getWidth(), placeable.getHeight());
-
-        this.tileset = new Tile[placeable.getWidth()][placeable.getHeight()];
-        for (Tile[] row : this.tileset)
-            Arrays.fill(row, TileCollection.HOUSE_TILE);
-        //setHouseDoorPosition();
-    }
 
     /**
      * Sets the Tile at the last Row in the relative center of the House to a House Tile Object and sets a reference
@@ -93,13 +65,6 @@ public class House extends MapObject {
 
     public void setDistrict(District district) {
         this.district = district;
-        // repaint Tiles
-        for( int x=0; x < this.tileset.length; x++){
-            for( int y=0; y < this.tileset[0].length; y++){
-                tileset[x][y] = new Tile(district.getHouseColorKey(), false);
-            }
-        }
-        //this.setHouseDoorPosition();
     }
 
     /**
@@ -111,7 +76,10 @@ public class House extends MapObject {
      */
     public void visit(Player player) {
         System.out.println("VISITED THIS HOUSE! " + this);
-        //int new_candy = (int) this.district.getCandy_multiplikator() * player.getChildrenCount();
-        //player.addCandy(new_candy);
+        if (isUnvisited) {
+            player.addCandy((int) this.district.getCandy_multiplikator() * player.getChildrenCount());
+        }
+        System.out.println(player.getCandy());
+        this.isUnvisited = false;
     }
 }

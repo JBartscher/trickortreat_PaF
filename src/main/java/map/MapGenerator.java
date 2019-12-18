@@ -83,13 +83,13 @@ public class MapGenerator {
         int width = 2, height = 2;
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
-            House smallHouse = new SmallHouse(new Placeable(0, 0, width, height));
+            House smallHouse = new SmallHouse(0, 0, width, height);
             findObjectSpot(smallHouse);
             // put the right district to the house object
             try {
                 District districtOfHouse = districtManager.getDistrict(smallHouse);
                 System.out.println(districtOfHouse);
-                // smallHouse.setDistrict(districtOfHouse);
+                smallHouse.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();
             }
@@ -106,12 +106,12 @@ public class MapGenerator {
         int width = 2, height = 3;
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
-            House bigHouse = new BigHouse(new Placeable(0, 0, width, height));
+            House bigHouse = new BigHouse(0, 0, width, height);
             findObjectSpot(bigHouse);
             // put the right district to the house object
             try {
                 District districtOfHouse = districtManager.getDistrict(bigHouse);
-                // bigHouse.setDistrict(districtOfHouse);
+                bigHouse.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();
             }

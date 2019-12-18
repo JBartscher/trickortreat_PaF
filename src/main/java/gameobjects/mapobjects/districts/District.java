@@ -1,6 +1,7 @@
 package main.java.gameobjects.mapobjects.districts;
 
 import main.java.map.Sector;
+import main.java.map.Tile;
 
 /**
  * Abstract class for Districts
@@ -23,7 +24,7 @@ public abstract class District {
         return candy_multiplikator;
     }
 
-    public int getHouseColorKey() {
-        return houseColorKey;
-    }
+    public abstract Tile[][] getSmallHouseTileset();
+
+    public abstract Tile[][] getBigHouseTileset();
 }
