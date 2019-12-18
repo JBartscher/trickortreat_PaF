@@ -7,6 +7,7 @@ import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.SmallHouse;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.gameobjects.mapobjects.districts.District;
+import main.java.Configuration;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -43,10 +44,12 @@ public class MapGenerator {
      * TODO: Switch with Builder Pattern.
      */
     public void createMap() {
+        Configuration<Object> config = new Configuration<Object>();
+
         // supply the center of the map
         createTownHall(gameMap.getSize_x() / 2, gameMap.getSize_y() / 2);
-        createSmallHouses(16);
-        createBigHouses(30); //TODO: Hier bitte aus der Config
+        createSmallHouses(((Number) config.getParam("smallHouses")).intValue());
+        createBigHouses(((Number) config.getParam("bigHouses")).intValue());
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
     }
