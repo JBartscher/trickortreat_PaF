@@ -57,15 +57,15 @@ public class Game {
         // Liste an zeichenbaren Objekten erweitert sich
         if(gameMode == GameMode.LOCAL) {
             listOfPlayers.add(otherPlayer);
-            gameCameraEnemy = new GameCamera(map.getSize_x(), map.getSize_y(), otherPlayer);
+            gameCameraEnemy = new GameCamera(map.getSize(), map.getSize(), otherPlayer);
             Game.WIDTH /= 2;
         }
 
         // GUI-Bereich
-        window = new Window(this, stage, map);
+        window = new Window(this, stage);
         window.showGUI();
         mapRenderer = new MapRenderer(map, window, this);
-        gameCamera = new GameCamera(map.getSize_x(), map.getSize_y(), player);
+        gameCamera = new GameCamera(map.getSize(), map.getSize(), player);
 
         // NUR TESTCODE - WIRD IN EINE EXTRA-KLASSE AUSGELAGERT
         window.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -138,7 +138,7 @@ public class Game {
 
         if (map.getMapSector().intersectsWithContainingItems(p)) {
             // collision with door
-            if (map.getMap()[player.getEntityPos().y][player.getEntityPos().x].getTileNr() == 8) {
+            if (map.getMap()[player.getEntityPos().y][player.getEntityPos().x].isDoorTile()) {
 
                 System.out.println("COLLIDE WITH DOOR!");
 
