@@ -1,10 +1,10 @@
 package main.java;
 
-import java.io.FileReader;
-import java.io.PrintWriter; 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
-import org.json.simple.JSONObject; 
-import org.json.simple.parser.*; 
+import java.io.FileReader;
+import java.io.PrintWriter;
 
 public class Configuration<P> {
 
