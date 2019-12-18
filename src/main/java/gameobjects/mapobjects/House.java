@@ -16,7 +16,7 @@ public class House extends MapObject {
      */
     final int OFFSET = 1;
 
-    private Tile[][] tileset;
+    protected Tile[][] tileset;
 
     private Tile doorTile;
 
@@ -36,6 +36,7 @@ public class House extends MapObject {
 
         this.tileset = new Tile[tileWidth][tileHeight];
 
+        /*
         if(tileWidth == 2 && tileHeight == 2){
             this.tileset = TileCollection.getSmallHouse();
         } else if(tileWidth == 3 && tileHeight == 2){
@@ -44,7 +45,8 @@ public class House extends MapObject {
             for (Tile[] row : this.tileset)
                 Arrays.fill(row, TileCollection.HOUSE_TILE);
         }
-        setHouseDoorPosition();
+        //setHouseDoorPosition();
+        */
     }
 
     /**
@@ -58,13 +60,13 @@ public class House extends MapObject {
         this.tileset = new Tile[placeable.getWidth()][placeable.getHeight()];
         for (Tile[] row : this.tileset)
             Arrays.fill(row, TileCollection.HOUSE_TILE);
-        setHouseDoorPosition();
+        //setHouseDoorPosition();
     }
 
     /**
      * Sets the Tile at the last Row in the relative center of the House to a House Tile Object and sets a reference
      * to this Tile.
-     */
+     *
     private void setHouseDoorPosition() {
         int last_row = tileset.length - 1;
         int center_cell = tileset[0].length / 2;
@@ -72,6 +74,7 @@ public class House extends MapObject {
         tileset[last_row][center_cell] = TileCollection.DOOR_TILE;
         this.doorTile = tileset[last_row][center_cell];
     }
+     */
 
     /**
      * gets an Tile of the House by its row and column index
@@ -96,7 +99,7 @@ public class House extends MapObject {
                 tileset[x][y] = new Tile(district.getHouseColorKey(), false);
             }
         }
-        this.setHouseDoorPosition();
+        //this.setHouseDoorPosition();
     }
 
     /**
