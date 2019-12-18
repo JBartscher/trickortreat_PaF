@@ -1,5 +1,6 @@
 package main.java.map;
 
+import main.java.Configuration;
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
 import main.java.gameobjects.mapobjects.BigHouse;
@@ -7,7 +8,6 @@ import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.SmallHouse;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.gameobjects.mapobjects.districts.District;
-import main.java.Configuration;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -47,7 +47,7 @@ public class MapGenerator {
         Configuration<Object> config = new Configuration<Object>();
 
         // supply the center of the map
-        createTownHall(gameMap.getSize_x() / 2, gameMap.getSize_y() / 2);
+        createTownHall(gameMap.getSize() / 2, gameMap.getSize() / 2);
         createSmallHouses(((Number) config.getParam("smallHouses")).intValue());
         createBigHouses(((Number) config.getParam("bigHouses")).intValue());
         transferPlacedObjectsTilesToTileMap();
@@ -134,7 +134,7 @@ public class MapGenerator {
         int height = placingObject.getHeight();
 
         while (true) {
-            Placeable placeable = new Placeable(r.nextInt(gameMap.getSize_x()), r.nextInt(gameMap.getSize_y()), width, height);
+            Placeable placeable = new Placeable(r.nextInt(gameMap.getSize()), r.nextInt(gameMap.getSize()), width, height);
             // not colliding and sector contains Placeable
             if (!gameMap.getMapSector().intersectsWithContainingItems(placeable) && gameMap.getMapSector().contains(placeable)) {
                 gameMap.getMapSector().addMapObject(placingObject);
