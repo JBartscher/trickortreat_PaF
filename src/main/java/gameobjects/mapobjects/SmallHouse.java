@@ -7,7 +7,7 @@ import main.java.map.TileCollection;
 public class SmallHouse extends House {
     public SmallHouse(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
-        this.tileset = TileCollection.getSmallHouseUnvisitedTiles();
+        this.tileset = TileCollection.getNormalSmallHouseUnvisitedTiles();
     }
 
     @Override

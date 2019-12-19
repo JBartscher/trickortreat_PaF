@@ -13,21 +13,21 @@ public class NormalDistrict extends District {
 
     @Override
     public Tile[][] getSmallHouseUnvisitedTileset() {
-        return TileCollection.getSmallHouseUnvisitedTiles();
+        return TileCollection.getNormalSmallHouseUnvisitedTiles();
     }
 
     @Override
     public Tile[][] getSmallHouseVisitedTileset() {
-        return TileCollection.getSmallHouseVisitedTiles();
+        return TileCollection.getNormalSmallHouseVisitedTiles();
     }
 
     @Override
     public Tile[][] getBigHouseUnvisitedTileset() {
-        return TileCollection.getBigHouseUnvisitedTiles();
+        return TileCollection.getNormalBigHouseUnvisitedTiles();
     }
 
     @Override
     public Tile[][] getBigHouseVisitedTileset() {
-        return TileCollection.getBigHouseVisitedTiles();
+        return TileCollection.getNormalBigHouseVisitedTiles();
     }
 }

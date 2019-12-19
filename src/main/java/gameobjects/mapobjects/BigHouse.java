@@ -1,12 +1,19 @@
 package main.java.gameobjects.mapobjects;
 
 import main.java.gameobjects.Player;
+import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
 public class BigHouse extends House {
     public BigHouse(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
-        this.tileset = TileCollection.getBigHouseUnvisitedTiles();
+        this.tileset = TileCollection.getNormalBigHouseUnvisitedTiles();
+    }
+
+    @Override
+    public void setDistrict(District district) {
+        super.setDistrict(district);
+        this.tileset = district.getBigHouseUnvisitedTileset();
     }
 
     @Override

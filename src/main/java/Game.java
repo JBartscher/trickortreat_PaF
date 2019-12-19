@@ -3,7 +3,6 @@ package main.java;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.*;
@@ -76,42 +75,34 @@ public class Game {
 
                 case UP:
                     moveVertical(-Player.SPEED, player);
-                    // player.setyPos(player.getyPos() - Player.SPEED);
                     break;
-                case DOWN:
-                    moveVertical(Player.SPEED, player);
-                    // player.setyPos(player.getyPos() + Player.SPEED);
-                    break;
-                case LEFT:
-                    moveHorizontal(-Player.SPEED, player);
-                    // player.setxPos(player.getxPos() - Player.SPEED);
-                    break;
-                case RIGHT:
-                    moveHorizontal(Player.SPEED, player);
-                    // player.setxPos(player.getxPos() + Player.SPEED);
-                    break;
-
+                    case DOWN:
+                        moveVertical(Player.SPEED, player);
+                        break;
+                    case LEFT:
+                        moveHorizontal(-Player.SPEED, player);
+                        break;
+                    case RIGHT:
+                        moveHorizontal(Player.SPEED, player);
+                        break;
                     case W:
                         moveVertical(-Player.SPEED, otherPlayer);
-                        // player.setyPos(player.getyPos() - Player.SPEED);
                         break;
                     case S:
                         moveVertical(Player.SPEED, otherPlayer);
-                        // player.setyPos(player.getyPos() + Player.SPEED);
                         break;
                     case A:
                         moveHorizontal(-Player.SPEED, otherPlayer);
-                        // player.setxPos(player.getxPos() - Player.SPEED);
                         break;
                     case D:
                         moveHorizontal(Player.SPEED, otherPlayer);
-                        // player.setxPos(player.getxPos() + Player.SPEED);
                         break;
                 }
             }
         });
 
-        Sound.playMusic();
+        //TODO nervt beim entwickeln
+        //Sound.playMusic();
     }
 
     public Game(int size) {
@@ -193,14 +184,8 @@ public class Game {
      */
     private boolean outOfBounds(Player player) {
         Placeable p = new Placeable(player.getEntityPos().y, player.getEntityPos().x, 1, 1, 0);
-        if (!map.getMapSector().intersects(p)) {
-            // mapSector does not contain player anymore
-            System.out.println("out");
-            return true;
-        } else {
-            System.out.println("in");
-            return false;
-        }
+        // mapSector does not contain player anymore
+        return !map.getMapSector().intersects(p);
     }
 
     public void update() {

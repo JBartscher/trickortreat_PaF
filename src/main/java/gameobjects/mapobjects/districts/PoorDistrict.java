@@ -14,21 +14,21 @@ public class PoorDistrict extends District {
 
     @Override
     public Tile[][] getSmallHouseUnvisitedTileset() {
-        return TileCollection.getSmallHouseUnvisitedTiles();
+        return TileCollection.getPoorSmallHouseUnvisitedTiles();
     }
 
     @Override
     public Tile[][] getSmallHouseVisitedTileset() {
-        return TileCollection.getSmallHouseVisitedTiles();
+        return TileCollection.getPoorSmallHouseVisitedTiles();
     }
 
     @Override
     public Tile[][] getBigHouseUnvisitedTileset() {
-        return TileCollection.getBigHouseUnvisitedTiles();
+        return TileCollection.getPoorBigHouseUnvisitedTiles();
     }
 
     @Override
     public Tile[][] getBigHouseVisitedTileset() {
-        return TileCollection.getBigHouseVisitedTiles();
+        return TileCollection.getPoorBigHouseVisitedTiles();
     }
 }

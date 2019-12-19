@@ -14,22 +14,22 @@ public class RichDistrict extends District {
 
     @Override
     public Tile[][] getSmallHouseUnvisitedTileset() {
-        return TileCollection.getSmallHouseUnvisitedTiles();
+        return TileCollection.getRichSmallHouseUnvisitedTiles();
     }
 
     @Override
     public Tile[][] getSmallHouseVisitedTileset() {
-        return TileCollection.getSmallHouseVisitedTiles();
+        return TileCollection.getRichSmallHouseVisitedTiles();
     }
 
     @Override
     public Tile[][] getBigHouseUnvisitedTileset() {
-        return TileCollection.getBigHouseUnvisitedTiles();
+        return TileCollection.getRichBigHouseUnvisitedTiles();
     }
 
     @Override
     public Tile[][] getBigHouseVisitedTileset() {
-        return TileCollection.getBigHouseVisitedTiles();
+        return TileCollection.getRichBigHouseVisitedTiles();
     }
 
 

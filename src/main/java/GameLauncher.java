@@ -6,7 +6,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -56,7 +55,7 @@ GameLauncher extends Application {
             game.update();
             game.getMapRenderer().drawMap();
             long endTime = System.currentTimeMillis();
-            System.out.println("NEEDED TIME :" + (endTime - startTime));
+            // System.out.println("NEEDED TIME :" + (endTime - startTime));
 
             try {
                 int sleepTime = (int)(1000 / FRAMES - (endTime - startTime));

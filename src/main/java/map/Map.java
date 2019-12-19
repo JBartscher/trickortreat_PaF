@@ -1,6 +1,6 @@
 package main.java.map;
 
-import java.util.Arrays;
+import java.util.Random;
 
 public class Map {
 
@@ -14,12 +14,13 @@ public class Map {
         this.size = size;
 
         map = new Tile[size][size];
-        try {
-            // 2D Arrays throw ArrayStoreException if one tryes to fill them just with Arrays.fill([],val)
-            for (Tile[] row : this.map)
-                Arrays.fill(row, TileCollection.GRASS_TILE);
-        } catch (ArrayStoreException ex) {
-            ex.printStackTrace();
+
+        // 2D Arrays throw ArrayStoreException if one tryes to fill them just with Arrays.fill([],val)
+        Random r = new Random();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                map[i][j] = new Tile(r.nextInt(5) + 1);
+            }
         }
 
         mapSector = new Sector(0, 0, size, size);
