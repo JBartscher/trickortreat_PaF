@@ -1,5 +1,6 @@
 package main.java.gameobjects.mapobjects;
 
+import main.java.Sound;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
@@ -19,6 +20,11 @@ public class BigHouse extends House {
     @Override
     public void visit(Player player) {
         if (isUnvisited) {
+            try {
+                Sound.playRing();
+            } catch (NoClassDefFoundError ex) {
+                ex.printStackTrace();
+            }
             player.addCandy((int) this.district.getCandy_multiplikator() * player.getChildrenCount());
             repaintAfterVisit();
             updateMap();
