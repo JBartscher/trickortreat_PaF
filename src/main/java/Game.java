@@ -100,9 +100,11 @@ public class Game {
                 }
             }
         });
-
-        //TODO nervt beim entwickeln
-        //Sound.playMusic();
+        try {
+            Sound.playMusic();
+        } catch (NoClassDefFoundError ex) {
+            ex.printStackTrace();
+        }
     }
 
     public Game(int size) {
@@ -132,8 +134,6 @@ public class Game {
             if (map.getMap()[player.getEntityPos().y][player.getEntityPos().x].isDoorTile()) {
 
                 System.out.println("COLLIDE WITH DOOR!");
-
-                Sound.playRing();
 
                 for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                     try {
