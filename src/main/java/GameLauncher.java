@@ -15,6 +15,7 @@ GameLauncher extends Application {
     private Game game;
     public final static int FRAMES = 50;
     private Stage stage;
+    private GameLoop gameLoop;
 
     public void start(Stage stage) throws Exception {
         this.stage = stage;
@@ -44,7 +45,7 @@ GameLauncher extends Application {
 
     public void startGame(Game.GameMode gameMode) {
         this.game = new Game(this, stage, gameMode);
-        GameLoop gameLoop = new GameLoop();
+        gameLoop = new GameLoop();
         gameLoop.start();
     }
 
@@ -61,12 +62,48 @@ GameLauncher extends Application {
                 int sleepTime = (int)(1000 / FRAMES - (endTime - startTime));
                 if(sleepTime < 0) sleepTime = 0;
                 Thread.sleep(sleepTime);
-                game.setGameTime((int)(game.getGameTime() - (System.currentTimeMillis() - startTime)));
+
+                int gameTime = (int) (game.getGameTime() - (System.currentTimeMillis() - startTime));
+                if(gameTime > 0)
+                    game.setGameTime((int)(game.getGameTime() - (System.currentTimeMillis() - startTime)));
+                else {
+                    showGameOver();
+                }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
+
+    public void showGameOver() {
+
+        this.gameLoop.stop();
+        this.gameLoop = null;
+
+        VBox root = new VBox(10);
+        root.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(root, Window.WIDTH, Window.HEIGHT);
+        Label labelScore = new Label ("Spieler 1 : " + game.getPlayer().getCandy() + " - Spieler 2 " +
+                game.getOtherPlayer().getCandy()
+                );
+        Button buttonRestart = new Button("Neustarten");
+        Button buttonMainMenu = new Button("Zurück zum Hauptmenü");
+
+        buttonRestart.setOnAction( (e) -> {
+           startGame(game.gameMode);
+        });
+
+        buttonMainMenu.setOnAction( (e) -> {
+           showMainMenu();
+        });
+
+        root.getChildren().addAll(labelScore, buttonRestart, buttonMainMenu);
+        stage.setScene(scene);
+
+    }
+
     public static void main(String[] args){
         launch();
     }

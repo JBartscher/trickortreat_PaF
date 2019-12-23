@@ -34,6 +34,10 @@ public class GameCamera {
                 yOffSet = t;
             }
         }
+
+        player.setxOffSet(xOffSet);
+        player.setyOffSet(yOffSet);
+
     }
 
     public int getXOffset() {

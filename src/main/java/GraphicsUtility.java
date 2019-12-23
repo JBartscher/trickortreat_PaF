@@ -11,9 +11,11 @@ public class GraphicsUtility {
 
     // tileset 12x12 => 144 tiles
     public static Image[] tileImages = new Image[72];
+    public  static Image imageCandy;
 
     public static void initGraphics(){
         initTileImages();
+        initCandyImage();
     }
 
     public static void initTileImages()
@@ -184,5 +186,13 @@ public class GraphicsUtility {
         }
 
 
+    }
+
+    public static void initCandyImage() {
+        imageCandy = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
+    }
+
+    public static Image getCandyImage() {
+        return imageCandy;
     }
 }
