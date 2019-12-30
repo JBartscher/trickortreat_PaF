@@ -19,7 +19,7 @@ public class Map {
         Random r = new Random();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                map[i][j] = new Tile(r.nextInt(5) + 1);
+                map[i][j] = new Tile(r.nextInt(4) + 1);
             }
         }
 

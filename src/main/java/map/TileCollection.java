@@ -127,33 +127,33 @@ public class TileCollection {
     // TownHall
     public final static Tile[][] getTownHallTiles() {
         Tile[][] townHall = new Tile[TownHall.TOWN_HALL_HEIGHT][TownHall.TOWN_HALL_WIDTH];
-        townHall[0][0] = new Tile(0);
-        townHall[0][1] = new Tile(0);
-        townHall[0][2] = new Tile(0);
-        townHall[0][3] = new Tile(0);
-        townHall[0][4] = new Tile(0);
-        townHall[0][5] = new Tile(0);
+        townHall[0][0] = new Tile(90);
+        townHall[0][1] = new Tile(91);
+        townHall[0][2] = new Tile(92);
+        townHall[0][3] = new Tile(93);
+        townHall[0][4] = new Tile(94);
+        townHall[0][5] = new Tile(95);
 
-        townHall[1][0] = new Tile(0);
-        townHall[1][1] = new Tile(0);
-        townHall[1][2] = new Tile(0);
-        townHall[1][3] = new Tile(0);
-        townHall[1][4] = new Tile(0);
-        townHall[1][5] = new Tile(0);
+        townHall[1][0] = new Tile(96);
+        townHall[1][1] = new Tile(97);
+        townHall[1][2] = new Tile(98);
+        townHall[1][3] = new Tile(99);
+        townHall[1][4] = new Tile(100);
+        townHall[1][5] = new Tile(101);
 
-        townHall[2][0] = new Tile(0);
-        townHall[2][1] = new Tile(0);
-        townHall[2][2] = new Tile(0);
-        townHall[2][3] = new Tile(0);
-        townHall[2][4] = new Tile(0);
-        townHall[2][5] = new Tile(0);
+        townHall[2][0] = new Tile(102);
+        townHall[2][1] = new Tile(103);
+        townHall[2][2] = new Tile(104);
+        townHall[2][3] = new Tile(105);
+        townHall[2][4] = new Tile(106);
+        townHall[2][5] = new Tile(107);
 
-        townHall[3][0] = new Tile(0);
-        townHall[3][1] = new Tile(0);
-        townHall[3][2] = new Tile(0, true);
-        townHall[3][3] = new Tile(0, true);
-        townHall[3][4] = new Tile(0);
-        townHall[3][5] = new Tile(0);
+        townHall[3][0] = new Tile(108);
+        townHall[3][1] = new Tile(109);
+        townHall[3][2] = new Tile(110, true);
+        townHall[3][3] = new Tile(111, true);
+        townHall[3][4] = new Tile(112);
+        townHall[3][5] = new Tile(113);
 
         return townHall;
     }
