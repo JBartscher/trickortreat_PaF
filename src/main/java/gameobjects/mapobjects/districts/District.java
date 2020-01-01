@@ -3,10 +3,12 @@ package main.java.gameobjects.mapobjects.districts;
 import main.java.map.Sector;
 import main.java.map.Tile;
 
+import java.io.Serializable;
+
 /**
  * Abstract class for Districts
  */
-public abstract class District {
+public abstract class District implements Serializable {
 
     protected double candy_multiplikator = 0;
     protected int houseColorKey = 5;

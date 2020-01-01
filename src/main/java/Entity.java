@@ -1,13 +1,14 @@
 package main.java;
 
 import javafx.scene.image.Image;
+import main.java.Network.EntityData;
+import main.java.gameobjects.Player;
 import main.java.map.Tile;
 
 import java.awt.*;
 
 import static java.lang.Math.round;
 
-;
 
 public abstract class Entity {
 
@@ -16,8 +17,8 @@ public abstract class Entity {
     protected double size;
     protected Point target;
 
-    protected SpriteSheet spriteSheet;
-    protected Image sprite;
+    transient protected SpriteSheet spriteSheet;
+    transient protected Image sprite;
 
     // represent horizontal and vertical move directions
     protected MovementManager.MoveDirection moveDirection = MovementManager.MoveDirection.DOWN;
@@ -27,7 +28,7 @@ public abstract class Entity {
     // represents the state of movement
     protected int moveCounter = 1;
 
-    protected int speed = 192;
+    protected int speed = 192 * Game.FRAMES / 50;
 
     // Default-Werte
     protected Entity() {
@@ -50,6 +51,48 @@ public abstract class Entity {
         this.spriteSheet = new SpriteSheet("player.png", 4, 3);
         this.sprite = spriteSheet.getSpriteImage(0, 1);
     }
+
+
+    public Point getTarget() {
+        return target;
+    }
+
+    public void setTarget(Point target) {
+        this.target = target;
+    }
+
+    public void setSpriteSheet(SpriteSheet spriteSheet) {
+        this.spriteSheet = spriteSheet;
+    }
+
+    public Image getSprite() {
+        return sprite;
+    }
+
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
+    }
+
+    public int getAnimCounter() {
+        return animCounter;
+    }
+
+    public void setAnimCounter(int animCounter) {
+        this.animCounter = animCounter;
+    }
+
+    public int getMoveCounter() {
+        return moveCounter;
+    }
+
+    public void setMoveCounter(int moveCounter) {
+        this.moveCounter = moveCounter;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
 
     public void move() {
 
@@ -146,10 +189,42 @@ public abstract class Entity {
     }
 
 
-    protected void setEntityImage() {
-
-        changeMoveImages();
+    public void setEntityImage(boolean calledByNetworkContext) {
+        if(!calledByNetworkContext) changeMoveImages();
+        Image currentImage = this.sprite;
         this.sprite = spriteSheet.getSpriteImage(moveCounter, moveDirection.ordinal());
+        if(this instanceof Player) {
+            Player player = (Player)this;
+            if(player.childrenSnake != null) {
+                player.childrenSnake.transferImageToNext(currentImage);
+            }
+        }
+    }
+
+    public Image getGameOverSpriteImage() {
+        return spriteSheet.getSpriteImage(1, 0);
+    }
+
+    public boolean init = true;
+    public void setGameStateData(EntityData entityData) {
+
+        if(init) {
+            init = false;
+            this.xPos = entityData.getxPos();
+            this.yPos = entityData.getyPos();
+        }
+        else {
+            this.xPos = (entityData.getxPos() + xPos) / 2;
+            this.yPos = (entityData.getyPos() + yPos) / 2;
+        }
+
+        this.size = entityData.getSize();
+        this.target = entityData.getTarget();
+        this.moveDirection = entityData.getMoveDirection();
+        this.animCounter = entityData.getAnimCounter();
+        this.moveCounter = entityData.getMoveCounter();
+        this.speed = entityData.getSpeed();
+
     }
 
     protected Image getEntityImage() {

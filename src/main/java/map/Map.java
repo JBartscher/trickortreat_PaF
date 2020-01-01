@@ -1,8 +1,9 @@
 package main.java.map;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Map {
+public class Map implements Serializable {
 
     private static Map instance;
     final Sector mapSector;
@@ -31,7 +32,13 @@ public class Map {
     public static Map getInstance() {
         if (Map.instance == null)
             Map.instance = new Map(Map.getInstance().getSize());
+
         return Map.instance;
+    }
+
+    //TODO: beim Client ist die Map-Instance nicht gesetzt, führt zu Problemen beim colliden mit Türen, daher diese unschöne Lösung
+    public static void setInstance(Map instance) {
+        Map.instance = instance;
     }
 
     public int getSize() {

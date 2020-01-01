@@ -2,6 +2,8 @@ package main.java.gameobjects;
 
 import main.java.Entity;
 import main.java.MovementManager;
+import main.java.Network.PlayerData;
+import main.java.PlayerSnake;
 import main.java.gameobjects.mapobjects.House;
 
 import java.util.List;
@@ -9,7 +11,10 @@ import java.util.Stack;
 
 public class Player extends Entity {
 
-    public MovementManager.MovementType movementType;
+    transient public PlayerSnake childrenSnake;
+    // represents amount of children
+    public int health = 3;
+
     private Stack children;
 
     private int candy = 0;
@@ -33,6 +38,8 @@ public class Player extends Entity {
         children.add(new Object());
         children.add(new Object());
         children.add(new Object());
+
+        this.childrenSnake = new PlayerSnake(this.xPos, this.yPos, this.sprite, health - 1);
     }
 
     public int getxOffSet() {
@@ -51,7 +58,7 @@ public class Player extends Entity {
         this.yOffSet = yOffSet;
     }
 
-
+    public PlayerSnake getNext()  { return childrenSnake; }
 
 
     /**
@@ -82,6 +89,57 @@ public class Player extends Entity {
      */
     public void addCandy(int candy) {
         this.candy += candy;
+    }
+
+    public MovementManager.MovementType movementType;
+
+    public MovementManager.MovementType getMovementType() {
+        return movementType;
+    }
+
+    public void setMovementType(MovementManager.MovementType movementType) {
+        this.movementType = movementType;
+    }
+
+    public PlayerSnake getChildrenSnake() {
+        return childrenSnake;
+    }
+
+    public void setChildrenSnake(PlayerSnake childrenSnake) {
+        this.childrenSnake = childrenSnake;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public Stack getChildren() {
+        return children;
+    }
+
+    public void setChildren(Stack children) {
+        this.children = children;
+    }
+
+    public void setCandy(int candy) {
+        this.candy = candy;
+    }
+
+    public void setGameStateData(PlayerData playerData) {
+        super.setGameStateData(playerData);
+
+        //this.childrenSnake = playerData.getChildrenSnake();
+        this.health = playerData.getHealth();
+        //this.children = playerData.getChildren();
+        this.candy = playerData.getCandy();
+        this.xOffSet = playerData.getxOffSet();
+        this.yOffSet = playerData.getyOffSet();
+
+
     }
 
 

@@ -22,7 +22,6 @@ public class SpriteSheet {
 
         for(int vertical = 0; vertical < directions; ++vertical) {
             for(int horizontal = 0; horizontal < amountOfMovements; ++horizontal) {
-                System.out.println("KNALL bei vertical : " + vertical + " - horizontal: " + horizontal);
                 spriteSet[vertical][horizontal] = new WritableImage(sprite.getPixelReader(),
                         horizontal * Tile.TILE_SIZE, vertical * Tile.TILE_SIZE,
                         Tile.TILE_SIZE, Tile.TILE_SIZE);

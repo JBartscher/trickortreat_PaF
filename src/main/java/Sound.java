@@ -14,6 +14,7 @@ public class Sound {
     public final static Media ring = new Media(new File("src/main/java/sounds/Doorbell-SoundBible.com-516741062.mp3").toURI().toString());
     public final static MediaPlayer ringPlayer = new MediaPlayer(ring);
 
+
     private Sound() {
     }
 
@@ -23,6 +24,17 @@ public class Sound {
             musicPlayer.play();
         });
         musicPlayer.play();
+    }
+
+    public static void muteSound() {
+        if(musicPlayer.isMute()) {
+            musicPlayer.setMute(false);
+            ringPlayer.setMute(false);
+        } else {
+            musicPlayer.setMute(true);
+            ringPlayer.setMute(true);
+        }
+
     }
 
     public static void playRing() {

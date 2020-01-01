@@ -2,9 +2,10 @@ package main.java.map;
 
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.Properties;
 
-public class Tile {
+public class Tile implements Serializable {
     boolean isDoorTile;
     int tileNr;
     static final Properties tileColors = new Properties();
@@ -23,6 +24,10 @@ public class Tile {
 
     public boolean isDoorTile() {
         return this.isDoorTile;
+    }
+
+    public void setTileNr(int tileNr) {
+        this.tileNr = tileNr;
     }
 
     public int getTileNr() {

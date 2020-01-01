@@ -1,7 +1,10 @@
 package main.java;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import main.java.map.Tile;
 
 
@@ -12,6 +15,9 @@ public class GraphicsUtility {
     // tileset 12x12 => 144 tiles
     public static Image[] tileImages = new Image[72];
     public  static Image imageCandy;
+
+    // TODO: ÜBERGANGSWEISE, wird später zum TileSet hinzugefügt
+    public static Image streetTile;
 
     public static void initGraphics(){
         initTileImages();
@@ -28,6 +34,25 @@ public class GraphicsUtility {
             }
         }
         System.out.println("fertig");
+
+        // TODO: ÜBERGANGSWEISE, wird später zum TileSet hinzugefügt
+
+        Image imageStreetTileSet = new Image(GraphicsUtility.class.getResourceAsStream("street_tile.png"));
+        streetTile = new WritableImage(imageStreetTileSet.getPixelReader(), 4 * (Tile.TILE_SIZE + 3), 2 * (Tile.TILE_SIZE + 3), Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+    }
+
+    public static void setTextProperties(Text text, String style, Color color, double x, double y) {
+        text.setStyle(style);
+        text.setFill(color);
+        text.setX(x);
+        text.setY(y);
+
+    }
+
+    public static void setImageProperties(ImageView img, double x, double y) {
+        img.setX(x);
+        img.setY(y);
     }
 
     public static Image getTileImage(int nr) {
@@ -40,11 +65,9 @@ public class GraphicsUtility {
             return tileImages[55];
         }
         if (nr == 3) {
-            return tileImages[61];
-        }
-        if (nr == 4) {
             return tileImages[62];
         }
+
 
 
         // SmallHouse - poor
@@ -178,9 +201,88 @@ public class GraphicsUtility {
             return tileImages[4];
         } //down-right lights-out
 
-
-        if (nr == 0) {
+        // Townhall
+        // first row
+        if (nr == 90) {
+            return tileImages[47];
+        }
+        if (nr == 91) {
             return tileImages[1];
+        }
+        if (nr == 92) {
+            return tileImages[1];
+        }
+        if (nr == 93) {
+            return tileImages[1];
+        }
+        if (nr == 94) {
+            return tileImages[1];
+        }
+        if (nr == 95) {
+            return tileImages[48];
+        }
+        //second row
+        if (nr == 96) {
+            return tileImages[3];
+        }
+        if (nr == 97) {
+            return tileImages[22];
+        }
+        if (nr == 98) {
+            return tileImages[24];
+        }
+        if (nr == 99) {
+            return tileImages[43];
+        }
+        if (nr == 100) {
+            return tileImages[61];
+        }
+        if (nr == 101) {
+            return tileImages[45];
+        }
+        //third row
+        if (nr == 102) {
+            return tileImages[5];
+        }
+        if (nr == 103) {
+            return tileImages[6];
+        }
+        if (nr == 104) {
+            return tileImages[19];
+        }
+        if (nr == 105) {
+            return tileImages[20];
+        }
+        if (nr == 106) {
+            return tileImages[33];
+        }
+        if (nr == 107) {
+            return tileImages[34];
+        }
+        //fourth row
+        if (nr == 108) {
+            return tileImages[12];
+        }
+        if (nr == 109) {
+            return tileImages[13];
+        }
+        if (nr == 110) {
+            return tileImages[26];
+        }
+        if (nr == 111) {
+            return tileImages[27];
+        }
+        if (nr == 112) {
+            return tileImages[40];
+        }
+        if (nr == 113) {
+            return tileImages[41];
+        }
+
+        // TODO: VORERST STREET-TILE
+        if (nr == 0) {
+            //return tileImages[1];
+            return streetTile;
         } else {
             return tileImages[54];
         }

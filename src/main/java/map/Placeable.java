@@ -1,6 +1,8 @@
 package main.java.map;
 
-public class Placeable {
+import java.io.Serializable;
+
+public class Placeable implements Serializable {
     private int x;
     private int y;
     // in tiles

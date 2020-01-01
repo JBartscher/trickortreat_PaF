@@ -23,13 +23,15 @@ public class Window {
     }
 
 
-    public void showGUI(){
+    public void createGUI(){
         this.root = new Group();
         this.scene = new Scene(root, WIDTH, HEIGHT);
-        stage.setScene(scene);
-        stage.show();
-        //stage.setScene(scene);
 
+    }
+
+    public void showGameGUI() {
+        stage.show();
+        stage.setScene(scene);
     }
 
     public Group getRoot() {

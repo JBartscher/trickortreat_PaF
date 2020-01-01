@@ -9,9 +9,8 @@ import main.java.gameobjects.mapobjects.SmallHouse;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.gameobjects.mapobjects.districts.District;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Random;
+import java.awt.*;
+import java.util.*;
 
 public class MapGenerator {
 
@@ -52,6 +51,8 @@ public class MapGenerator {
         createBigHouses(((Number) config.getParam("bigHouses")).intValue());
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
+        createStreetNetwork();
+
     }
 
     /**
@@ -172,5 +173,177 @@ public class MapGenerator {
      */
     private void disableHouseOffsets() {
         gameMap.getMapSector().getAllContainingMapObjects().forEach(Placeable::disableOffset);
+    }
+
+
+    public void createStreetNetwork() {
+
+        ArrayList<Point> doorPoints = new ArrayList<>();
+        Tile[][] tileMap = gameMap.getMap();
+        for(int y = 0; y < tileMap.length; y++){
+            for(int x = 0; x < tileMap[y].length; x++) {
+                int tileNr = tileMap[y][x].getTileNr();
+
+                String nr = String.valueOf(tileNr);
+                if(nr.length() == 1) nr = "0" + nr;
+                if(nr.length() == 3 || tileNr >= 90) nr = "XX";
+
+                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85) {
+                    nr = "DD";
+                    doorPoints.add(new Point(x, y + 1));
+                }
+
+                System.out.print(nr + " ");
+            }
+            System.out.println();
+        }
+
+
+        // Start
+        int size = doorPoints.size() - 1;
+        int x = doorPoints.get(0).x;
+        int y = doorPoints.get(0).y;
+        tileMap[y][x].setTileNr(0);
+
+        for(int i = 0; i < size; i++) {
+
+            Point target = findLowestDistance(doorPoints, x, y);
+            drawStreet(x, y, target.x, target.y, true, true);
+
+            // remove starting point from list
+            Iterator<Point> iterator = doorPoints.iterator();
+            while(iterator.hasNext()) {
+
+                Point point = iterator.next();
+                if(point.x == x && point.y == y)
+                {
+                    iterator.remove();
+                    x = target.x;
+                    y = target.y;
+                    break;
+                }
+            }
+
+        }
+
+
+    }
+
+    public Point findLowestDistance(ArrayList<Point> doorPoints, int x, int y) {
+
+        double min = 1000.0;
+        double distance = 1000.0;
+        int targetX = 0;
+        int targetY = 0;
+        for(Point points: doorPoints) {
+            distance = Math.sqrt (  (x - points.x) * (x - points.x) + (y - points.y) * (y - points.y) ) ;
+            if(distance == 0) continue;
+            if(distance < min) {
+                min = distance;
+                targetX = points.x;
+                targetY= points.y;
+            }
+        }
+
+        System.out.println("Kürzeste Entfernung für x: " + x + " y: " + y + " - " + " ist " + " x: " + targetX + " - y: " + targetY);
+        return new Point(targetX, targetY);
+
+    }
+
+    public void drawStreet(int x, int y, int targetX, int targetY, boolean xAllowed, boolean yAllowed) {
+
+
+        if(targetX > x && xAllowed) {
+            if(isGrasOrStreet(x + 1, y))
+                x++;
+
+            else if(targetY < y && isGrasOrStreet(x, y - 1)){
+                y--;
+            }
+
+            else if(targetY > y && isGrasOrStreet(x, y + 1)){
+                y++;
+            }
+
+            setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
+            return;
+        }
+
+        else if(targetX < x && xAllowed) {
+            if(isGrasOrStreet(x - 1, y))
+                x--;
+            else if(targetY < y && isGrasOrStreet(x, y - 1)){
+                y--;
+            }
+
+            else if(targetY > y && isGrasOrStreet(x, y + 1)){
+                y++;
+            }
+            setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
+            return;
+        }
+
+        if(targetY > y && yAllowed) {
+            if(isGrasOrStreet(x, y + 1)) {
+                y++;
+                setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
+                return;
+            }
+            else if(isGrasOrStreet(x + 1, y)) {
+                x++;
+                setStreetAndRecallMethod(x, y, targetX, targetY, false, true);
+                return;
+            }
+        }
+
+        else if(targetY < y && yAllowed) {
+            if(isGrasOrStreet(x, y - 1)) {
+                y--;
+                setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
+                return;
+            }
+            else if(isGrasOrStreet(x + 1, y)){
+                x++;
+                setStreetAndRecallMethod(x, y, targetX, targetY, false, true);
+                return;
+            }
+
+        }
+
+
+
+        /*
+        if(targetY > y) {
+            if(isGrasOrStreet(x, y + 1))
+                y++;
+            else if (isGrasOrStreet(x - 1, y)) {
+                x--;
+            }
+            setStreetAndRecallMethod(x, y, targetX, targetY);
+        }
+
+        else if(targetY < y) {
+            if(isGrasOrStreet(x, y - 1))
+                y--;
+            else if(isGrasOrStreet(x - 1, y)) {
+                x--;
+            }
+            setStreetAndRecallMethod(x, y, targetX, targetY);
+
+        }
+
+
+         */
+    }
+
+    public boolean isGrasOrStreet(int x, int y) {
+        int tileNr = gameMap.getMap()[y][x].getTileNr();
+        return (tileNr == 0 || tileNr == 1 || tileNr == 2 || tileNr == 3 || tileNr == 4 || tileNr == 5) ? true : false;
+    }
+
+    public void setStreetAndRecallMethod(int x, int y, int targetX, int targetY, boolean xAllowed, boolean yAllowed) {
+        if(gameMap.getMap()[y][x].getTileNr() != 0)
+            gameMap.getMap()[y][x].setTileNr(0);
+        if(x != targetX || y != targetY) drawStreet(x, y, targetX, targetY, xAllowed, yAllowed);
     }
 }

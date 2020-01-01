@@ -11,7 +11,9 @@ import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Placeable;
 
-public class MovementManager implements EventHandler<InputEvent> {
+import java.io.Serializable;
+
+public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
 
     Player player1;
@@ -25,12 +27,12 @@ public class MovementManager implements EventHandler<InputEvent> {
 
 
     // There are three different kinds of movement types
-    public enum MovementType {
+    public enum MovementType implements Serializable {
         KEYBOARD_AWSD, KEYBOARD_ARROW, MOUSE;
     }
 
     // represents the move directions to animate the entities
-    public enum MoveDirection {
+    public enum MoveDirection implements Serializable {
         DOWN, LEFT, RIGHT, UP
     }
 
@@ -61,7 +63,7 @@ public class MovementManager implements EventHandler<InputEvent> {
         } else if(player.movementType == MovementType.KEYBOARD_ARROW) {
             inputARROW = player;
 
-        } else {
+        } else if(player.movementType == MovementType.MOUSE) {
             inputMOUSE = player;
         }
 
@@ -79,9 +81,8 @@ public class MovementManager implements EventHandler<InputEvent> {
 
     public void handleMouse(MouseEvent event)
     {
+        if(inputMOUSE == null) return;
         if(event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-            System.out.println("SCENE X: " +  event.getSceneX() + " SCENE Y: " + event.getSceneY());
-            System.out.println("SPIELER X: " + inputMOUSE.getxPos() + " - SPIELER Y : " + inputMOUSE.getyPos());
 
 
             if(inputMOUSE != null) {
@@ -97,6 +98,11 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void handleKeyboard(KeyEvent event)
     {
         if(event.getEventType() == KeyEvent.KEY_PRESSED) {
+            if(event.getCode() == KeyCode.M) {
+                Sound.muteSound();
+            }
+
+
             if(event.getCode() == KeyCode.A) {
                 if(inputAWSD != null) {
                     inputAWSD.setTarget( inputAWSD.target.x - inputAWSD.speed * 100, inputAWSD.target.y );
@@ -120,6 +126,8 @@ public class MovementManager implements EventHandler<InputEvent> {
                     inputAWSD.setTarget( inputAWSD.target.x + inputAWSD.speed * 100, inputAWSD.target.y);
                 }
             }
+
+
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
             if(event.getCode() == KeyCode.A) {
@@ -226,6 +234,12 @@ public class MovementManager implements EventHandler<InputEvent> {
             entity.setMoveDirection(MoveDirection.UP);
         }
 
+        if(entity instanceof Player) {
+            Player playerObj = (Player)entity;
+            if(playerObj.getNext() != null)
+                playerObj.getNext().transferCoordinatesToNext(entity.getxPos(), entity.getyPos());
+        }
+
         // check out of bounds and change entity position
         entity.setxPos(entity.getxPos() + moveX);
         if(outOfBounds(entity)) {
@@ -241,7 +255,7 @@ public class MovementManager implements EventHandler<InputEvent> {
         moveHorizontal(moveX, entity);
         moveVertical(moveY, entity);
 
-        entity.setEntityImage();
+        entity.setEntityImage(false);
 
     }
 
@@ -266,7 +280,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                         House h = (House) obj;
                         if (h.intersects(p)) {
                             if(entity instanceof Player)
-                            h.visit((Player)entity);
+                                h.visit((Player)entity);
                         }
                     } catch (ClassCastException ex) {
                         // the Object is not a House
