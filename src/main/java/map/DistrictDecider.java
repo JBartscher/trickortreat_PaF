@@ -29,18 +29,39 @@ public class DistrictDecider {
         //create the sectors
         List<Sector> sectors = partionateIntoMapSectors();
         //shuffle to get a random outcome each time so that the pos of a sector isnt fixed
+        RichDistrict richSector1 = new RichDistrict(sectors.get(4));
+        sectors.remove(sectors.get(4));
         Collections.shuffle(sectors);
 
-        RichDistrict richSector = new RichDistrict(sectors.get(0));
-        NormalDistrict normalDistrict = new NormalDistrict(sectors.get(1));
-        PoorDistrict poorDistrict = new PoorDistrict(sectors.get(2));
-        District randomDistrict = randomDistrict(sectors.get(3));
+        RichDistrict richSector2 = new RichDistrict(sectors.get(3));
+
+        NormalDistrict normalDistrict1 = new NormalDistrict(sectors.get(0));
+        NormalDistrict normalDistrict2 = new NormalDistrict(sectors.get(4));
+
+        PoorDistrict poorDistrict1 = new PoorDistrict(sectors.get(1));
+        PoorDistrict poorDistrict2 = new PoorDistrict(sectors.get(5));
+
+        District randomDistrict1 = randomDistrict(sectors.get(2));
+        District randomDistrict2 = randomDistrict(sectors.get(6));
+        District randomDistrict3 = randomDistrict(sectors.get(7));
+
 
         ArrayList<District> districts = new ArrayList<>();
-        districts.add(richSector);
-        districts.add(normalDistrict);
-        districts.add(poorDistrict);
-        districts.add(randomDistrict);
+        districts.add(richSector1);
+        districts.add(richSector2);
+        districts.add(normalDistrict1);
+        districts.add(normalDistrict2);
+        districts.add(poorDistrict1);
+        districts.add(poorDistrict2);
+        districts.add(randomDistrict1);
+        districts.add(randomDistrict2);
+        districts.add(randomDistrict3);
+
+        for(District district: districts) {
+            Random random = new Random();
+            district.setBiomType(District.BiomType.values()[random.nextInt(District.BiomType.values().length)]);
+
+        }
 
         return districts;
     }
@@ -79,18 +100,35 @@ public class DistrictDecider {
      */
     private List<Sector> partionateIntoMapSectors() {
         ArrayList<Sector> sectors = new ArrayList<>();
-        int map_half_width = width / 2;
-        int map_half_height = height / 2;
+        int map_third_width = width / 3;
+        int map_third_height = height / 3;
+
+        //int map_second_third_width = (width / 3) * 2;
+        //int map_second_third_height = (height / 3) * 2;
+
+
         // create sectors
-        Sector sector_left_bottom = new Sector(0, 0, map_half_width, map_half_height);
-        Sector sector_right_bottom = new Sector(map_half_width, 0, map_half_width, map_half_height);
-        Sector sector_left_top = new Sector(0, map_half_height, map_half_width, map_half_height);
-        Sector sector_right_top = new Sector(map_half_width, map_half_height, map_half_width, map_half_height);
+        //Sector sector_top_left = new Sector(0, 0, map_third_width, map_second_third_height);
+        //Sector sector_top_centre = new Sector(0, 0, map_third_width, map_second_third_height);
+
+
+        //Sector sector_left_bottom = new Sector(0, 0, map_half_width, map_half_height);
+        //Sector sector_right_bottom = new Sector(map_half_width, 0, map_half_width, map_half_height);
+        //Sector sector_left_top = new Sector(0, map_half_height, map_half_width, map_half_height);
+        //Sector sector_right_top = new Sector(map_half_width, map_half_height, map_half_width, map_half_height);
+
+        for(int y = 0; y < 3; y++) {
+            for(int x = 0; x < 3; x++) {
+                Sector sector = new Sector(x * map_third_width, y * map_third_height, map_third_width, map_third_height);
+                sectors.add(sector);
+            }
+        }
+
         // add to list
-        sectors.add(sector_left_bottom);
-        sectors.add(sector_right_bottom);
-        sectors.add(sector_left_top);
-        sectors.add(sector_right_top);
+        //sectors.add(sector_left_bottom);
+        //sectors.add(sector_right_bottom);
+        //sectors.add(sector_left_top);
+        //sectors.add(sector_right_top);
         return sectors;
     }
 }

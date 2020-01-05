@@ -5,11 +5,11 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
 
-    Type messageType;
+    private Type messageType;
     private Object o;
 
     public enum Type {
-        INIT, GAMESTATE
+        INIT, GAMESTATE, EVENT
     }
 
 
@@ -20,4 +20,5 @@ public class Message implements Serializable {
 
 
     public Object getObject() { return o; }
+    public Type getMessageType() { return messageType; }
 }

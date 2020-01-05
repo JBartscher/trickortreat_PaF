@@ -7,7 +7,7 @@ import java.util.Stack;
 public class PlayerData extends EntityData {
 
     // represents amount of children
-    public int health = 3;
+    public int childrenCount = 3;
 
     private Stack children;
 
@@ -21,7 +21,7 @@ public class PlayerData extends EntityData {
     public PlayerData(Player player) {
         super(player);
         //this.childrenSnake = player.getChildrenSnake();
-        this.health = player.getHealth();
+        this.childrenCount = player.getChildrenCount();
         //this.children = player.getChildren();
         this.candy = player.getCandy();
         this.xOffSet = player.getxOffSet();
@@ -42,12 +42,12 @@ public class PlayerData extends EntityData {
 
      */
 
-    public int getHealth() {
-        return health;
+    public int getChildrenCount() {
+        return childrenCount;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void setChildrenCount(int childrenCount) {
+        this.childrenCount = childrenCount;
     }
 
     /*

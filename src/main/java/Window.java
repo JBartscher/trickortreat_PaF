@@ -27,6 +27,7 @@ public class Window {
         this.root = new Group();
         this.scene = new Scene(root, WIDTH, HEIGHT);
 
+
     }
 
     public void showGameGUI() {

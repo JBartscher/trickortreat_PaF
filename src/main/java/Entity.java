@@ -2,7 +2,6 @@ package main.java;
 
 import javafx.scene.image.Image;
 import main.java.Network.EntityData;
-import main.java.gameobjects.Player;
 import main.java.map.Tile;
 
 import java.awt.*;
@@ -28,7 +27,8 @@ public abstract class Entity {
     // represents the state of movement
     protected int moveCounter = 1;
 
-    protected int speed = 192 * Game.FRAMES / 50;
+    protected double speed = 120 * Game.FRAMES / 50 * 5;
+
 
     // Default-Werte
     protected Entity() {
@@ -89,30 +89,13 @@ public abstract class Entity {
         this.moveCounter = moveCounter;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 
 
     public void move() {
 
-        /*
-        double movementSize = speed / Game.FRAMES;
-
-        if( (target.x - xPos) > 2) {
-            xPos += movementSize ;
-        } else if (target.x < xPos) {
-            xPos -= movementSize ;
-        }
-
-        if( (target.y - yPos) > 2) {
-            yPos += movementSize;
-        } else if (target.y < yPos) {
-            yPos -= movementSize;
-        }
-
-
-         */
     }
 
     public void setTarget(double x, double y) {
@@ -123,7 +106,7 @@ public abstract class Entity {
     public void setInput(){
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
@@ -155,6 +138,12 @@ public abstract class Entity {
         return new Point((int) round(xPos / Tile.TILE_SIZE), (int) round(yPos / Tile.TILE_SIZE));
     }
 
+    // Ermöglicht einen weicheren Übergang beim Checken der Kollision der Außengrenzen wegen Offset (Abstandsregelung)
+    public Point getEntityPosWithCurrency(double offset) {
+        offset = Tile.TILE_SIZE * offset;
+        return new Point((int) round((xPos + offset) / Tile.TILE_SIZE), (int) round((yPos + offset) / Tile.TILE_SIZE));
+    }
+
 
     // represents the direction in which a entity is moving / looking
     public MovementManager.MoveDirection getMoveDirection() {
@@ -173,7 +162,9 @@ public abstract class Entity {
     void changeMoveImages(){
         animCounter++;
 
-        if(animCounter >= 7 ) {
+        double movementSize = getSpeed() / Game.FRAMES;
+
+        if(animCounter >= 5) {
             if(moveCounter == 2) {
                 moveCounter = 0;
             } else {
@@ -183,7 +174,7 @@ public abstract class Entity {
         }
 
         // sofern am Ziel, dann Bild auf Stillstand setzen
-        if(Math.abs(target.x - xPos) < 2 && Math.abs(target.y - yPos) < 2) {
+        if(Math.abs(target.x - xPos) < movementSize && Math.abs(target.y - yPos) < movementSize) {
             moveCounter = 1;
         }
     }
@@ -193,12 +184,7 @@ public abstract class Entity {
         if(!calledByNetworkContext) changeMoveImages();
         Image currentImage = this.sprite;
         this.sprite = spriteSheet.getSpriteImage(moveCounter, moveDirection.ordinal());
-        if(this instanceof Player) {
-            Player player = (Player)this;
-            if(player.childrenSnake != null) {
-                player.childrenSnake.transferImageToNext(currentImage);
-            }
-        }
+
     }
 
     public Image getGameOverSpriteImage() {

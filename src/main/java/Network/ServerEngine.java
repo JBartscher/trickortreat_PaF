@@ -9,13 +9,18 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import main.java.*;
+import main.java.Game;
+import main.java.GameLauncher;
+import main.java.Message;
+import main.java.MovementManager;
+import main.java.map.MapObject;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerEngine extends Thread implements Network {
@@ -127,7 +132,7 @@ public class ServerEngine extends Thread implements Network {
 
                 labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
                 game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
-                game.getNetworkController().setGameState(new GameState(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), Game.TIME));
+                game.getNetworkController().setGameState(new GameState(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new CooperData(game.getAliceCooper()), new EntityData(game.getWitch()), null, Game.TIME));
 
             });
 
@@ -156,25 +161,61 @@ public class ServerEngine extends Thread implements Network {
 
             while(true) {
 
-                Thread.sleep(15);
+                Thread.sleep(20);
                 long start = System.currentTimeMillis();
 
                 Message msg = (Message)input.readObject();
                 GameState gameState = (GameState)msg.getObject();
-                game.setMap(gameState.getMap());
+                //game.setMap(gameState.getMap());
 
                 game.getOtherPlayer().setGameStateData(gameState.getOtherPlayerData());
-                //GameState newGameState = new GameState(game.getMap(), new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), game.getGameTime());
-                GameState newGameState = new GameState(null, new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), game.getGameTime());
+
+                if(game.getAliceCooper().isAvailable())
+                    game.getAliceCooper().setGameStateData(gameState.getCooperData());
+
+
+                // Es ist ein Event aufgetreten
+                if(msg.getMessageType() == Message.Type.EVENT) {
+                    System.out.println("EVENT IST AUFGETRETEN!");
+                    List mapObjects = game.getMap().getMapSector().getAllContainingMapObjects();
+
+                    // Über alle Objekte iterieren und Objekt updaten
+                    int index = 0;
+                    for(Object o : mapObjects ) {
+                        if(o == gameState.getEventObj()) {
+                            System.out.println(o);
+                            System.out.println(gameState.getEventObj());
+                            mapObjects.set(index, o);
+                            index++;
+                        }
+                    }
+                }
+
+                //TODO: EVALUIEREN : der Server braucht an sich keine Aktualisierung der HEXE, weil der Server die HEXE steuern soll
+                //game.getWitch().setGameStateData(gameState.getWitchData());
+
+                // Sofern ein Haus betreten
+
+                MapObject mapObject = null;
+                Message.Type messageType = null;
+                if(!gameState.isEventTransmitted()) {
+                    messageType = Message.Type.EVENT;
+                    mapObject = gameState.getEventObj();
+                    gameState.setEventTransmitted(true);
+                } else {
+                    messageType = Message.Type.GAMESTATE;
+                }
+
+
+                GameState newGameState = new GameState(null, new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new CooperData(game.getAliceCooper()), new EntityData(game.getWitch()), mapObject, game.getGameTime());
 
                 game.getNetworkController().setGameState(newGameState);
                 this.gameState = newGameState;
 
-                output.writeObject(new Message(Message.Type.GAMESTATE, this.gameState));
+                output.writeObject(new Message(messageType, this.gameState));
                 output.flush();
 
                 //System.out.println("Dauer einer Verbindung: " + (System.currentTimeMillis() - start) + " ms");
-
 
             }
 

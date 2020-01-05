@@ -17,7 +17,29 @@ public class GraphicsUtility {
     public  static Image imageCandy;
 
     // TODO: ÜBERGANGSWEISE, wird später zum TileSet hinzugefügt
-    public static Image streetTile;
+    public static Image streetTileGras;
+    public static Image streetTileSand;
+    public static Image streetTileDesert;
+    public static Image streetTileSnow;
+
+    public static Image grasGroundTile;
+    public static Image grasDeko1Tile;
+    public static Image grasDeko2Tile;
+    public static Image grasDeko3Tile;
+
+    public static Image sandGroundTile;
+    public static Image desertGroundTile;
+
+    public static Image snowGroundTile;
+    public static Image snowDeko1Tile;
+    public static Image snowDeko2Tile;
+    public static Image snowDeko3Tile;
+
+
+    public static Image centreTile;
+
+
+    public static Image borderTile;
 
     public static void initGraphics(){
         initTileImages();
@@ -35,10 +57,40 @@ public class GraphicsUtility {
         }
         System.out.println("fertig");
 
-        // TODO: ÜBERGANGSWEISE, wird später zum TileSet hinzugefügt
+        // TODO: ÜBERGANGSWEISE, wird später überarbeitet
 
-        Image imageStreetTileSet = new Image(GraphicsUtility.class.getResourceAsStream("street_tile.png"));
-        streetTile = new WritableImage(imageStreetTileSet.getPixelReader(), 4 * (Tile.TILE_SIZE + 3), 2 * (Tile.TILE_SIZE + 3), Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+
+        Image imageTileSetGras = new Image(GraphicsUtility.class.getResourceAsStream("tileset_gras.png"));
+        Image imageTileSet = new Image(GraphicsUtility.class.getResourceAsStream("tileset_ground.png"));
+
+        centreTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+
+
+        //grasGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
+        grasGroundTile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+        grasDeko1Tile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        grasDeko2Tile = new WritableImage(imageTileSetGras.getPixelReader(), 1 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        grasDeko3Tile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+
+        sandGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
+        desertGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
+        snowGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+        streetTileGras = new WritableImage(imageTileSetGras.getPixelReader(), 2 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        streetTileSand = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        streetTileDesert = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        streetTileSnow = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+        snowDeko1Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        snowDeko2Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        snowDeko3Tile = new WritableImage(imageTileSet.getPixelReader(), 4 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+
+
+        borderTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
 
     }
 
@@ -57,15 +109,26 @@ public class GraphicsUtility {
 
     public static Image getTileImage(int nr) {
 
-        //grass tiles = 54,55,61,62
-        if (nr == 1) {
-            return tileImages[55];
-        }
-        if (nr == 2) {
-            return tileImages[55];
-        }
-        if (nr == 3) {
-            return tileImages[62];
+        if(nr == 1) {
+            return grasGroundTile;
+        } else if(nr == 2) {
+            return grasDeko1Tile;
+        } else if(nr == 3) {
+            return grasDeko2Tile;
+        } else if (nr == 4) {
+            return grasDeko3Tile;
+        } else if (nr == 5) {
+            return sandGroundTile;
+        } else if (nr == 6) {
+            return desertGroundTile;
+        } else if (nr == 7) {
+            return snowGroundTile;
+        } else if (nr == 8) {
+            return snowDeko1Tile;
+        } else if (nr == 9) {
+            return snowDeko2Tile;
+        }else if (nr == 10) {
+            return snowDeko3Tile;
         }
 
 
@@ -279,10 +342,21 @@ public class GraphicsUtility {
             return tileImages[41];
         }
 
+
+        if (nr == 20 ) {
+            return borderTile;
+        }
         // TODO: VORERST STREET-TILE
-        if (nr == 0) {
-            //return tileImages[1];
-            return streetTile;
+        if (nr == 21) {
+            return streetTileGras;
+        } else if (nr == 22) {
+            return streetTileSand;
+        } else if (nr == 23) {
+            return streetTileDesert;
+        } else if(nr == 24) {
+            return streetTileSnow;
+        } else if(nr == 25) {
+            return centreTile;
         } else {
             return tileImages[54];
         }

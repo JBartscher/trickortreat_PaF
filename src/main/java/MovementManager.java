@@ -10,11 +10,11 @@ import main.java.gameobjects.mapobjects.House;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Placeable;
+import main.java.map.Tile;
 
 import java.io.Serializable;
 
 public class MovementManager implements EventHandler<InputEvent>, Serializable {
-
 
     Player player1;
     Player player2;
@@ -24,6 +24,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
     Player inputMOUSE;
 
     private Map map;
+    private Game game;
 
 
     // There are three different kinds of movement types
@@ -37,9 +38,10 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
     }
 
     // Lokaler Multiplayer
-    public MovementManager(Map map, Player player1, Player player2)
+    public MovementManager(Game game, Player player1, Player player2)
     {
-        this.map = map;
+        this.game = game;
+        this.map = game.getMap();
         this.player1 = player1;
         this.player2 = player2;
 
@@ -49,10 +51,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
     }
 
-    // Es existiert nur ein Spieler - Remote GAME
-    public MovementManager(Map map, Player player1){
-        registerPlayerInputs(player1);
-    }
 
 
     public void registerPlayerInputs(Player player)
@@ -66,7 +64,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         } else if(player.movementType == MovementType.MOUSE) {
             inputMOUSE = player;
         }
-
     }
 
     @Override
@@ -87,8 +84,9 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
             if(inputMOUSE != null) {
 
-                double currentRenderX = inputMOUSE.xPos - inputMOUSE.getxOffSet();
-                double currentRenderY = inputMOUSE.yPos - inputMOUSE.getyOffSet() + Window.HEIGHT * 0.1;
+                double currentRenderX = inputMOUSE.xPos - inputMOUSE.getxOffSet() + Tile.TILE_SIZE / 2;
+                double currentRenderY = inputMOUSE.yPos - inputMOUSE.getyOffSet() + Window.HEIGHT * 0.1 + Tile.TILE_SIZE / 2;
+                if(inputMOUSE == game.getOtherPlayer()) currentRenderX += Game.WIDTH + 2 * Tile.TILE_SIZE;
 
                 inputMOUSE.setTarget(inputMOUSE.getxPos() + (event.getSceneX() - currentRenderX), inputMOUSE.getyPos() + (event.getSceneY() - currentRenderY));
             }
@@ -211,34 +209,37 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
     // move-method - uses speed from entity class and Game FRAMES
     public void moveObject(Entity entity) {
-        entity.move();
-
 
         double movementSize = entity.getSpeed() / Game.FRAMES;
+
+        // TODO: FUNKTIONIERT ÜBER NETZWERK WEGEN NULLPOINTER NICHT
+          //  int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
+          //  if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
+
+
         double moveX = 0.0;
         double moveY = 0.0;
 
-        if( (entity.target.x - entity.xPos) > 2) {
+        if( (entity.target.x - entity.xPos) >= movementSize) {
             moveX = movementSize;
             entity.setMoveDirection(MoveDirection.RIGHT);
-        } else if (entity.target.x < entity.xPos) {
+        } else if ( (entity.xPos >= entity.target.x + movementSize)) {
             moveX = - movementSize;
             entity.setMoveDirection(MoveDirection.LEFT);
+        } else {
+
         }
 
-        if( (entity.target.y - entity.yPos) > 2) {
+        if( (entity.target.y - entity.yPos) > movementSize) {
             moveY = movementSize;
             entity.setMoveDirection(MoveDirection.DOWN);
-        } else if (entity.target.y < entity.yPos) {
+        } else if (entity.yPos >= entity.target.y + movementSize) {
             moveY = -movementSize;
             entity.setMoveDirection(MoveDirection.UP);
+        } else {
+
         }
 
-        if(entity instanceof Player) {
-            Player playerObj = (Player)entity;
-            if(playerObj.getNext() != null)
-                playerObj.getNext().transferCoordinatesToNext(entity.getxPos(), entity.getyPos());
-        }
 
         // check out of bounds and change entity position
         entity.setxPos(entity.getxPos() + moveX);
@@ -256,7 +257,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         moveVertical(moveY, entity);
 
         entity.setEntityImage(false);
-
     }
 
 
@@ -271,7 +271,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         // check collisions in vertical direction
         if (map.getMapSector().intersectsWithContainingItems(p)) {
             // collision with door
-            if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x].isDoorTile()) {
+            if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
 
                 System.out.println("COLLIDE WITH DOOR!");
 
@@ -279,8 +279,10 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                     try {
                         House h = (House) obj;
                         if (h.intersects(p)) {
-                            if(entity instanceof Player)
-                                h.visit((Player)entity);
+                            if(entity instanceof Player && h.isUnvisited()) {
+                                h.visit((Player) entity);
+                                if(game.getGameMode() == Game.GameMode.REMOTE) game.getNetworkController().changeGameStateObject(h);
+                            }
                         }
                     } catch (ClassCastException ex) {
                         // the Object is not a House
@@ -291,8 +293,20 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             System.out.println("COLLIDE!");
             // revert movement
             entity.setyPos(entity.getyPos() - size);
-        }
+            // TODO: LÖST die Kollision zwischen zwei Spielern, muss noch auf alle Entitäten erweitert werden
+        } else {
 
+            for(Entity e : game.getListOfAllEntites()) {
+                if(e == entity) continue;
+
+                if (Math.abs(entity.getxPos() - e.getxPos()) < 0.5 * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * 0.5 ) {
+                    entity.setyPos(entity.getyPos() - size);
+                    if(e instanceof AliceCooper && entity instanceof Player) {
+                        ((AliceCooper)e).playSong((Player)entity);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -306,6 +320,19 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             System.out.println("COLLIDE!");
             // revert movement
             entity.setxPos(entity.getxPos() - size);
+            // TODO: LÖST die Kollision zwischen zwei Spielern
+        } else {
+
+            for(Entity e : game.getListOfAllEntites()) {
+                if(e == entity) continue;
+
+                if (Math.abs(entity.getxPos() - e.getxPos()) < 0.5 * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * 0.5 ) {
+                    entity.setxPos(entity.getxPos() - size);
+                    if(e instanceof AliceCooper && entity instanceof Player) {
+                        ((AliceCooper)e).playSong((Player)entity);
+                    }
+                }
+            }
         }
     }
 
@@ -316,9 +343,14 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
      * @return true if out of bounds failing which false
      */
     private boolean outOfBounds(Entity entity) {
-        Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
+
+        Placeable p1 = new Placeable(entity.getEntityPosWithCurrency(-0.1).y,  entity.getEntityPosWithCurrency(-0.1).x, 1, 1, 0);
+        Placeable p2 = new Placeable(entity.getEntityPosWithCurrency(+0.33).y,  entity.getEntityPosWithCurrency(+0.33).x, 1, 1, 0);
+
         // mapSector does not contain player anymore
-        return !map.getMapSector().intersects(p);
+        return !map.getMapSector().intersects(p1) || !map.getMapSector().intersects(p2);
     }
+
+
 }
 

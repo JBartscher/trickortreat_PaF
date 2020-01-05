@@ -34,6 +34,8 @@ public class MainMenu {
     private GameLauncher gameLauncher;
     private Game.GameMode gameMode;
 
+
+    private static Scene scene;
     private static final int WIDTH = Window.WIDTH;
     private static final int HEIGHT = Window.HEIGHT;
 
@@ -100,7 +102,7 @@ public class MainMenu {
     }
 
     private void addTitle() {
-        MenuTitle title = new MenuTitle("TRICK OR TREAT", 48);
+        MenuTitle title = new MenuTitle("TRICK OR TREAT V.0.2", 48);
         title.setTranslateX(WIDTH / 2 - title.getTitleWidth() / 2);
         title.setTranslateY(HEIGHT / 4);
 
@@ -155,7 +157,9 @@ public class MainMenu {
 
     public void showMainMenu() {
 
-        Scene scene = new Scene(createContent());
+
+        if(scene == null)
+            scene = new Scene(createContent());
         stage.setTitle("Trick or Treat");
         stage.setScene(scene);
         stage.show();

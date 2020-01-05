@@ -6,12 +6,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import main.java.*;
+import main.java.Game;
+import main.java.GameLauncher;
+import main.java.Message;
+import main.java.MovementManager;
+import main.java.map.MapObject;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientEngine extends Thread implements Network {
 
@@ -99,7 +104,7 @@ public class ClientEngine extends Thread implements Network {
         while(!ready) {
             index ++;
             //System.out.println("WARTEN");
-            if(index % 100000 == 0) System.out.println("Warten");
+            if(index % 1000000 == 0) System.out.println("Warten");
         }
 
 
@@ -123,13 +128,21 @@ public class ClientEngine extends Thread implements Network {
         try {
             Message msg = (Message)input.readObject();
             GameState gameStateReceived = (GameState)msg.getObject();
+            this.gameState = gameStateReceived;
             Platform.runLater( () -> {
                 System.out.println(gameStateReceived);
-                Game game = new Game(this, gameStateReceived, stage, movementType);
+                game = new Game(this, gameStateReceived, stage, movementType);
 
 
                 //TODO: beim Client ist die Map-Instance nicht gesetzt, führt zu Problemen beim colliden mit Türen, daher diese unschöne Lösung
+
                 game.getMap().setInstance(game.getMap());
+
+
+
+                //this.map = gameStateReceived.getMap();
+
+
                 gameLauncher.startGame(game);
                 System.out.println("GameState vom Server erhalten");
 
@@ -152,22 +165,55 @@ public class ClientEngine extends Thread implements Network {
 
             while(true) {
 
-                //Thread.sleep(20);
+                // Sofern ein Haus betreten wurde
+                MapObject mapObject = null;
+                Message.Type messageType = null;
+                if(!gameState.isEventTransmitted()) {
+                    messageType = Message.Type.EVENT;
+                    mapObject = gameState.getEventObj();
+                    gameState.setEventTransmitted(true);
+                } else {
+                    messageType = Message.Type.GAMESTATE;
+                }
 
-                game = gameLauncher.getGame();
-                Message message = new Message(Message.Type.GAMESTATE, game.getNetworkController().getGameState());
+                System.out.println(messageType);
+
+                Message message = new Message(messageType, game.getNetworkController().getGameState());
                 output.writeObject(message);
                 output.flush();
 
                 Message msg = (Message)input.readObject();
                 GameState newGameState = (GameState)msg.getObject();
 
+                // Daten an den neuen GameState anpassen
                 game.setMap(newGameState.getMap());
                 game.setGameTime(newGameState.getGameTime());
                 game.getOtherPlayer().setGameStateData(newGameState.getPlayerData());
+                game.getAliceCooper().setGameStateData(newGameState.getCooperData());
+                game.getWitch().setGameStateData(newGameState.getWitchData());
 
-                //newGameState = new GameState(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), game.getGameTime());
-                newGameState = new GameState(null, new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), game.getGameTime());
+
+                //TODO: FEHLERHAFT....
+
+                // Es ist ein Event aufgetreten
+                if(msg.getMessageType() == Message.Type.EVENT) {
+
+                    List mapObjects = game.getMapRenderer().getMap().getMapSector().getAllContainingMapObjects();
+
+                    // Über alle Objekte iterieren und Objekt updatensdd
+
+                    int index = 0;
+                    for(Object o : mapObjects ) {
+                        if(o == gameState.getEventObj()) {
+                            System.out.println(o);
+                            System.out.println(gameState.getEventObj());
+                            mapObjects.set(index, o);
+                            index++;
+                        }
+                    }
+                }
+
+                newGameState = new GameState(null, new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new CooperData(game.getAliceCooper()), new EntityData(game.getWitch()), mapObject, game.getGameTime());
                 game.getNetworkController().setGameState(newGameState);
                 this.gameState = newGameState;
             }
@@ -179,6 +225,9 @@ public class ClientEngine extends Thread implements Network {
 
     }
 
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
     public GameState getGameState() {
         return gameState;
     }

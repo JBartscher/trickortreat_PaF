@@ -1,6 +1,7 @@
 package main.java.Network;
 
 import main.java.Entity;
+import main.java.Game;
 import main.java.MovementManager;
 
 import java.awt.*;
@@ -24,7 +25,7 @@ public class EntityData implements Serializable {
     // represents the state of movement
     protected int moveCounter = 1;
 
-    protected int speed = 192;
+    protected double speed = 200 * Game.FRAMES / 50;
 
     public EntityData(Entity entity) {
         xPos = entity.getxPos();
@@ -95,11 +96,11 @@ public class EntityData implements Serializable {
         this.moveCounter = moveCounter;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 }

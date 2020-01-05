@@ -45,14 +45,75 @@ public class MapGenerator {
     public void createMap() {
         Configuration<Object> config = new Configuration<Object>();
 
+        generateBioms();
+
         // supply the center of the map
-        createTownHall(gameMap.getSize() / 2, gameMap.getSize() / 2);
+        createTownHall(gameMap.getSize() / 2 - TownHall.TOWN_HALL_HEIGHT / 2, gameMap.getSize() / 2  - TownHall.TOWN_HALL_WIDTH / 2 + 1);
+        createCentreSmallHouses(5);
+
+
         createSmallHouses(((Number) config.getParam("smallHouses")).intValue());
         createBigHouses(((Number) config.getParam("bigHouses")).intValue());
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
-        createStreetNetwork();
+        //createStreetNetwork();
 
+    }
+
+    // Generiert für jeden Distrikt ein
+    public void generateBioms() {
+        ArrayList<District> mapDistricts = districtManager.getMapDistircts();
+        int mapThirdSize = gameMap.getSize() / 3;
+        Random random = new Random();
+        int nr = 1;
+        int zahl = 1;
+
+        for(int y = 0; y < 3; y++) {
+            for(int x = 0; x < 3; x++) {
+
+                // Zentrum überspringen
+                if(y * 3 + x == 4) continue;
+                District.BiomType biomType = mapDistricts.get(y * 3 + x).getBiomType();
+                for(int j = 0; j < mapThirdSize; j++) {
+                    for(int i = 0; i < mapThirdSize; i++) {
+
+                        Tile currentTile = gameMap.getMap()[y * mapThirdSize + j][x * mapThirdSize + i][0];
+
+                        switch(biomType) {
+
+                            case Gras:
+                                zahl = random.nextInt(100);
+                                if(zahl < 60) nr = 1;
+                                if(zahl >= 60 && zahl < 70) nr = 2;
+                                if(zahl >= 66 && zahl < 80) nr = 3;
+                                if(zahl >= 80) nr = 4;
+                                currentTile.setTileNr(nr);
+                                break;
+
+                            case Sand:
+                                currentTile.setTileNr(5);
+                                break;
+
+                            case Desert:
+                                currentTile.setTileNr(6);
+                                break;
+
+                            case Snow:
+                                zahl = random.nextInt(100);
+                                if(zahl < 60) nr = 7;
+                                if(zahl >= 60 && zahl < 70) nr = 8;
+                                if(zahl >= 66 && zahl < 80) nr = 9;
+                                if(zahl >= 80) nr = 10;
+                                currentTile.setTileNr(nr);
+                                break;
+
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + biomType);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -135,9 +196,19 @@ public class MapGenerator {
         int height = placingObject.getHeight();
 
         while (true) {
-            Placeable placeable = new Placeable(r.nextInt(gameMap.getSize()), r.nextInt(gameMap.getSize()), width, height);
+            int y = r.nextInt(gameMap.getSize());
+            int x = r.nextInt(gameMap.getSize());
+
+            // TODO: Verhindert zu dichtes Spawnen am Stadtzentrum
+            if(x > gameMap.getSize() * 0.35 && x < gameMap.getSize() * 0.65 && y > gameMap.getSize() * 0.35 && y < gameMap.getSize() * 0.65) continue;
+
+            if ( (x > gameMap.getSize() * 0.25 && x < gameMap.getSize() * 0.37 ) || ( x >= gameMap.getSize() * 0.63 && x < gameMap.getSize() * 0.75)) continue;
+            if ( (y > gameMap.getSize() * 0.25 && y < gameMap.getSize() * 0.37 ) || ( y >= gameMap.getSize() * 0.63 && y < gameMap.getSize() * 0.75)) continue;
+
+            Placeable placeable = new Placeable(y, x, width, height);
             // not colliding and sector contains Placeable
             if (!gameMap.getMapSector().intersectsWithContainingItems(placeable) && gameMap.getMapSector().contains(placeable)) {
+
                 gameMap.getMapSector().addMapObject(placingObject);
                 // convey x and y pos to object
                 placingObject.setX(placeable.getX());
@@ -162,7 +233,7 @@ public class MapGenerator {
             int houseHeight = currentMapObject.getHeight();
             for (int x = 0; x < houseWidth; x++) {
                 for (int y = 0; y < houseHeight; y++) {
-                    gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y] = currentMapObject.getTileByTileIndex(x, y);
+                    gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][1] = currentMapObject.getTileByTileIndex(x, y);
                 }
             }
         }
@@ -175,20 +246,49 @@ public class MapGenerator {
         gameMap.getMapSector().getAllContainingMapObjects().forEach(Placeable::disableOffset);
     }
 
+    private void createCentreSmallHouses(int numberOfHouses) {
+        // 2x2
+        int width = 2, height = 2;
+        for (int i = 0; i < numberOfHouses; i++) {
+            // stub Object, the placeable will be overridden in the findObjectSpot method
+            House smallHouse = new SmallHouse(0, 0, width, height);
+
+            int x = (int) (gameMap.getSize() * 0.4) + i * 3;
+            int y = (int) (gameMap.getSize() * 0.40);
+            gameMap.getMapSector().addMapObject(smallHouse);
+            // convey x and y pos to object
+            smallHouse.setX(y);
+            smallHouse.setY(x);
+
+            transferQueue.add(smallHouse);
+
+            // put the right district to the house object
+            try {
+                District districtOfHouse = districtManager.getDistrict(smallHouse);
+                System.out.println(districtOfHouse);
+                smallHouse.setDistrict(districtOfHouse);
+            } catch (PlaceableBelongsToNoSectorException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public void createStreetNetwork() {
 
         ArrayList<Point> doorPoints = new ArrayList<>();
-        Tile[][] tileMap = gameMap.getMap();
+        Tile[][][] tileMap = gameMap.getMap();
+
         for(int y = 0; y < tileMap.length; y++){
             for(int x = 0; x < tileMap[y].length; x++) {
-                int tileNr = tileMap[y][x].getTileNr();
-
+                int tileNr = tileMap[y][x][1].getTileNr();
                 String nr = String.valueOf(tileNr);
                 if(nr.length() == 1) nr = "0" + nr;
                 if(nr.length() == 3 || tileNr >= 90) nr = "XX";
 
                 if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85) {
+
+
                     nr = "DD";
                     doorPoints.add(new Point(x, y + 1));
                 }
@@ -198,12 +298,12 @@ public class MapGenerator {
             System.out.println();
         }
 
-
         // Start
         int size = doorPoints.size() - 1;
         int x = doorPoints.get(0).x;
         int y = doorPoints.get(0).y;
-        tileMap[y][x].setTileNr(0);
+
+        tileMap[y][x][1].setTileNr(21);
 
         for(int i = 0; i < size; i++) {
 
@@ -223,10 +323,7 @@ public class MapGenerator {
                     break;
                 }
             }
-
         }
-
-
     }
 
     public Point findLowestDistance(ArrayList<Point> doorPoints, int x, int y) {
@@ -252,16 +349,17 @@ public class MapGenerator {
 
     public void drawStreet(int x, int y, int targetX, int targetY, boolean xAllowed, boolean yAllowed) {
 
+        System.out.println("Momentane Koordinaten - x : " + x + " - y: " + y);
 
         if(targetX > x && xAllowed) {
-            if(isGrasOrStreet(x + 1, y))
+            if(isWalkable(x + 1, y))
                 x++;
 
-            else if(targetY < y && isGrasOrStreet(x, y - 1)){
+            else if(targetY < y && isWalkable(x, y - 1)){
                 y--;
             }
 
-            else if(targetY > y && isGrasOrStreet(x, y + 1)){
+            else if(targetY >= y && isWalkable(x, y + 1)){
                 y++;
             }
 
@@ -270,80 +368,100 @@ public class MapGenerator {
         }
 
         else if(targetX < x && xAllowed) {
-            if(isGrasOrStreet(x - 1, y))
+
+            if(isWalkable(x - 1, y))
                 x--;
-            else if(targetY < y && isGrasOrStreet(x, y - 1)){
+            else if(targetY < y && isWalkable(x, y - 1)){
                 y--;
             }
 
-            else if(targetY > y && isGrasOrStreet(x, y + 1)){
+            else if(targetY >= y && isWalkable(x, y + 1)){
                 y++;
             }
+
             setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
             return;
         }
 
         if(targetY > y && yAllowed) {
-            if(isGrasOrStreet(x, y + 1)) {
+            if(isWalkable(x, y + 1)) {
                 y++;
                 setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
                 return;
             }
-            else if(isGrasOrStreet(x + 1, y)) {
-                x++;
+            else if(isWalkable(x - 1, y)) {
+                x--;
                 setStreetAndRecallMethod(x, y, targetX, targetY, false, true);
                 return;
             }
         }
 
         else if(targetY < y && yAllowed) {
-            if(isGrasOrStreet(x, y - 1)) {
+            if(isWalkable(x, y - 1)) {
                 y--;
                 setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
                 return;
             }
-            else if(isGrasOrStreet(x + 1, y)){
+            else if(isWalkable(x + 1, y)){
                 x++;
                 setStreetAndRecallMethod(x, y, targetX, targetY, false, true);
                 return;
             }
-
         }
 
+        if (targetX == x && targetY != y) {
 
 
-        /*
-        if(targetY > y) {
-            if(isGrasOrStreet(x, y + 1))
-                y++;
-            else if (isGrasOrStreet(x - 1, y)) {
+            boolean ready = false;
+            do {
                 x--;
-            }
-            setStreetAndRecallMethod(x, y, targetX, targetY);
+                setStreetAndRecallMethod(x, y, x, y, true, false);
+
+                if (targetY > y) {
+                    if (isWalkable(x, y + 1)) {
+                        y++;
+                        ready = true;
+                        setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
+                    } else {
+
+                    }
+                } else if (targetY < y) {
+                    if(isWalkable(x, y - 1)) {
+                        y--;
+                        ready = true;
+                        setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
+                    }
+                }
+
+            } while(!ready);
+
+
+
         }
-
-        else if(targetY < y) {
-            if(isGrasOrStreet(x, y - 1))
-                y--;
-            else if(isGrasOrStreet(x - 1, y)) {
-                x--;
-            }
-            setStreetAndRecallMethod(x, y, targetX, targetY);
-
-        }
-
-
-         */
     }
 
-    public boolean isGrasOrStreet(int x, int y) {
-        int tileNr = gameMap.getMap()[y][x].getTileNr();
-        return (tileNr == 0 || tileNr == 1 || tileNr == 2 || tileNr == 3 || tileNr == 4 || tileNr == 5) ? true : false;
+    public boolean isWalkable(int x, int y) {
+        int tileNr = gameMap.getMap()[y][x][1].getTileNr();
+        return (tileNr <= 25) ? true : false;
+
     }
 
     public void setStreetAndRecallMethod(int x, int y, int targetX, int targetY, boolean xAllowed, boolean yAllowed) {
-        if(gameMap.getMap()[y][x].getTileNr() != 0)
-            gameMap.getMap()[y][x].setTileNr(0);
-        if(x != targetX || y != targetY) drawStreet(x, y, targetX, targetY, xAllowed, yAllowed);
+        int tileNr = gameMap.getMap()[y][x][1].getTileNr();
+        int streetType = 20;
+        if (tileNr < 20) {
+
+            // TODO: FUNKTIONIERT MIT DER NEUEN KARTENGRößE NICHT MEHR
+            //if (x < Map.BORDER && y < Map.BORDER) streetType = 21;
+            //else if (x > Map.BORDER && y < Map.BORDER) streetType = 22;
+            //else if (x < Map.BORDER && y > Map.BORDER) streetType = 23;
+            //else if (x > Map.BORDER && y > Map.BORDER) streetType = 24;
+
+            streetType = 21;
+
+            gameMap.getMap()[y][x][1].setTileNr(streetType);
+        }
+            if (x != targetX || y != targetY) drawStreet(x, y, targetX, targetY, xAllowed, yAllowed);
+
     }
 }

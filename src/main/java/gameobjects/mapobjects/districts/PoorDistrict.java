@@ -8,7 +8,7 @@ public class PoorDistrict extends District {
 
     public PoorDistrict(Sector sector) {
         super(sector);
-        this.candy_multiplikator = 1.5;
+        this.candy_multiplikator = 1;
         this.houseColorKey = 7;
     }
 

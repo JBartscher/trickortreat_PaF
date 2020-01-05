@@ -5,6 +5,8 @@ import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
+import java.util.Random;
+
 public class BigHouse extends House {
     public BigHouse(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
@@ -25,7 +27,16 @@ public class BigHouse extends House {
             } catch (NoClassDefFoundError ex) {
                 ex.printStackTrace();
             }
-            player.addCandy((int) this.district.getCandy_multiplikator() * player.getChildrenCount());
+
+            // Berechne die Menge der Süßigkeiten
+            int candies = 0;
+            Random random = new Random();
+            for(int i = 0; i < player.getChildrenCount(); i++) {
+                int zahl = random.nextInt(2);
+                candies += (int)(this.district.getCandy_multiplikator() + zahl);
+            }
+
+            player.addCandy(candies);
             repaintAfterVisit();
             updateMap();
         }

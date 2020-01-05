@@ -8,7 +8,7 @@ public class NormalDistrict extends District {
 
     public NormalDistrict(Sector sector) {
         super(sector);
-        this.candy_multiplikator = 2.5;
+        this.candy_multiplikator = 4;
     }
 
     @Override

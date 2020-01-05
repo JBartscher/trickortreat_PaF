@@ -70,7 +70,7 @@ public class House extends MapObject {
             } catch (NoClassDefFoundError ex) {
                 ex.printStackTrace();
             }
-            player.addCandy((int) this.district.getCandy_multiplikator() * player.getChildrenCount());
+            player.addCandy((int) (this.district.getCandy_multiplikator() * player.getChildrenCount()));
         }
         System.out.println(player.getCandy());
         this.isUnvisited = false;
@@ -78,14 +78,18 @@ public class House extends MapObject {
 
     protected void updateMap() {
 
-        Tile[][] map = Map.getInstance().getMap();
+        Tile[][][] map = Map.getInstance().getMap();
 
         for (int y = 0; y < tileset[0].length; y++) {
             for (int x = 0; x < tileset.length; x++) {
-                map[x + this.getX()][y + this.getY()] = tileset[x][y];
+                map[x + this.getX()][y + this.getY()][1] = tileset[x][y];
             }
         }
 
         Map.getInstance().setMap(map);
+    }
+
+    public boolean isUnvisited() {
+        return isUnvisited;
     }
 }

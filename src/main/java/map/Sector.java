@@ -13,6 +13,7 @@ public class Sector extends Placeable {
     //private ArrayList<Placeable> containingPlacebles;
     private final List<MapObject> sectorObjects;
 
+
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
         sectorObjects = new ArrayList<>();

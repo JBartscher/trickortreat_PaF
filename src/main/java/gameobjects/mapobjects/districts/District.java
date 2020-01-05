@@ -26,6 +26,21 @@ public abstract class District implements Serializable {
         return candy_multiplikator;
     }
 
+
+    public enum BiomType {
+        Gras, Sand, Desert, Snow;
+    }
+
+    public BiomType getBiomType() {
+        return biomType;
+    }
+
+    public void setBiomType(BiomType biomType) {
+        this.biomType = biomType;
+    }
+
+    private BiomType biomType;
+
     public abstract Tile[][] getSmallHouseUnvisitedTileset();
 
     public abstract Tile[][] getSmallHouseVisitedTileset();

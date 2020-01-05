@@ -18,7 +18,7 @@ public class MapRenderer {
 
     private Map map;
     private Window window;
-    private Tile[][] tileMap;
+    private Tile[][][] tileMap;
     private Game game;
 
     public MapRenderer(Map map, Window window, Game game){
@@ -57,69 +57,99 @@ public class MapRenderer {
                 }
 
             // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
-            for (int y = 0; y < tileMap.length; y++) {
-                for (int x = 0; x < tileMap[y].length; x++) {
-                    int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
-                    int yPos = (int)(y * Tile.TILE_SIZE - gameCamera.getYOffset() + Window.HEIGHT * 0.1);
-                    // nur Zeichnen, wenn sichtbar - sonst verwerfen
+            for(int z = 0; z < 3; z++) {
 
-                    if(yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
-                        ImageView imagePlayer = new ImageView(GraphicsUtility.getTileImage(tileMap[y][x].getTileNr()));
-                        GraphicsUtility.setImageProperties(imagePlayer, xPos, yPos);
-                        root.getChildren().add(imagePlayer);
+                for (int y = 0; y < tileMap.length; y++) {
+                    for (int x = 0; x < tileMap[y].length; x++) {
+                        int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
+                        int yPos = (int) (y * Tile.TILE_SIZE - gameCamera.getYOffset() + Window.HEIGHT * 0.1);
+                        // nur Zeichnen, wenn sichtbar - sonst verwerfen
+
+                        if(tileMap[y][x][z].getTileNr() == 0) continue;
+
+                        if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
+                            ImageView imagePlayer = new ImageView(GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr()));
+                            GraphicsUtility.setImageProperties(imagePlayer, xPos, yPos);
+                            root.getChildren().add(imagePlayer);
+                        }
                     }
                 }
             }
 
-            // Eigenen Spieler zeichnen
-            ImageView imagePlayer = new ImageView(obj.getEntityImage());
+            // Eigenen Spieler und Anhang zeichnen
+            for(int i = 0; i < obj.getChildrenCount(); i++) {
+                ImageView imagePlayer = new ImageView(obj.getEntityImage());
 
-            double xPos = obj.getxPos() - gameCamera.getXOffset() + widthOffset;
-            double yPos = obj.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1;
-            imagePlayer.setX(xPos);
-            imagePlayer.setY(yPos);
-            root.getChildren().add(imagePlayer);
+                double xPos = obj.getxPos() - gameCamera.getXOffset() + widthOffset;
+                double yPos = obj.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1;
 
-            /*
-            PlayerSnake playerSnake = obj.getNext();
-            while(playerSnake != null) {
+                // Kinder verschieben
+                if(i == 1) { xPos += 0.33 * Tile.TILE_SIZE; }
+                if(i == 2) { yPos += 0.33 * Tile.TILE_SIZE; }
 
-                ImageView imagePlayerSnake = new ImageView(playerSnake.image);
-                xPos = playerSnake.xPos - gameCamera.getXOffset() + widthOffset;
-                yPos = playerSnake.yPos - gameCamera.getYOffset() + Window.HEIGHT * 0.1;
-                imagePlayerSnake.setX(xPos);
-                imagePlayerSnake.setY(yPos);
-                root.getChildren().add(imagePlayerSnake);
-                playerSnake = playerSnake.getNext();
+                // Auf 50 % der Größe skalieren ( jedes Kind ist somit halb so hoch und breit wie ein ganzes Tile
+                imagePlayer.setScaleX(0.5);
+                imagePlayer.setScaleY(0.5);
+                imagePlayer.setX(xPos);
+                imagePlayer.setY(yPos);
+                root.getChildren().add(imagePlayer);
             }
 
-             */
 
             Rectangle middleTile = null;
-            // zeichnet jeweils den anderen Spieler, sofern lokaler Mulitplayer gespielt wird
+            // zeichnet jeweils den anderen Spieler und seinen Anhang
             if(widthOffset == 0) {
                 otherPlayer = game.getOtherPlayer();
             } else {
                 otherPlayer = game.getPlayer();
                 middleTile = new Rectangle(Game.WIDTH, Window.HEIGHT * 0.1, 2 *  Tile.TILE_SIZE, Window.HEIGHT);
-                //root.getChildren().add(middleTile);
-            }
-                xPos = otherPlayer.getxPos() - gameCamera.getXOffset() + widthOffset;
-                yPos = otherPlayer.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1;
 
-                if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
-                    ImageView otherPlayerObject = new ImageView(otherPlayer.getEntityImage());
-                    GraphicsUtility.setImageProperties(otherPlayerObject, xPos, yPos);
-                    root.getChildren().add(otherPlayerObject);
-                }
-                if(middleTile != null) root.getChildren().add(middleTile);
+            }
+
+            for(int i = 0; i < otherPlayer.getChildrenCount(); i++) {
+                double xPosOffset = 0;
+                double yPosOffset = 0;
+                if(i == 1) { xPosOffset = 0.33 * Tile.TILE_SIZE; }
+                if(i == 2) { yPosOffset = 0.33 * Tile.TILE_SIZE; }
+                if(i == 3) { xPosOffset = 0.33 * Tile.TILE_SIZE; yPosOffset = 0.33 * Tile.TILE_SIZE; }
+
+                drawEntity(root, otherPlayer, gameCamera, widthOffset, xPosOffset, yPosOffset, 0.5);
+            }
+
+            drawEntity(root, game.getWitch(), gameCamera, widthOffset, 0, 0, 1);
+            drawEntity(root, game.getAliceCooper(), gameCamera, widthOffset, 0, 0, 1);
+
+            // Mittelstück wird hinzugefügt, sofern ein Splitscreen existiert
+            if(middleTile != null) root.getChildren().add(middleTile);
 
 
             widthOffset += Game.WIDTH + 2 * Tile.TILE_SIZE;
         }
 
-
         setHeadlineIcons(root);
+    }
+
+    public void drawEntity(Group root, Entity entity, GameCamera gameCamera, int widthOffset, double xPosOffset, double yPosOffset, double scaleFactor){
+
+        double xPos = entity.getxPos() - gameCamera.getXOffset() + widthOffset + xPosOffset;
+        double yPos = entity.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1 + yPosOffset;
+
+        if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
+            ImageView entityImage = new ImageView(entity.getEntityImage());
+            GraphicsUtility.setImageProperties(entityImage, xPos, yPos);
+
+            if(entity instanceof Witch) {
+                entityImage.setOpacity(0.5);
+            }
+
+            if(scaleFactor != 1.0) {
+                entityImage.setScaleX(scaleFactor);
+                entityImage.setScaleY(scaleFactor);
+            }
+
+            root.getChildren().add(entityImage);
+        }
+
 
 
     }
@@ -190,6 +220,11 @@ public class MapRenderer {
 
         return minutes + ":" + secondsString;
     }
+
+    public Map getMap() {
+        return map;
+    }
+
 
 
 }

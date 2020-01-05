@@ -91,5 +91,9 @@ public class DistrictManager {
         throw new PlaceableBelongsToNoSectorException("a placeble cannot intersect with no sector");
     }
 
+    public ArrayList<District> getMapDistircts() {
+        return mapDistircts;
+    }
+
 
 }

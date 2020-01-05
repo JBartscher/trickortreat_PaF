@@ -1,6 +1,6 @@
 package main.java.Network;
 
-import main.java.GameState;
+import main.java.map.MapObject;
 
 public class NetworkController {
 
@@ -48,4 +48,22 @@ public class NetworkController {
     public void communicate() {
         networkEngine.communicate();
     }
+
+    public void changeGameStateObject (MapObject mapObject) {
+
+
+        gameState.setEventTransmitted(false);
+        gameState.setEventObj(mapObject);
+
+        System.out.println("CHANGED");
+
+        if( networkEngine instanceof ServerEngine) {
+            ((ServerEngine) networkEngine).setGameState(gameState);
+        } else if (networkEngine instanceof ClientEngine) {
+            ((ClientEngine) networkEngine).setGameState(gameState);
+        }
+    }
+
+
+
 }
