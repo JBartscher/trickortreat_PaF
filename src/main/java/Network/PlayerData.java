@@ -100,14 +100,6 @@ public class PlayerData extends EntityData {
         this.inside = inside;
     }
 
-    public boolean isNoCollision() {
-        return noCollision;
-    }
-
-    public void setNoCollision(boolean noCollision) {
-        this.noCollision = noCollision;
-    }
-
     public MapObject getInsideObject() {
         return insideObject;
     }

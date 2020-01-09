@@ -92,8 +92,8 @@ public class Player extends Entity {
         this.movementType = movementType;
     }
 
-    public void setChildrenCount(int health) {
-        this.childrenCount = childrenCount;
+    public void setChildrenCount(int value) {
+        this.childrenCount = value;
     }
 
     public void setCandy(int candy) {

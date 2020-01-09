@@ -1,6 +1,5 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Network.Visitible;
 import main.java.gameobjects.Player;
 import main.java.map.Tile;
 import main.java.map.TileCollection;

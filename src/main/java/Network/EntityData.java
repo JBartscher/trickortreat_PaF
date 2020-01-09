@@ -25,6 +25,8 @@ public class EntityData implements Serializable {
     // represents the state of movement
     protected int moveCounter = 1;
 
+    protected boolean noCollision = false;
+
     protected double speed = 200 * Game.FRAMES / 50;
 
     public EntityData(Entity entity) {
@@ -36,6 +38,7 @@ public class EntityData implements Serializable {
         animCounter = entity.getAnimCounter();
         moveCounter = entity.getMoveCounter();
         speed = entity.getSpeed();
+        noCollision = entity.isNoCollision();
 
     }
 
@@ -102,5 +105,13 @@ public class EntityData implements Serializable {
 
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+    public boolean isNoCollision() {
+        return noCollision;
+    }
+
+    public void setNoCollision(boolean noCollision) {
+        this.noCollision = noCollision;
     }
 }

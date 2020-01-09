@@ -346,7 +346,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
      */
     public void moveHorizontal(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
-        if (map.getMapSector().intersectsWithContainingItems(p) && !((Player)entity).isNoCollision()) {
+        if (map.getMapSector().intersectsWithContainingItems(p) && !entity.isNoCollision()) {
 
 
             // revert movement when entity is not a player and has a collision detection
@@ -361,17 +361,30 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             // TODO: LÖST die Kollision zwischen zwei Spielern
         } else {
 
-            for(Entity e : game.getListOfAllEntites()) {
-                if(e == entity) continue;
+            // überprüft die Kollision zwischen Entitäten
+            checkCollisionsBetweenEntities(entity, size);
 
-                if (Math.abs(entity.getxPos() - e.getxPos()) < 0.5 * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * 0.5 ) {
-                    entity.setxPos(entity.getxPos() - size);
-                    if(e instanceof AliceCooper && entity instanceof Player) {
-                        ((AliceCooper)e).playSong((Player)entity);
-                    }
+        }
+    }
+
+
+    public void checkCollisionsBetweenEntities(Entity entity, double size) {
+
+        for(Entity e : game.getListOfAllEntites()) {
+            if(e == entity) continue;
+
+            if (Math.abs(entity.getxPos() - e.getxPos()) < 0.5 * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * 0.5 ) {
+                entity.setxPos(entity.getxPos() - size);
+                if(e instanceof AliceCooper && entity instanceof Player) {
+                    ((AliceCooper)e).playSong((Player)entity);
+                } else if(e instanceof Witch && entity instanceof Player) {
+                    System.out.println("KOLLIDIERT MIT HEXE!");
+                    ((Player)entity).setChildrenCount(1);
                 }
             }
         }
+
+
     }
 
 

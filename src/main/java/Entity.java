@@ -16,6 +16,8 @@ public abstract class Entity {
     protected double size;
     protected Point target;
 
+    protected boolean noCollision = false;
+
     transient protected SpriteSheet spriteSheet;
     transient protected Image sprite;
 
@@ -211,6 +213,7 @@ public abstract class Entity {
         this.animCounter = entityData.getAnimCounter();
         this.moveCounter = entityData.getMoveCounter();
         this.speed = entityData.getSpeed();
+        this.noCollision = entityData.isNoCollision();
 
     }
 
@@ -220,6 +223,14 @@ public abstract class Entity {
 
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
+    }
+
+    public boolean isNoCollision() {
+        return noCollision;
+    }
+
+    public void setNoCollision(boolean noCollision) {
+        this.noCollision = noCollision;
     }
 
 }

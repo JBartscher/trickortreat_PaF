@@ -191,7 +191,7 @@ public class Game {
 
         if(gameMode == GameMode.LOCAL) {
             witch.setTarget(new Point((int)player.getxPos(), (int)player.getyPos()));
-            //movementManager.moveObject(witch);
+            movementManager.moveObject(witch);
         }
     }
 
