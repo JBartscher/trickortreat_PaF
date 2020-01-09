@@ -1,9 +1,9 @@
 package main.java.Network;
 
 import main.java.map.Map;
-import main.java.map.MapObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class GameState implements Serializable {
 
@@ -16,26 +16,19 @@ public class GameState implements Serializable {
     private CooperData cooperData;
     private EntityData witchData;
 
-    private MapObject eventObj;
+    private ArrayList<Event> eventQueue = new ArrayList<>();
+    private Event event;
     private boolean eventTransmitted = true;
-
-    public MapObject getEvent() {
-        return eventObj;
-    }
-
-    public void setEvent(MapObject event) {
-        this.eventObj = event;
-    }
 
     private int gameTime;
 
-    public GameState(Map map, PlayerData playerData, PlayerData otherPlayerData, CooperData cooperData, EntityData witchData, MapObject event, int gameTime) {
+    public GameState(Map map, PlayerData playerData, PlayerData otherPlayerData, EntityData witchData, CooperData cooperData, Event event, int gameTime) {
         this.map = map;
         this.playerData  = playerData;
         this.otherPlayerData = otherPlayerData;
         this.cooperData = cooperData;
         this.witchData = witchData;
-        this.eventObj = event;
+        this.event = event;
 
         this.gameTime = gameTime;
     }
@@ -64,14 +57,6 @@ public class GameState implements Serializable {
         this.otherPlayerData = otherPlayerData;
     }
 
-    public CooperData getCooperData() {
-        return cooperData;
-    }
-
-    public void setCooperData(CooperData cooperData) {
-        this.cooperData = cooperData;
-    }
-
     public EntityData getWitchData() {
         return witchData;
     }
@@ -88,20 +73,51 @@ public class GameState implements Serializable {
         this.gameTime = gameTime;
     }
 
-    public MapObject getEventObj() {
-        return eventObj;
-    }
-
-    public void setEventObj(MapObject eventObj) {
-        this.eventObj = eventObj;
-    }
-
     public boolean isEventTransmitted() {
         return eventTransmitted;
     }
 
     public void setEventTransmitted(boolean eventTransmitted) {
         this.eventTransmitted = eventTransmitted;
+    }
+
+    public CooperData getCooperData() {
+        return cooperData;
+    }
+
+    public void setCooperData(CooperData cooperData) {
+        this.cooperData = cooperData;
+    }
+
+    public void addEvent(Object o, Event.EventType type) {
+        this.eventQueue.add(new Event(o, type));
+        eventTransmitted = false;
+        this.event = new Event(o, type);
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public Event getEvent() {
+        return this.event;
+    }
+
+    public ArrayList<Event> getEventQueue() {
+        return eventQueue;
+    }
+
+    public void setEventQueue(ArrayList<Event> eventQueue) {
+
+        this.eventQueue.clear();
+        this.eventQueue.addAll(eventQueue);
+
+        //this.eventQueue = eventQueue;
+    }
+
+    public void clearEventQueue() {
+        eventQueue.clear();
+        eventTransmitted = true;
     }
 
 

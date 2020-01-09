@@ -3,13 +3,11 @@ package main.java.map;
 import main.java.Configuration;
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
-import main.java.gameobjects.mapobjects.BigHouse;
-import main.java.gameobjects.mapobjects.House;
-import main.java.gameobjects.mapobjects.SmallHouse;
-import main.java.gameobjects.mapobjects.TownHall;
+import main.java.gameobjects.mapobjects.*;
 import main.java.gameobjects.mapobjects.districts.District;
 
 import java.awt.*;
+import java.util.Queue;
 import java.util.*;
 
 public class MapGenerator {
@@ -49,6 +47,8 @@ public class MapGenerator {
 
         // supply the center of the map
         createTownHall(gameMap.getSize() / 2 - TownHall.TOWN_HALL_HEIGHT / 2, gameMap.getSize() / 2  - TownHall.TOWN_HALL_WIDTH / 2 + 1);
+        createMansion(5, 5);
+
         createCentreSmallHouses(5);
 
 
@@ -60,7 +60,7 @@ public class MapGenerator {
 
     }
 
-    // Generiert für jeden Distrikt ein
+    // Generiert für jeden Distrikt ein Biom
     public void generateBioms() {
         ArrayList<District> mapDistricts = districtManager.getMapDistircts();
         int mapThirdSize = gameMap.getSize() / 3;
@@ -114,6 +114,25 @@ public class MapGenerator {
                 }
             }
         }
+    }
+
+
+    private void createMansion(int x, int y) {
+        // 8x5
+        Mansion mansion = new Mansion(x, y);
+        // the first item cannot intersect with other items because its new.
+        //findObjectSpot(mansion);
+        gameMap.getMapSector().addMapObject(mansion);
+        transferQueue.add(mansion);
+
+        // put the right district to the house object
+        try {
+            District districtOfHouse = districtManager.getDistrict(mansion);
+            // townHall.setDistrict(districtOfHouse);
+        } catch (PlaceableBelongsToNoSectorException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -200,10 +219,10 @@ public class MapGenerator {
             int x = r.nextInt(gameMap.getSize());
 
             // TODO: Verhindert zu dichtes Spawnen am Stadtzentrum
-            if(x > gameMap.getSize() * 0.35 && x < gameMap.getSize() * 0.65 && y > gameMap.getSize() * 0.35 && y < gameMap.getSize() * 0.65) continue;
+            if(x > gameMap.getSize() * 0.36 && x < gameMap.getSize() * 0.64 && y > gameMap.getSize() * 0.36 && y < gameMap.getSize() * 0.64) continue;
 
-            if ( (x > gameMap.getSize() * 0.25 && x < gameMap.getSize() * 0.37 ) || ( x >= gameMap.getSize() * 0.63 && x < gameMap.getSize() * 0.75)) continue;
-            if ( (y > gameMap.getSize() * 0.25 && y < gameMap.getSize() * 0.37 ) || ( y >= gameMap.getSize() * 0.63 && y < gameMap.getSize() * 0.75)) continue;
+            if ( (x > gameMap.getSize() * 0.27 && x < gameMap.getSize() * 0.37 ) || ( x >= gameMap.getSize() * 0.62 && x < gameMap.getSize() * 0.75)) continue;
+            if ( (y > gameMap.getSize() * 0.27 && y < gameMap.getSize() * 0.37 ) || ( y >= gameMap.getSize() * 0.62 && y < gameMap.getSize() * 0.75)) continue;
 
             Placeable placeable = new Placeable(y, x, width, height);
             // not colliding and sector contains Placeable
@@ -464,4 +483,5 @@ public class MapGenerator {
             if (x != targetX || y != targetY) drawStreet(x, y, targetX, targetY, xAllowed, yAllowed);
 
     }
+
 }

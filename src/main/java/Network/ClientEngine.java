@@ -8,14 +8,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.java.Game;
 import main.java.GameLauncher;
-import main.java.Message;
 import main.java.MovementManager;
+import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientEngine extends Thread implements Network {
@@ -71,8 +72,8 @@ public class ClientEngine extends Thread implements Network {
         buttonCommit.setOnAction( (e) -> {
             setMovementType();
             ip = textFieldServer.getText();
-                stageClient.close();
-                start();
+            stageClient.close();
+            start();
 
         });
 
@@ -127,7 +128,7 @@ public class ClientEngine extends Thread implements Network {
 
         try {
             Message msg = (Message)input.readObject();
-            GameState gameStateReceived = (GameState)msg.getObject();
+            GameState gameStateReceived = msg.getGameState();
             this.gameState = gameStateReceived;
             Platform.runLater( () -> {
                 System.out.println(gameStateReceived);
@@ -137,11 +138,6 @@ public class ClientEngine extends Thread implements Network {
                 //TODO: beim Client ist die Map-Instance nicht gesetzt, führt zu Problemen beim colliden mit Türen, daher diese unschöne Lösung
 
                 game.getMap().setInstance(game.getMap());
-
-
-
-                //this.map = gameStateReceived.getMap();
-
 
                 gameLauncher.startGame(game);
                 System.out.println("GameState vom Server erhalten");
@@ -163,66 +159,76 @@ public class ClientEngine extends Thread implements Network {
         System.out.println("Starte Kommunikation vom Client zum Server!");
         try{
 
+            ArrayList<Event> eventQueue = new ArrayList<>();
             while(true) {
 
-                // Sofern ein Haus betreten wurde
-                MapObject mapObject = null;
-                Message.Type messageType = null;
+                Message.Type messageType = Message.Type.GAMESTATE;
+
+                // Wenn ein Event existiert, was noch nicht übermittelt wurde -> auslesen und MessageType setzen
                 if(!gameState.isEventTransmitted()) {
-                    messageType = Message.Type.EVENT;
-                    mapObject = gameState.getEventObj();
                     gameState.setEventTransmitted(true);
+                    messageType = Message.Type.EVENT;
+
                 } else {
-                    messageType = Message.Type.GAMESTATE;
+                    gameState.clearEventQueue();
+                    game.getNetworkController().getGameState().clearEventQueue();
+                    gameState.setEvent(null);
+                    game.getNetworkController().getGameState().setEvent(null);
                 }
 
-                System.out.println(messageType);
 
+                // Nachricht erstellen und an Server verschicken
                 Message message = new Message(messageType, game.getNetworkController().getGameState());
                 output.writeObject(message);
                 output.flush();
 
+
+                // GameState vom Server lesen
                 Message msg = (Message)input.readObject();
-                GameState newGameState = (GameState)msg.getObject();
+                GameState gameStateReceived = msg.getGameState();
+
 
                 // Daten an den neuen GameState anpassen
-                game.setMap(newGameState.getMap());
-                game.setGameTime(newGameState.getGameTime());
-                game.getOtherPlayer().setGameStateData(newGameState.getPlayerData());
-                game.getAliceCooper().setGameStateData(newGameState.getCooperData());
-                game.getWitch().setGameStateData(newGameState.getWitchData());
+                game.setGameTime(gameStateReceived.getGameTime());
+                game.getOtherPlayer().setGameStateData(gameStateReceived.getPlayerData());
+                game.getWitch().setGameStateData(gameStateReceived.getWitchData());
 
-
-                //TODO: FEHLERHAFT....
 
                 // Es ist ein Event aufgetreten
                 if(msg.getMessageType() == Message.Type.EVENT) {
-
-                    List mapObjects = game.getMapRenderer().getMap().getMapSector().getAllContainingMapObjects();
-
-                    // Über alle Objekte iterieren und Objekt updatensdd
-
-                    int index = 0;
-                    for(Object o : mapObjects ) {
-                        if(o == gameState.getEventObj()) {
-                            System.out.println(o);
-                            System.out.println(gameState.getEventObj());
-                            mapObjects.set(index, o);
-                            index++;
-                        }
-                    }
+                    handleEvents(gameStateReceived);
                 }
 
-                newGameState = new GameState(null, new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new CooperData(game.getAliceCooper()), new EntityData(game.getWitch()), mapObject, game.getGameTime());
-                game.getNetworkController().setGameState(newGameState);
-                this.gameState = newGameState;
+                GameState newGameState = new GameState(null, new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new EntityData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
+
+                if(!gameState.isEventTransmitted()) {
+
+                    Event event = gameState.getEvent();
+
+                    game.getNetworkController().setGameState(newGameState);
+                    game.getNetworkController().getGameState().setEvent(event);
+                    game.getNetworkController().setGameState(newGameState);
+                    gameState.setEventTransmitted(false);
+                    game.getNetworkController().getGameState().setEventTransmitted(false);
+
+                    System.out.println("ANZAHL:" + gameState.getEventQueue().size());
+
+
+                } else {
+                    game.getNetworkController().setGameState(newGameState);
+                    //gameState.clearEventQueue();
+                    //game.getNetworkController().getGameState().clearEventQueue();
+                    game.getNetworkController().getGameState().setEvent(null);
+                    gameState.setEvent(null);
+
+
+                }
             }
 
         } catch(Exception e) {
             System.out.println(e);
 
         }
-
     }
 
     public void setGameState(GameState gameState) {
@@ -234,5 +240,36 @@ public class ClientEngine extends Thread implements Network {
     public Game getGame() { return game; }
 
 
+    public void handleEvents(GameState gameStateReceived){
+
+        Event event = gameStateReceived.getEvent();
+        if(event == null) return;
+
+            switch(event.getType()) {
+
+                case VISITED:
+                    // Über alle Objekte iterieren und Objekt updatensdd
+                    List mapObjects = game.getMapRenderer().getMap().getMapSector().getAllContainingMapObjects();
+                    for(Object o : mapObjects ) {
+                        MapObject obj = (MapObject)o;
+                        MapObject eventMapObject = (MapObject)event.getObject();
+                        if(  (obj.getX() == eventMapObject.getX() && obj.getY() == eventMapObject.getY()) || ( obj == eventMapObject) ) {
+                            House h = (House)o;
+                            h.repaintAfterVisit();
+                            h.updateMap();
+                            h.setUnvisited(((House)eventMapObject).isUnvisited());
+
+                            System.out.println("GEFUNDEN: " + event.getObject());
+                        }
+                    }
+                    break;
+                case PAUSED:
+                    game.paused = true;
+                    break;
+                case UNPAUSED:
+                    game.paused = false;
+                    break;
+            }
+    }
 
 }

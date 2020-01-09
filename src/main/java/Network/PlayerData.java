@@ -1,6 +1,7 @@
 package main.java.Network;
 
 import main.java.gameobjects.Player;
+import main.java.map.MapObject;
 
 import java.util.Stack;
 
@@ -18,6 +19,10 @@ public class PlayerData extends EntityData {
     // necessary to get  the right coordinates when playing with mouse
     private int xOffSet, yOffSet;
 
+    private boolean inside;
+    private boolean noCollision;
+    private MapObject insideObject;
+
     public PlayerData(Player player) {
         super(player);
         //this.childrenSnake = player.getChildrenSnake();
@@ -26,7 +31,9 @@ public class PlayerData extends EntityData {
         this.candy = player.getCandy();
         this.xOffSet = player.getxOffSet();
         this.yOffSet = player.getyOffSet();
-
+        this.inside = player.isInside();
+        this.noCollision = player.isNoCollision();
+        this.insideObject = player.getInsideObject();
     }
 
 
@@ -83,6 +90,30 @@ public class PlayerData extends EntityData {
 
     public void setyOffSet(int yOffSet) {
         this.yOffSet = yOffSet;
+    }
+
+    public boolean isInside() {
+        return inside;
+    }
+
+    public void setInside(boolean inside) {
+        this.inside = inside;
+    }
+
+    public boolean isNoCollision() {
+        return noCollision;
+    }
+
+    public void setNoCollision(boolean noCollision) {
+        this.noCollision = noCollision;
+    }
+
+    public MapObject getInsideObject() {
+        return insideObject;
+    }
+
+    public void setInsideObject(MapObject insideObject) {
+        this.insideObject = insideObject;
     }
 
 

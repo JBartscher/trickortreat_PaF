@@ -51,6 +51,8 @@ public class Game {
 
     private GameLauncher launcher;
 
+    public boolean paused;
+
     // Network and Multiplayer
 
     // decide between LOCAL and REMOTE
@@ -73,7 +75,6 @@ public class Game {
 
         // instanziert die Entitäten, setzt die Steuerung und ggf. Netzwerk
         initPlayerAndNetwork(networkEngine, movementTypePlayer1, movementTypePlayer2);
-
         initGUIandSound(stage);
 
     }

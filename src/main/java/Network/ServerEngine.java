@@ -11,8 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.java.Game;
 import main.java.GameLauncher;
-import main.java.Message;
 import main.java.MovementManager;
+import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 
 import java.io.IOException;
@@ -132,20 +132,20 @@ public class ServerEngine extends Thread implements Network {
 
                 labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
                 game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
-                game.getNetworkController().setGameState(new GameState(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new CooperData(game.getAliceCooper()), new EntityData(game.getWitch()), null, Game.TIME));
+                game.getNetworkController().setGameState(new GameState(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new EntityData(game.getWitch()), new CooperData(game.getAliceCooper()), null, Game.TIME));
 
             });
 
             // Wartet auf Verbindungen , instanziert einen Thread für Requests und übersendet in diesem Thread den GameState
-                Socket socket = serverSocket.accept();
-                this.socket = socket;
+            Socket socket = serverSocket.accept();
+            this.socket = socket;
 
-                // private Klasse bearbeitet fortan die Kommunikation zwischen Client und Server
-                requestHandler = new RequestHandler(socket);
-                requestHandler.start();
+            // private Klasse bearbeitet fortan die Kommunikation zwischen Client und Server
+            requestHandler = new RequestHandler(socket);
+            requestHandler.start();
 
-                // Server-Thread, der auf eine Verbindung gewartet hat, wird nicht mehr benötigt und unterbrochen
-                this.interrupt();
+            // Server-Thread, der auf eine Verbindung gewartet hat, wird nicht mehr benötigt und unterbrochen
+            this.interrupt();
 
 
         } catch (IOException e) {
@@ -153,66 +153,75 @@ public class ServerEngine extends Thread implements Network {
         }
     }
 
+    // Diese Methode repräsentiert die Kommunikation zwischen Client u. Server
     @Override
     public void communicate() {
 
         System.out.println("Starte Kommunikation vom Server zum Client!");
         try{
 
+            //ArrayList<Event> eventQueue = new ArrayList<>();
             while(true) {
 
                 Thread.sleep(20);
                 long start = System.currentTimeMillis();
 
+
+                // Nachricht vom Server lesen, in GameState konvertieren u. eigenen GameState aktualisieren
                 Message msg = (Message)input.readObject();
-                GameState gameState = (GameState)msg.getObject();
-                //game.setMap(gameState.getMap());
+                GameState gameStateReceived = msg.getGameState();
 
-                game.getOtherPlayer().setGameStateData(gameState.getOtherPlayerData());
+                game.getOtherPlayer().setGameStateData(gameStateReceived.getOtherPlayerData());
 
-                if(game.getAliceCooper().isAvailable())
-                    game.getAliceCooper().setGameStateData(gameState.getCooperData());
+                // Eigene Alice-Cooper Daten nur ändern, wenn sich was geändert hat (verfügbar und spielt aktuell nichts)
+                //if(game.getAliceCooper().isAvailable())
+                //    game.getAliceCooper().setGameStateData(gameStateReceived.getCooperData());
 
 
-                // Es ist ein Event aufgetreten
+                // Es ist ein Event aufgetreten (Haus wurde besucht)
                 if(msg.getMessageType() == Message.Type.EVENT) {
-                    System.out.println("EVENT IST AUFGETRETEN!");
-                    List mapObjects = game.getMap().getMapSector().getAllContainingMapObjects();
-
-                    // Über alle Objekte iterieren und Objekt updaten
-                    int index = 0;
-                    for(Object o : mapObjects ) {
-                        if(o == gameState.getEventObj()) {
-                            System.out.println(o);
-                            System.out.println(gameState.getEventObj());
-                            mapObjects.set(index, o);
-                            index++;
-                        }
-                    }
+                    System.out.println("EVENT erhalten vom CLIENT - ");
+                    handleEvents(gameStateReceived);
                 }
 
-                //TODO: EVALUIEREN : der Server braucht an sich keine Aktualisierung der HEXE, weil der Server die HEXE steuern soll
+                //TODO: EVALUIEREN : der Server braucht an sich keine Aktualisierung der HEXE, weil der Server die HEXE steuern soll- außer bei Kollision?
                 //game.getWitch().setGameStateData(gameState.getWitchData());
 
                 // Sofern ein Haus betreten
 
-                MapObject mapObject = null;
-                Message.Type messageType = null;
+                Message.Type messageType;
+
+                // Es existiert ein Event, was noch nicht transmitted wurde, MapObject (Haus) abholen
                 if(!gameState.isEventTransmitted()) {
                     messageType = Message.Type.EVENT;
-                    mapObject = gameState.getEventObj();
                     gameState.setEventTransmitted(true);
+                    System.out.println(gameState.getEventQueue());
                 } else {
                     messageType = Message.Type.GAMESTATE;
+                    //gameState.clearEventQueue();
+                    //game.getNetworkController().getGameState().clearEventQueue();
+                    gameState.clearEventQueue();
+                    game.getNetworkController().getGameState().clearEventQueue();
+                    gameState.setEvent(null);
+                    game.getNetworkController().getGameState().setEvent(null);
+
                 }
 
+                // Neuen GameState setzen und an Client verschicken
 
-                GameState newGameState = new GameState(null, new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new CooperData(game.getAliceCooper()), new EntityData(game.getWitch()), mapObject, game.getGameTime());
+                GameState newGameState = new GameState(null, new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new EntityData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
 
-                game.getNetworkController().setGameState(newGameState);
-                this.gameState = newGameState;
 
+                // GameState ersetzen, aber noch offene Events nicht verwerfen
+                if(!gameState.isEventTransmitted()) {
+                    Event event = this.gameState.getEvent();
+                    game.getNetworkController().setGameState(newGameState);
+                    game.getNetworkController().getGameState().setEvent(event);
+                }
+
+                // Verschicken
                 output.writeObject(new Message(messageType, this.gameState));
+                game.getNetworkController().setGameState(newGameState);
                 output.flush();
 
                 //System.out.println("Dauer einer Verbindung: " + (System.currentTimeMillis() - start) + " ms");
@@ -247,14 +256,14 @@ public class ServerEngine extends Thread implements Network {
             Platform.runLater(() -> {
                 labelRequests.setText("Verbindung eingegangen von " + socket.getRemoteSocketAddress());
             });
-                sendFirstGameStateToClient();
+            sendFirstGameStateToClient();
 
-                // Wartet auf die Initalisierung der GUI
-                while(!ready) {
-                    System.out.println("Serverseitig warten");
+            // Wartet auf die Initalisierung der GUI
+            while(!ready) {
+                System.out.println("Serverseitig warten");
 
-                }
-                communicate();
+            }
+            communicate();
 
         }
 
@@ -264,6 +273,7 @@ public class ServerEngine extends Thread implements Network {
                 // Instanziert ein neues Game-Objekt - sendet GameState zum Client
 
                 Message message = new Message(Message.Type.INIT, game.getNetworkController().getGameState());
+                gameState = game.getNetworkController().getGameState();
                 try {
                     output.writeObject(message);
                     output.flush();
@@ -278,11 +288,6 @@ public class ServerEngine extends Thread implements Network {
 
                 ready = true;
             });
-
-
-
-
-
         }
 
         public GameState getGameState() {
@@ -299,5 +304,32 @@ public class ServerEngine extends Thread implements Network {
     }
 
     public Game getGame() { return game; }
+
+
+    public void handleEvents(GameState gameStateReceived) {
+
+        Event event = gameStateReceived.getEvent();
+        if(event == null) return;
+
+            switch(event.getType()) {
+
+                case VISITED:
+                    System.out.println((MapObject)(event.getObject()));
+                    // Über alle Objekte iterieren und Objekt updatensdd
+                    List mapObjects = game.getMapRenderer().getMap().getMapSector().getAllContainingMapObjects();
+                    for(Object o : mapObjects ) {
+                        MapObject obj = (MapObject)o;
+                        MapObject eventMapObject = (MapObject)event.getObject();
+
+                        //TODO: KEINE SCHÖNE LÖSUNG, aber funktioniert - komischerweise hat Client die gleichen Häuser wie der Server, aber andersrum nicht?...
+                        if(  (obj.getX() == eventMapObject.getX() && obj.getY() == eventMapObject.getY()) || ( obj == eventMapObject) ) {
+                            House h = (House)o;
+                            h.repaintAfterVisit();
+                            h.updateMap();
+                            h.setUnvisited(false);
+                        }
+                    }
+            }
+    }
 
 }

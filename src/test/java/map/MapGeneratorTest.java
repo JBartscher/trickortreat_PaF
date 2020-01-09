@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 class MapGeneratorTest {
 
+
+
     private MapGenerator mapGenerator;
     private Map gameMap;
 
@@ -15,6 +17,7 @@ class MapGeneratorTest {
         this.gameMap = new Map(50);
         this.mapGenerator = new MapGenerator(gameMap);
     }
+
 
     @Test
     void testCreateMap() {
@@ -60,4 +63,5 @@ class MapGeneratorTest {
     @Test
     void transferHouseTilesToTileMap() {
     }
+
 }

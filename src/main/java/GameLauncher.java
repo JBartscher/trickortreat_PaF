@@ -55,25 +55,27 @@ public class GameLauncher extends Application {
         @Override
         public void handle(long now) {
             long startTime = System.currentTimeMillis();
-            game.update();
+            if(!game.paused) game.update();
             game.getMapRenderer().drawMap();
-            long endTime = System.currentTimeMillis();
-            //System.out.println("Benoetigte Zeit: " + (endTime - startTime));
+            if(!game.paused) {
+                long endTime = System.currentTimeMillis();
+                //System.out.println("Benoetigte Zeit: " + (endTime - startTime));
 
-            try {
-                int sleepTime = (int)(1000 / FRAMES - (endTime - startTime));
-                if(sleepTime < 0) sleepTime = 0;
-                Thread.sleep(sleepTime);
+                try {
+                    int sleepTime = (int) (1000 / FRAMES - (endTime - startTime));
+                    if (sleepTime < 0) sleepTime = 0;
+                    Thread.sleep(sleepTime);
 
-                int gameTime = (int) (game.getGameTime() - (System.currentTimeMillis() - startTime));
-                if(gameTime > 0)
-                    game.setGameTime((int)(game.getGameTime() - (System.currentTimeMillis() - startTime)));
-                else {
-                    showGameOver();
+                    int gameTime = (int) (game.getGameTime() - (System.currentTimeMillis() - startTime));
+                    if (gameTime > 0)
+                        game.setGameTime((int) (game.getGameTime() - (System.currentTimeMillis() - startTime)));
+                    else {
+                        showGameOver();
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }

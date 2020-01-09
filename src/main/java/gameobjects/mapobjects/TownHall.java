@@ -19,4 +19,9 @@ public class TownHall extends House {
 
         // release player
     }
+
+    @Override
+    public void repaintAfterVisit() {
+
+    }
 }

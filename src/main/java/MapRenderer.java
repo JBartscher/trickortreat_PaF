@@ -59,6 +59,7 @@ public class MapRenderer {
             // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
             for(int z = 0; z < 3; z++) {
 
+
                 for (int y = 0; y < tileMap.length; y++) {
                     for (int x = 0; x < tileMap[y].length; x++) {
                         int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
@@ -68,13 +69,16 @@ public class MapRenderer {
                         if(tileMap[y][x][z].getTileNr() == 0) continue;
 
                         if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
-                            ImageView imagePlayer = new ImageView(GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr()));
-                            GraphicsUtility.setImageProperties(imagePlayer, xPos, yPos);
-                            root.getChildren().add(imagePlayer);
+
+                            ImageView imageTile = new ImageView(GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr()));
+                            GraphicsUtility.setImageProperties(imageTile, xPos, yPos);
+                            root.getChildren().add(imageTile);
+
                         }
                     }
                 }
             }
+
 
             // Eigenen Spieler und Anhang zeichnen
             for(int i = 0; i < obj.getChildrenCount(); i++) {
@@ -94,6 +98,8 @@ public class MapRenderer {
                 imagePlayer.setY(yPos);
                 root.getChildren().add(imagePlayer);
             }
+
+
 
 
             Rectangle middleTile = null;
@@ -124,6 +130,15 @@ public class MapRenderer {
 
 
             widthOffset += Game.WIDTH + 2 * Tile.TILE_SIZE;
+        }
+
+        if(game.paused) {
+            Text textPaused = new Text("PAUSED");
+            Rectangle rect = new Rectangle(0, 0, Window.WIDTH, Window.HEIGHT);
+            rect.setOpacity(0.3);
+            GraphicsUtility.setTextProperties(textPaused, "-fx-font: 128 arial;", Color.DARKRED, Window.WIDTH / 2 - 250, 400.0);
+            root.getChildren().addAll(textPaused, rect);
+
         }
 
         setHeadlineIcons(root);
@@ -197,10 +212,10 @@ public class MapRenderer {
         GraphicsUtility.setTextProperties(textCandy2, "-fx-font: 32 arial;", Color.WHITE, 850, 50.0 );
 
         ImageView imageCandyPlayer  = new ImageView(GraphicsUtility.getCandyImage());
-        GraphicsUtility.setImageProperties(imageCandyPlayer, Window.WIDTH / 3 - 30, 22);
+        GraphicsUtility.setImageProperties(imageCandyPlayer, Window.WIDTH / 3 - 10, 22);
 
         ImageView imageCandyPlayer2  = new ImageView(GraphicsUtility.getCandyImage());
-        GraphicsUtility.setImageProperties(imageCandyPlayer2, 1150, 22);
+        GraphicsUtility.setImageProperties(imageCandyPlayer2, 1170, 22);
 
         text.setText(calculateTime(game));
 

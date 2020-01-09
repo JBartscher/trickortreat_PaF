@@ -30,6 +30,7 @@ public abstract class Entity {
     protected double speed = 120 * Game.FRAMES / 50 * 5;
 
 
+
     // Default-Werte
     protected Entity() {
         xPos = 0;

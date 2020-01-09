@@ -5,8 +5,11 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import main.java.Network.Event;
+import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
+import main.java.gameobjects.mapobjects.Mansion;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Placeable;
@@ -50,7 +53,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         registerPlayerInputs(player2);
 
     }
-
 
 
     public void registerPlayerInputs(Player player)
@@ -100,6 +102,16 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                 Sound.muteSound();
             }
 
+            if(event.getCode() == KeyCode.P) {
+                if(game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                    game.getNetworkController().changeGameStateObject("PAUSED", Event.EventType.PAUSED);
+                    game.paused = true;
+                } else if (game.getGameMode() == Game.GameMode.LOCAL) {
+                    game.paused = true;
+                }
+
+            }
+
 
             if(event.getCode() == KeyCode.A) {
                 if(inputAWSD != null) {
@@ -128,6 +140,14 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
+
+            if(event.getCode() == KeyCode.R) {
+                game.paused = false;
+                if(game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                    game.getNetworkController().changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
+                }
+            }
+
             if(event.getCode() == KeyCode.A) {
                 if(inputAWSD != null) {
                     inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.target.y );
@@ -213,8 +233,8 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         double movementSize = entity.getSpeed() / Game.FRAMES;
 
         // TODO: FUNKTIONIERT ÜBER NETZWERK WEGEN NULLPOINTER NICHT
-          //  int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
-          //  if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
+            //int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
+            // if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
 
 
         double moveX = 0.0;
@@ -279,9 +299,12 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                     try {
                         House h = (House) obj;
                         if (h.intersects(p)) {
-                            if(entity instanceof Player && h.isUnvisited()) {
+                            if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer))) {
                                 h.visit((Player) entity);
-                                if(game.getGameMode() == Game.GameMode.REMOTE) game.getNetworkController().changeGameStateObject(h);
+
+                                if(game.getGameMode() == Game.GameMode.REMOTE) {
+                                    game.getNetworkController().changeGameStateObject(h, Event.EventType.VISITED);
+                                }
                             }
                         }
                     } catch (ClassCastException ex) {
@@ -290,9 +313,16 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                     }
                 }
             }
-            System.out.println("COLLIDE!");
-            // revert movement
-            entity.setyPos(entity.getyPos() - size);
+
+            // revert movement when entity is not a player and has a collision detection
+            if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
+
+            } else {
+                System.out.println("COLLIDE!");
+                entity.setyPos(entity.getyPos() - size);
+            }
+
+
             // TODO: LÖST die Kollision zwischen zwei Spielern, muss noch auf alle Entitäten erweitert werden
         } else {
 
@@ -316,10 +346,18 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
      */
     public void moveHorizontal(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
-        if (map.getMapSector().intersectsWithContainingItems(p)) {
-            System.out.println("COLLIDE!");
-            // revert movement
-            entity.setxPos(entity.getxPos() - size);
+        if (map.getMapSector().intersectsWithContainingItems(p) && !((Player)entity).isNoCollision()) {
+
+
+            // revert movement when entity is not a player and has a collision detection
+            if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
+
+            } else {
+                System.out.println("COLLIDE!");
+                entity.setxPos(entity.getxPos() - size);
+            }
+
+
             // TODO: LÖST die Kollision zwischen zwei Spielern
         } else {
 
@@ -344,11 +382,39 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
      */
     private boolean outOfBounds(Entity entity) {
 
-        Placeable p1 = new Placeable(entity.getEntityPosWithCurrency(-0.1).y,  entity.getEntityPosWithCurrency(-0.1).x, 1, 1, 0);
-        Placeable p2 = new Placeable(entity.getEntityPosWithCurrency(+0.33).y,  entity.getEntityPosWithCurrency(+0.33).x, 1, 1, 0);
+        if(entity instanceof Player && ((Player)entity).isInside()) {
+            Player player = (Player)entity;
+            return outOfBoundsInside((Player)entity, player.getInsideObject());
 
-        // mapSector does not contain player anymore
-        return !map.getMapSector().intersects(p1) || !map.getMapSector().intersects(p2);
+        } else {
+
+            Placeable p1 = new Placeable(entity.getEntityPosWithCurrency(-0.1).y, entity.getEntityPosWithCurrency(-0.1).x, 1, 1, 0);
+            Placeable p2 = new Placeable(entity.getEntityPosWithCurrency(+0.33).y, entity.getEntityPosWithCurrency(+0.33).x, 1, 1, 0);
+
+            // mapSector does not contain player anymore
+            return !map.getMapSector().intersects(p1) || !map.getMapSector().intersects(p2);
+        }
+    }
+
+    private boolean outOfBoundsInside(Player player, MapObject o) {
+
+
+        int e_x = player.getEntityPos().x;
+        int e_y = player.getEntityPos().y;
+        int o_x = o.getY();
+        int o_y = o.getX();
+        int o_width = o.getHeight();
+        int o_height = o.getWidth();
+
+        return (
+                (e_x >= o_x && e_x <= o_x + o_width && e_y == o_y - 1) ||
+                        (e_x >= o_x && e_x <= o_x + o_width && player.getEntityPosWithCurrency(+0.5).y == o_y + o_height) ||
+
+                        (player.getEntityPosWithCurrency( -.1).x == o_x - 1 && e_y >= o_y && e_y <= o_y + o_height) ||
+                        (player.getEntityPosWithCurrency(+.33).x == o_x + o_width && e_y >= o_y && e_y <= o_y + o_height)
+
+        );
+
     }
 
 

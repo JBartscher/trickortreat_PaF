@@ -1,7 +1,5 @@
 package main.java.Network;
 
-import main.java.map.MapObject;
-
 public class NetworkController {
 
     public enum NetworkRole {
@@ -43,25 +41,35 @@ public class NetworkController {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+        networkEngine.setGameState(gameState);
     }
 
     public void communicate() {
         networkEngine.communicate();
     }
 
-    public void changeGameStateObject (MapObject mapObject) {
+    public void changeGameStateObject (Object o, Event.EventType type) {
 
+        //gameState.addEvent(o, type);
+        gameState.setEvent(new Event(o, type));
 
         gameState.setEventTransmitted(false);
-        gameState.setEventObj(mapObject);
 
-        System.out.println("CHANGED");
+        // delegate GameState to Engine
+        //networkEngine.setGameState(gameState);
 
-        if( networkEngine instanceof ServerEngine) {
-            ((ServerEngine) networkEngine).setGameState(gameState);
+      /*  if( networkEngine instanceof ServerEngine) {
+            ((ServerEngine) networkEngine).getGameState().addEvent(o, type);
         } else if (networkEngine instanceof ClientEngine) {
-            ((ClientEngine) networkEngine).setGameState(gameState);
+            //((ClientEngine) networkEngine).setGameState(gameState);
+            ((ClientEngine) networkEngine).getGameState().addEvent(o, type);
         }
+
+
+       */
+        networkEngine.setGameState(gameState);
+
+
     }
 
 

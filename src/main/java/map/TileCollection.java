@@ -1,5 +1,6 @@
 package main.java.map;//TODO: Ich check Enums nicht :( Wenn jemand das durch einen Enum ersetzten könnte wäre das Töfte.
 
+import main.java.gameobjects.mapobjects.Mansion;
 import main.java.gameobjects.mapobjects.TownHall;
 
 /**
@@ -157,5 +158,22 @@ public class TileCollection {
 
         return townHall;
     }
+
+    // Mansion
+    public final static Tile[][] getMansonTiles() {
+        Tile[][] mansion = new Tile[Mansion.MANSION_HEIGHT][Mansion.MANSION_WIDTH];
+
+        for(int y = 0; y < mansion.length; y ++) {
+            for(int x = 0; x < mansion[y].length; x++) {
+                mansion[y][x] = new Tile(100);
+
+            }
+        }
+
+        mansion[4][3] = new Tile(34, true);
+
+        return mansion;
+    }
+
 
 }

@@ -15,4 +15,9 @@ public class GingerbreadHouse extends House {
         // witch starts hunting
         // one child gets abducted
     }
+
+    @Override
+    public void repaintAfterVisit() {
+        
+    }
 }

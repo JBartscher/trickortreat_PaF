@@ -7,7 +7,7 @@ import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Tile;
 
-public class House extends MapObject {
+public abstract class House extends MapObject {
 
     /**
      * Offset of Object to other Objects @see Placeble
@@ -18,9 +18,10 @@ public class House extends MapObject {
 
     private Tile doorTile;
 
-    boolean isUnvisited = true;
+    protected boolean isUnvisited = true;
 
     protected District district = null;
+
 
     /**
      * House constructor.
@@ -76,7 +77,7 @@ public class House extends MapObject {
         this.isUnvisited = false;
     }
 
-    protected void updateMap() {
+    public void updateMap() {
 
         Tile[][][] map = Map.getInstance().getMap();
 
@@ -92,4 +93,11 @@ public class House extends MapObject {
     public boolean isUnvisited() {
         return isUnvisited;
     }
+
+    public void setUnvisited(boolean unvisited) {
+        isUnvisited = unvisited;
+    }
+
+    public abstract void repaintAfterVisit();
+
 }

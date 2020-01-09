@@ -4,6 +4,7 @@ import main.java.Entity;
 import main.java.MovementManager;
 import main.java.Network.PlayerData;
 import main.java.gameobjects.mapobjects.House;
+import main.java.map.MapObject;
 
 import java.util.List;
 
@@ -16,7 +17,11 @@ public class Player extends Entity {
     // necessary to get  the right coordinates when playing with mouse
     private int xOffSet, yOffSet;
 
-    private boolean isProtected;
+
+    private boolean inside;
+    private boolean noCollision;
+    private MapObject insideObject;
+
 
     public Player(List children, MovementManager.MovementType type) {
         super();
@@ -104,15 +109,35 @@ public class Player extends Entity {
         this.candy = playerData.getCandy();
         this.xOffSet = playerData.getxOffSet();
         this.yOffSet = playerData.getyOffSet();
+        this.inside = playerData.isInside();
+        this.noCollision = playerData.isNoCollision();
+        this.insideObject = playerData.getInsideObject();
     }
 
-    public boolean isProtected() {
-        return isProtected;
+    public boolean isInside() {
+        return inside;
     }
 
-    public void setProtected(boolean aProtected) {
-        isProtected = aProtected;
+    public void setInside(boolean inside) {
+        this.inside = inside;
     }
+
+    public boolean isNoCollision() {
+        return noCollision;
+    }
+
+    public void setNoCollision(boolean noCollision) {
+        this.noCollision = noCollision;
+    }
+
+    public MapObject getInsideObject() {
+        return insideObject;
+    }
+
+    public void setInsideObject(MapObject insideObject) {
+        this.insideObject = insideObject;
+    }
+
 
 
 }
