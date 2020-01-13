@@ -1,6 +1,10 @@
 package main.java.Network;
 
 import main.java.Game;
+import main.java.GameCamera;
+import main.java.GameController;
+import main.java.Window;
+import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 
@@ -10,7 +14,7 @@ import java.util.List;
 
 // aktualisiert und delegiert den aktuellen GameState zur eingesetzten Engine (Client o. Server)
 // GameStates werden in dieser Klasse aktualisiert
-public class NetworkController {
+public class NetworkController extends GameController {
 
     public enum NetworkRole {
         SERVER, CLIENT
@@ -22,10 +26,9 @@ public class NetworkController {
     // ClientEngine und ServerEngine implementieren das Interface
     private Network networkEngine;
     private GameState gameState;
-    private Game game;
 
     public NetworkController(Game game, Network networkEngine, NetworkRole networkRole) {
-        this.game = game;
+        super(game);
         this.networkEngine = networkEngine;
         this.networkRole = networkRole;
     }
@@ -35,22 +38,18 @@ public class NetworkController {
         return networkRole;
     }
 
-    public void setNetworkRole(NetworkRole networkRole) {
-        this.networkRole = networkRole;
-    }
-
     public Network getNetworkEngine() {
         return networkEngine;
-    }
-
-    public void setNetworkEngine(Network networkEngine) {
-        this.networkEngine = networkEngine;
     }
 
     public GameState getGameState() {
         return gameState;
     }
 
+    /**
+     * vergleicht eigenen GameState mit dem erhaltenen u. berechnet korrekten GameState
+     * @param newGameState
+     */
     public void updateGameState(GameState newGameState) {
 
         if(gameState == null) gameState = newGameState;
@@ -73,10 +72,6 @@ public class NetworkController {
         GameState newGameState = new GameState(null, new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
         updateGameState(newGameState);
 
-    }
-
-    public void communicate() {
-        networkEngine.communicate();
     }
 
     public void changeGameStateObject (Object o, Event.EventType type) {
@@ -151,5 +146,21 @@ public class NetworkController {
                 game.paused = false;
                 break;
         }
+    }
+
+    @Override
+    public void initNetwork() {
+
+        game.setOtherPlayer(new Player(null));
+    }
+
+    @Override
+    protected GameCamera setGameCameraEnemy() {
+
+        game.getListOfPlayers().remove(game.getOtherPlayer());
+
+        Game.WIDTH = Window.WIDTH;
+        System.out.println(Game.WIDTH);
+        return null;
     }
 }

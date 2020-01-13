@@ -1,8 +1,9 @@
 package main.java.map;
 
 import java.io.Serializable;
+import java.util.Observable;
 
-public class Placeable implements Serializable {
+public class Placeable extends Observable implements Serializable {
     private static final long serialVersionUID = 4762734196222645657L;
     private int x;
     private int y;

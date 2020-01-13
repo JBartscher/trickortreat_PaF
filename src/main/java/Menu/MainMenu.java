@@ -57,6 +57,12 @@ public class MainMenu {
 
             }),
 
+            new Pair<String, Runnable>("Highscore", () -> {
+                //gameMode = Game.GameMode.REMOTE;
+                //new ClientEngine(gameLauncher, stage);
+
+            }),
+
             new Pair<String, Runnable>("Credits", () -> {}),
             new Pair<String, Runnable>("Exit to Desktop", Platform::exit)
     );

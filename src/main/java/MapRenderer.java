@@ -44,6 +44,8 @@ public class MapRenderer {
         int widthOffset = 0;
         for(Player obj : game.getListOfPlayers()){
 
+            System.out.println("GAME_width:" + game.WIDTH + " offset: " + widthOffset + "- Anzahl Spieler: " + game.getListOfPlayers());
+
             if(widthOffset > 0) {
                 Line line = new Line();
                 line.setStartX(Game.WIDTH);
@@ -193,11 +195,11 @@ public class MapRenderer {
         Text textCandy;
         Text textCandy2;
 
-        if(game.gameMode == Game.GameMode.REMOTE && game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+        if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
             textCandy = new Text("Spieler 1 - Candy: " + game.getPlayer().getCandy());
             textCandy2 = new Text("Spieler 2 - Candy: " + game.getOtherPlayer().getCandy());
 
-        } else if(game.gameMode == Game.GameMode.REMOTE && game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
+        } else if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
             textCandy = new Text("Spieler 1 - Candy: " + game.getOtherPlayer().getCandy());
             textCandy2 = new Text("Spieler 2 - Candy: " + game.getPlayer().getCandy());
         } else {
