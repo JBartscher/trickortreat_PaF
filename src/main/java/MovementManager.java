@@ -113,9 +113,9 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             }
 
             if(event.getCode() == KeyCode.P) {
-                if(game.getNetworkController() != null) {
-                if(game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                    game.getNetworkController().changeGameStateObject("PAUSED", Event.EventType.PAUSED);
+                if(game.getGameController() != null) {
+                if(game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                    ((NetworkController)game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
                     game.paused = true;
                 }
                 } else if (game.getGameMode() == Game.GameMode.LOCAL) {
@@ -151,9 +151,9 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
 
             if(event.getCode() == KeyCode.R) {
-                if(game.getNetworkController() != null) {
-                    if (game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                        game.getNetworkController().changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
+                if(game.getGameController() != null) {
+                    if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                        ((NetworkController)game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
                         game.paused = false;
                     }
                 } else if(game.getGameMode() == Game.GameMode.LOCAL) {
@@ -371,7 +371,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         entity.setEntityImage(false);
     }
 
-    public void moveAllEntites(NetworkController networkController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
+    public void moveAllEntites(GameController gameController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
         for(Player player : listOPlayers)
         {
             if(player.getChildrenCount() > 0)
@@ -379,7 +379,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         }
 
         //move NPC
-        if( (game.getGameMode() == Game.GameMode.LOCAL || networkController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.getGameTime() <= 30000) {
+        if( (game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.getGameTime() <= 30000) {
             if (game.ticks % 10 == 0 /*|| game.ticks == 1 */) {
 
                 Point target = findTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
@@ -479,7 +479,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                                 h.visit((Player) entity);
 
                                 if(game.getGameMode() == Game.GameMode.REMOTE) {
-                                    game.getNetworkController().changeGameStateObject(h, Event.EventType.VISITED);
+                                    ((NetworkController)game.getGameController()).changeGameStateObject(h, Event.EventType.VISITED);
                                 }
                             }
                         }
@@ -562,7 +562,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                     player.setProtectedTicks(100);
 
                     if(game.getGameMode() == Game.GameMode.REMOTE) {
-                        game.getNetworkController().changeGameStateObject(witch, Event.EventType.COLLISION);
+                        ((NetworkController)game.getGameController()).changeGameStateObject(witch, Event.EventType.COLLISION);
                     }
                 }
 

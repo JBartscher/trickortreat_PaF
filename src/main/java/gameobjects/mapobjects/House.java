@@ -75,6 +75,7 @@ public abstract class House extends MapObject {
         }
         System.out.println(player.getCandy());
         this.isUnvisited = false;
+        
     }
 
     public void updateMap() {

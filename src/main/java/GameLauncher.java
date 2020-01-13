@@ -68,7 +68,7 @@ public class GameLauncher extends Application {
                     else {
 
                         this.stop();
-                        new GameOver().showGameOver(game, GameLauncher.this, stage, mainMenu);
+                        new GameOver(game, GameLauncher.this, stage, mainMenu).showGameOver();
                     }
 
                 } catch (InterruptedException e) {

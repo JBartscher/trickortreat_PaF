@@ -19,8 +19,22 @@ import main.java.gameobjects.Player;
 public class GameOver {
 
 
-    public void showGameOver(Game game, GameLauncher gameLauncher, Stage stage, MainMenu mainMenu) {
+    private Game game;
+    private GameLauncher gameLauncher;
+    private Stage stage;
+    private MainMenu mainMenu;
 
+    public GameOver(Game game, GameLauncher gameLauncher, Stage stage, MainMenu mainMenu) {
+
+
+        this.game = game;
+        this.gameLauncher = gameLauncher;
+        this.stage = stage;
+        this.mainMenu = mainMenu;
+    }
+
+
+    public void showGameOver() {
 
         Pane root = new Pane();
         //root.setAlignment(Pos.CENTER);
@@ -37,14 +51,17 @@ public class GameOver {
         if(game.getGameMode() == Game.GameMode.LOCAL) {
             player1 = game.getPlayer();
             player2 = game.getOtherPlayer();
+            new HighScoreGUI().checkScore(new int[]{player1.getCandy(), player2.getCandy()}, 0, false);
         } else {
-            if(game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER ) {
+            if(game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER ) {
                 player1 = game.getPlayer();
                 player2 = game.getOtherPlayer();
+                new HighScoreGUI().checkScore(new int[]{player1.getCandy()}, 0, false);
 
             } else {
                 player1 = game.getOtherPlayer();
                 player2 = game.getPlayer();
+                new HighScoreGUI().checkScore(new int[]{player2.getCandy()}, 0, false);
             }
         }
 

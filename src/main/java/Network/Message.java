@@ -20,7 +20,7 @@ public class Message implements Serializable, Cloneable {
     private GameState gameState;
 
     public enum Type {
-        INIT, GAMESTATE, EVENT, GAMEOVER
+        INIT, GAMESTATE, EVENT
     }
 
 

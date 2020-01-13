@@ -132,7 +132,7 @@ public class ClientEngine extends Thread implements Network {
             Platform.runLater( () -> {
                 System.out.println(gameStateReceived);
                 game = new Game(this, gameStateReceived, stage, movementType);
-                networkController = game.getNetworkController();
+                networkController = (NetworkController)game.getGameController();
 
 
                 //TODO: beim Client ist die Map-Instance nicht gesetzt, führt zu Problemen beim colliden mit Türen, daher diese unschöne Lösung

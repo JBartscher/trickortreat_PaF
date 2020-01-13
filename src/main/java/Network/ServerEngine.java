@@ -130,7 +130,7 @@ public class ServerEngine extends Thread implements Network {
 
                 labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
                 game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
-                networkController = game.getNetworkController();
+                networkController = (NetworkController)game.getGameController();
                 networkController.updateGameState(new GameState(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), null, Game.TIME));
 
             });
@@ -189,8 +189,8 @@ public class ServerEngine extends Thread implements Network {
             Platform.runLater(() -> {
                 // Instanziert ein neues Game-Objekt - sendet GameState zum Client
 
-                Message message = new Message(Message.Type.INIT, game.getNetworkController().getGameState());
-                gameState = game.getNetworkController().getGameState();
+                Message message = new Message(Message.Type.INIT, ((NetworkController)game.getGameController()).getGameState());
+                gameState = ((NetworkController)game.getGameController()).getGameState();
                 try {
                     output.writeObject(Message.deepCopy(message));
                     output.flush();
