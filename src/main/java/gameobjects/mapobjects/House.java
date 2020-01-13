@@ -1,10 +1,13 @@
 package main.java.gameobjects.mapobjects;
 
+import main.java.Sound;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Tile;
+
+import java.util.Random;
 
 public abstract class House extends MapObject {
 
@@ -63,20 +66,24 @@ public abstract class House extends MapObject {
      * @see TownHall
      */
     public void visit(Player player) {
-        /*
-        System.out.println("VISITED THIS HOUSE! " + this);
         if (isUnvisited) {
             try {
                 Sound.playRing();
             } catch (NoClassDefFoundError ex) {
                 ex.printStackTrace();
             }
-            player.addCandy((int) (this.district.getCandy_multiplikator() * player.getChildrenCount()));
-        }
-        System.out.println(player.getCandy());
-        this.isUnvisited = false;
 
-         */
+            // Berechne die Menge der Süßigkeiten
+            int candies = 0;
+            Random random = new Random();
+            for(int i = 0; i < player.getChildrenCount(); i++) {
+                int zahl = random.nextInt(2);
+                candies += (int)(this.district.getCandy_multiplikator() + zahl);
+            }
+
+            player.addCandy(candies);
+        }
+        this.isUnvisited = false;
         notifyObservers(observers);
         
     }

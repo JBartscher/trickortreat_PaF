@@ -44,8 +44,6 @@ public class MapRenderer {
         int widthOffset = 0;
         for(Player obj : game.getListOfPlayers()){
 
-            System.out.println("GAME_width:" + game.WIDTH + " offset: " + widthOffset + "- Anzahl Spieler: " + game.getListOfPlayers());
-
             if(widthOffset > 0) {
                 Line line = new Line();
                 line.setStartX(Game.WIDTH);

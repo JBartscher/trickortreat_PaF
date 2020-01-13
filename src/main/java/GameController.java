@@ -5,9 +5,11 @@ import javafx.stage.Stage;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
+import main.java.map.MapObject;
 import main.java.map.Tile;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class GameController implements Observer {
 
@@ -73,6 +75,10 @@ public class GameController implements Observer {
 
     public void initObservers() {
 
+        List<MapObject> mapObjects = game.getMap().getMapSector().getAllContainingMapObjects();
+        for(MapObject mapObject : mapObjects){
+            mapObject.addObserver(this);
+        }
     }
 
     protected GameCamera setGameCameraEnemy() {
@@ -88,7 +94,6 @@ public class GameController implements Observer {
         House h = (House)o;
         h.repaintAfterVisit();
         h.updateMap();
-
-
+        
     }
 }

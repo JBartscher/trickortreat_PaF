@@ -151,14 +151,6 @@ public class NetworkController extends GameController {
         game.setOtherPlayer(new Player(null));
     }
 
-    @Override
-    public void initObservers() {
-
-       List<MapObject> mapObjects = game.getMap().getMapSector().getAllContainingMapObjects();
-       for(MapObject mapObject : mapObjects){
-           mapObject.addObserver(this);
-       }
-    }
 
     @Override
     public void update(Observable o, Object arg) {

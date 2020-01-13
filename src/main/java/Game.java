@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game {
     public static final int FRAMES = 50;
-    public final static int TIME = 180000;
+    public final static int TIME = 35000;
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
@@ -23,7 +23,6 @@ public class Game {
 
     public Player player;
     public Player otherPlayer;
-
 
     /**
      * repräsentiert alle Objekte, die von EINER Spielinstanz verwaltet werde
