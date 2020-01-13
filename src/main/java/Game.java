@@ -43,9 +43,6 @@ public class Game {
 
     private Window window;
 
-
-
-
     private GameCamera gameCamera;
     private GameCamera gameCameraEnemy;
     private MapRenderer mapRenderer;
@@ -89,9 +86,8 @@ public class Game {
         //initPlayerAndNetwork(networkEngine, movementTypePlayer1, movementTypePlayer2);
         gameController.initEntities(movementTypePlayer1, movementTypePlayer2);
         gameController.initNetwork();
-
         gameController.initGUIandSound(stage);
-
+        gameController.initObservers();
     }
 
     // get GameState from Server - get only called by CLIENT
@@ -104,10 +100,8 @@ public class Game {
         this.player = new Player(movementType);
         this.otherPlayer = new Player(null);
 
-        System.out.println("GAMESTATE: " + gameState);
         this.player.setGameStateData(gameState.getPlayerData());
         this.otherPlayer.setGameStateData(gameState.getOtherPlayerData());
-
 
         this.aliceCooper = new AliceCooper();
         this.witch = new Witch();
@@ -121,49 +115,8 @@ public class Game {
         this.map = gameState.getMap();
 
         gameController.initGUIandSound(stage);
+        gameController.initObservers();
     }
-
-
-    // Wird lokal (Multiplayer) oder im REMOTE-MODUS vom Server zur Initalisierung des Netzwerks aufgerufen
-    /*public void initPlayerAndNetwork(Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
-
-        // NUR TESTCODE FÜR DAS RENDERN DER PLAYEROBJEKTE
-        this.player = new Player(movementTypePlayer1);
-        listOfPlayers.add(player);
-
-        // Sofern LOKAL gespielt wird, gibt es eine zweite Kamera
-        // Liste an zeichenbaren Objekten erweitert sich
-        if(this.gameMode == GameMode.LOCAL) {
-            this.gameController = new GameController(this);
-            this.otherPlayer = new Player(movementTypePlayer2);
-            listOfPlayers.add(otherPlayer);
-            gameCameraEnemy = new GameCamera(map.getSize(), map.getSize(), otherPlayer);
-            Game.WIDTH = Window.WIDTH / 2 - Tile.TILE_SIZE;
-        }
-        // setzt die Rolle im Netzwerk auf Server
-        // instanziert den NetworkController, der die Netzwerkeigenschaften bündelt
-        else {
-            this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.SERVER);
-            this.otherPlayer = new Player(null);
-        }
-
-        otherPlayer.setxPos(player.getxPos());
-        otherPlayer.setyPos(player.getyPos() + 5 * Tile.TILE_SIZE);
-
-        this.witch = new Witch();
-        witch.setxPos(map.getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
-        witch.setyPos(map.getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
-
-        this.aliceCooper = new AliceCooper();
-        aliceCooper.setxPos(map.getSize() / 2 * Tile.TILE_SIZE + Tile.TILE_SIZE * 2);
-        aliceCooper.setyPos(map.getSize() / 2 * Tile.TILE_SIZE + Tile.TILE_SIZE * 2);
-
-        this.listOfAllEntites.addAll(Arrays.asList(player, otherPlayer, /*aliceCooper, witch));
-    }
-
-     */
-
-
 
     public void update() {
 
@@ -275,38 +228,6 @@ public class Game {
         return movementManager;
     }
 
-    public static int getFRAMES() {
-        return FRAMES;
-    }
-
-    public static int getTIME() {
-        return TIME;
-    }
-
-    public static int getWIDTH() {
-        return WIDTH;
-    }
-
-    public static void setWIDTH(int WIDTH) {
-        Game.WIDTH = WIDTH;
-    }
-
-    public static int getHEIGHT() {
-        return HEIGHT;
-    }
-
-    public static void setHEIGHT(int HEIGHT) {
-        Game.HEIGHT = HEIGHT;
-    }
-
-    public MapGenerator getGenerator() {
-        return generator;
-    }
-
-    public void setGenerator(MapGenerator generator) {
-        this.generator = generator;
-    }
-
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -315,55 +236,18 @@ public class Game {
         this.otherPlayer = otherPlayer;
     }
 
-    public void setListOfPlayers(CopyOnWriteArrayList<Player> listOfPlayers) {
-        this.listOfPlayers = listOfPlayers;
-    }
 
     public void setAliceCooper(AliceCooper aliceCooper) {
         this.aliceCooper = aliceCooper;
-    }
-
-    public void setListOfAllEntites(CopyOnWriteArrayList<Entity> listOfAllEntites) {
-        this.listOfAllEntites = listOfAllEntites;
     }
 
     public void setGameCameraEnemy(GameCamera gameCameraEnemy) {
         this.gameCameraEnemy = gameCameraEnemy;
     }
 
-    public GameLauncher getLauncher() {
-        return launcher;
-    }
-
-    public void setLauncher(GameLauncher launcher) {
-        this.launcher = launcher;
-    }
-
-    public int getTicks() {
-        return ticks;
-    }
-
-    public void setTicks(int ticks) {
-        this.ticks = ticks;
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public void setPaused(boolean paused) {
-        this.paused = paused;
-    }
-
-    public void setGameMode(GameMode gameMode) {
-        this.gameMode = gameMode;
-    }
 
     public GameController getGameController() {
         return gameController;
     }
 
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
 }

@@ -37,8 +37,7 @@ public class BigHouse extends House {
             }
 
             player.addCandy(candies);
-            repaintAfterVisit();
-            updateMap();
+            notifyObservers(this);
         }
         System.out.println(player.getCandy());
         this.isUnvisited = false;

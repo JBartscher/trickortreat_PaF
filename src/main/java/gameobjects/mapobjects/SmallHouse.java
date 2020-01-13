@@ -39,8 +39,7 @@ public class SmallHouse extends House {
             System.out.println(candies);
             player.addCandy(candies);
 
-            repaintAfterVisit();
-            updateMap();
+            notifyObservers(this);
         }
 
         this.isUnvisited = false;

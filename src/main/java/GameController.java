@@ -4,11 +4,10 @@ import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
+import main.java.gameobjects.mapobjects.House;
 import main.java.map.Tile;
 
 import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
 
 public class GameController implements Observer {
 
@@ -17,19 +16,12 @@ public class GameController implements Observer {
 
     public GameController(Game game) {
         this.game = game;
-
     }
 
     public GameController() {
 
-
     }
 
-
-    @Override
-    public void update(Observable o, Object arg) {
-
-    }
 
     public void initGUIandSound(Stage stage) {
         // GUI-Bereich
@@ -51,7 +43,6 @@ public class GameController implements Observer {
     }
 
     public void initNetwork() {
-
 
     }
 
@@ -80,11 +71,24 @@ public class GameController implements Observer {
 
     }
 
+    public void initObservers() {
+
+    }
+
     protected GameCamera setGameCameraEnemy() {
         return new GameCamera(game.getMap().getSize(), game.getMap().getSize(), game.getOtherPlayer());
     }
 
     public NetworkController.NetworkRole getNetworkRole() {
         return null;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        House h = (House)o;
+        h.repaintAfterVisit();
+        h.updateMap();
+
+
     }
 }

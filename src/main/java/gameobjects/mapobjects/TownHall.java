@@ -18,6 +18,8 @@ public class TownHall extends House {
         // super.visit(player);
 
         // release player
+
+        notifyObservers(this);
     }
 
     @Override

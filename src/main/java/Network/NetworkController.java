@@ -1,9 +1,6 @@
 package main.java.Network;
 
-import main.java.Game;
-import main.java.GameCamera;
-import main.java.GameController;
-import main.java.Window;
+import main.java.*;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
@@ -152,6 +149,21 @@ public class NetworkController extends GameController {
     public void initNetwork() {
 
         game.setOtherPlayer(new Player(null));
+    }
+
+    @Override
+    public void initObservers() {
+
+       List<MapObject> mapObjects = game.getMap().getMapSector().getAllContainingMapObjects();
+       for(MapObject mapObject : mapObjects){
+           mapObject.addObserver(this);
+       }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        super.update(o, arg);
+        changeGameStateObject(o, Event.EventType.VISITED);
     }
 
     @Override

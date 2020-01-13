@@ -1,6 +1,5 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Sound;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.Map;
@@ -64,6 +63,7 @@ public abstract class House extends MapObject {
      * @see TownHall
      */
     public void visit(Player player) {
+        /*
         System.out.println("VISITED THIS HOUSE! " + this);
         if (isUnvisited) {
             try {
@@ -75,6 +75,9 @@ public abstract class House extends MapObject {
         }
         System.out.println(player.getCandy());
         this.isUnvisited = false;
+
+         */
+        notifyObservers(observers);
         
     }
 
@@ -90,6 +93,8 @@ public abstract class House extends MapObject {
 
         Map.getInstance().setMap(map);
     }
+
+
 
     public boolean isUnvisited() {
         return isUnvisited;
