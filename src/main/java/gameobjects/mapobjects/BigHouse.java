@@ -1,11 +1,8 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Sound;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
-
-import java.util.Random;
 
 public class BigHouse extends House {
     public BigHouse(int x, int y, int tileWidth, int tileHeight) {
@@ -21,6 +18,7 @@ public class BigHouse extends House {
 
     @Override
     public void visit(Player player) {
+        /*
         if (isUnvisited) {
             try {
                 Sound.playRing();
@@ -37,11 +35,13 @@ public class BigHouse extends House {
             }
 
             player.addCandy(candies);
-            repaintAfterVisit();
-            updateMap();
         }
-        System.out.println(player.getCandy());
         this.isUnvisited = false;
+        notifyObservers(this);
+
+         */
+
+        super.visit(player);
     }
 
     /**

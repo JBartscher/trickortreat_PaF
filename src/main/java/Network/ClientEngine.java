@@ -89,7 +89,6 @@ public class ClientEngine extends Thread implements Network {
         } else if(radioButtonMOUSE.isSelected()) {
             movementType = MovementManager.MovementType.MOUSE;
         }
-
     }
 
 
@@ -98,12 +97,10 @@ public class ClientEngine extends Thread implements Network {
         joinServer();
         receiveFirstGameState();
 
-
         int index = 0;
         while(!ready) {
             index ++;
-            //System.out.println("WARTEN");
-            if(index % 1000000 == 0) System.out.println("Warten");
+            if(index % 10000000 == 0) System.out.println("Warten");
         }
 
 
@@ -189,8 +186,6 @@ public class ClientEngine extends Thread implements Network {
         game.setGameTime(gameStateReceived.getGameTime());
         game.getOtherPlayer().setGameStateData(gameStateReceived.getPlayerData());
         game.getWitch().setGameStateData(gameStateReceived.getWitchData());
-
-
     }
 
     public void setGameState(GameState gameState) {

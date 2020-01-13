@@ -278,7 +278,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
     }
 
     public void checkTarget(Entity entity, double movementSize) {
-
         if(entity instanceof Witch) {
             Witch witch = (Witch)entity;
             if(Math.abs(witch.getxPos() - witch.getHomeX()) <= Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) <= Tile.TILE_SIZE ) {
@@ -305,7 +304,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
     // move-method - uses speed from entity class and Game FRAMES
     public void moveObject(Entity entity) {
-
         double movementSize = entity.getSpeed() / Game.FRAMES;
 
         if(entity == game.getWitch()) checkTarget(entity, movementSize);
@@ -469,7 +467,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             // collision with door
             if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
 
-                //System.out.println("COLLIDE WITH DOOR!");
 
                 for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                     try {
@@ -478,9 +475,9 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                             if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer))) {
                                 h.visit((Player) entity);
 
-                                if(game.getGameMode() == Game.GameMode.REMOTE) {
-                                    ((NetworkController)game.getGameController()).changeGameStateObject(h, Event.EventType.VISITED);
-                                }
+                                //if(game.getGameMode() == Game.GameMode.REMOTE) {
+                                //    ((NetworkController)game.getGameController()).changeGameStateObject(h, Event.EventType.VISITED);
+                                //}
                             }
                         }
                     } catch (ClassCastException ex) {

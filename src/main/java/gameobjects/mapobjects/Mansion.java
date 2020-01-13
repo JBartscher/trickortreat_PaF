@@ -31,6 +31,8 @@ public class Mansion extends House implements Visitible {
             setInsideMode(insidePlayer);
         }
 
+        notifyObservers(this);
+
 
         // super.visit(player);
 
