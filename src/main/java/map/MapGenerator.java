@@ -5,10 +5,13 @@ import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
 import main.java.gameobjects.mapobjects.*;
 import main.java.gameobjects.mapobjects.districts.District;
+import main.java.pathfinding.AStar;
+import main.java.pathfinding.Node;
 
 import java.awt.*;
 import java.util.Queue;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapGenerator {
 
@@ -17,6 +20,7 @@ public class MapGenerator {
     DistrictManager districtManager;
 
     final private Map gameMap;
+    private AStar aStar;
 
     /**
      * Queue of Objects that should be placed. The idea behind using a queue is that we place important Objects before
@@ -31,6 +35,7 @@ public class MapGenerator {
         DistrictDecider districtDecider = new DistrictDecider(map);
         try {
             this.districtManager = new DistrictManager(districtDecider.generateDistricts());
+            this.aStar = new AStar(gameMap);
         } catch (SectorOverlappingException e) {
             e.printStackTrace();
         }
@@ -56,13 +61,13 @@ public class MapGenerator {
         createBigHouses(((Number) config.getParam("bigHouses")).intValue());
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
-        //createStreetNetwork();
+        createStreetNetwork();
 
     }
 
     // Generiert für jeden Distrikt ein Biom
     public void generateBioms() {
-        ArrayList<District> mapDistricts = districtManager.getMapDistircts();
+        ArrayList<District> mapDistricts = districtManager.getMapDistricts();
         int mapThirdSize = gameMap.getSize() / 3;
         Random random = new Random();
         int nr = 1;
@@ -88,6 +93,7 @@ public class MapGenerator {
                                 if(zahl >= 66 && zahl < 80) nr = 3;
                                 if(zahl >= 80) nr = 4;
                                 currentTile.setTileNr(nr);
+
                                 break;
 
                             case Sand:
@@ -215,8 +221,8 @@ public class MapGenerator {
         int height = placingObject.getHeight();
 
         while (true) {
-            int y = r.nextInt(gameMap.getSize());
-            int x = r.nextInt(gameMap.getSize());
+            int y = r.nextInt(gameMap.getSize() - 4) + 2;
+            int x = r.nextInt(gameMap.getSize() - 4) + 2;
 
             // TODO: Verhindert zu dichtes Spawnen am Stadtzentrum
             if(x > gameMap.getSize() * 0.36 && x < gameMap.getSize() * 0.64 && y > gameMap.getSize() * 0.36 && y < gameMap.getSize() * 0.64) continue;
@@ -294,7 +300,6 @@ public class MapGenerator {
 
 
     public void createStreetNetwork() {
-
         ArrayList<Point> doorPoints = new ArrayList<>();
         Tile[][][] tileMap = gameMap.getMap();
 
@@ -307,8 +312,7 @@ public class MapGenerator {
 
                 if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85) {
 
-
-                    nr = "DD";
+                    //nr = "DD";
                     doorPoints.add(new Point(x, y + 1));
                 }
 
@@ -317,31 +321,52 @@ public class MapGenerator {
             System.out.println();
         }
 
+        System.out.println(doorPoints.size());
+
         // Start
         int size = doorPoints.size() - 1;
         int x = doorPoints.get(0).x;
         int y = doorPoints.get(0).y;
 
-        tileMap[y][x][1].setTileNr(21);
+        tileMap[y][x][1].setTileNr(getBiomStreetType(x, y));
 
         for(int i = 0; i < size; i++) {
 
             Point target = findLowestDistance(doorPoints, x, y);
-            drawStreet(x, y, target.x, target.y, true, true);
+            findStreetConnection(x, y, target.x, target.y);
 
             // remove starting point from list
             Iterator<Point> iterator = doorPoints.iterator();
             while(iterator.hasNext()) {
 
                 Point point = iterator.next();
-                if(point.x == x && point.y == y)
-                {
                     iterator.remove();
-                    x = target.x;
-                    y = target.y;
+                    x = point.x;
+                    y = point.y;
                     break;
-                }
             }
+        }
+    }
+
+    // uses AStar Algorithm
+    public void findStreetConnection(int x, int y, int targetX , int targetY) {
+
+        aStar.setStartPosition(new Point(x, y));
+        aStar.setTargetPosition(new Point(targetX, targetY));
+
+        CopyOnWriteArrayList<Point> targets = new CopyOnWriteArrayList<>();
+        targets.clear();
+        aStar.fillMap(gameMap.getMap());
+        ArrayList<Node> nodes = aStar.executeAStar();
+
+        if(nodes != null) {
+            for(Node node : nodes) {
+                targets.add(node.getPosition());
+            }
+
+            drawStreet(targets);
+        } else {
+            System.out.println("KEIN PFAD GEFUNDEN!");
         }
     }
 
@@ -360,128 +385,45 @@ public class MapGenerator {
                 targetY= points.y;
             }
         }
-
-        System.out.println("Kürzeste Entfernung für x: " + x + " y: " + y + " - " + " ist " + " x: " + targetX + " - y: " + targetY);
+        //System.out.println("Kürzeste Entfernung für x: " + x + " y: " + y + " - " + " ist " + " x: " + targetX + " - y: " + targetY);
         return new Point(targetX, targetY);
-
     }
 
-    public void drawStreet(int x, int y, int targetX, int targetY, boolean xAllowed, boolean yAllowed) {
+    public void drawStreet(CopyOnWriteArrayList<Point> targets) {
 
-        System.out.println("Momentane Koordinaten - x : " + x + " - y: " + y);
+        for(Point point : targets) {
+            int tileNr = gameMap.getMap()[point.y][point.x][1].getTileNr();
+            int streetType = 20;
+            if (tileNr < 20) {
 
-        if(targetX > x && xAllowed) {
-            if(isWalkable(x + 1, y))
-                x++;
+                streetType = getBiomStreetType(point.x, point.y);
 
-            else if(targetY < y && isWalkable(x, y - 1)){
-                y--;
+                gameMap.getMap()[point.y][point.x][1].setTileNr(streetType);
             }
-
-            else if(targetY >= y && isWalkable(x, y + 1)){
-                y++;
-            }
-
-            setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
-            return;
-        }
-
-        else if(targetX < x && xAllowed) {
-
-            if(isWalkable(x - 1, y))
-                x--;
-            else if(targetY < y && isWalkable(x, y - 1)){
-                y--;
-            }
-
-            else if(targetY >= y && isWalkable(x, y + 1)){
-                y++;
-            }
-
-            setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
-            return;
-        }
-
-        if(targetY > y && yAllowed) {
-            if(isWalkable(x, y + 1)) {
-                y++;
-                setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
-                return;
-            }
-            else if(isWalkable(x - 1, y)) {
-                x--;
-                setStreetAndRecallMethod(x, y, targetX, targetY, false, true);
-                return;
-            }
-        }
-
-        else if(targetY < y && yAllowed) {
-            if(isWalkable(x, y - 1)) {
-                y--;
-                setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
-                return;
-            }
-            else if(isWalkable(x + 1, y)){
-                x++;
-                setStreetAndRecallMethod(x, y, targetX, targetY, false, true);
-                return;
-            }
-        }
-
-        if (targetX == x && targetY != y) {
-
-
-            boolean ready = false;
-            do {
-                x--;
-                setStreetAndRecallMethod(x, y, x, y, true, false);
-
-                if (targetY > y) {
-                    if (isWalkable(x, y + 1)) {
-                        y++;
-                        ready = true;
-                        setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
-                    } else {
-
-                    }
-                } else if (targetY < y) {
-                    if(isWalkable(x, y - 1)) {
-                        y--;
-                        ready = true;
-                        setStreetAndRecallMethod(x, y, targetX, targetY, true, true);
-                    }
-                }
-
-            } while(!ready);
-
-
-
         }
     }
 
-    public boolean isWalkable(int x, int y) {
-        int tileNr = gameMap.getMap()[y][x][1].getTileNr();
-        return (tileNr <= 25) ? true : false;
 
-    }
+    public int getBiomStreetType(int x, int y) {
+        int sectorNumbY = y / 20;
+        int sectorNumbX = x / 20;
 
-    public void setStreetAndRecallMethod(int x, int y, int targetX, int targetY, boolean xAllowed, boolean yAllowed) {
-        int tileNr = gameMap.getMap()[y][x][1].getTileNr();
-        int streetType = 20;
-        if (tileNr < 20) {
 
-            // TODO: FUNKTIONIERT MIT DER NEUEN KARTENGRößE NICHT MEHR
-            //if (x < Map.BORDER && y < Map.BORDER) streetType = 21;
-            //else if (x > Map.BORDER && y < Map.BORDER) streetType = 22;
-            //else if (x < Map.BORDER && y > Map.BORDER) streetType = 23;
-            //else if (x > Map.BORDER && y > Map.BORDER) streetType = 24;
+        District dis = districtManager.getMapDistricts().get(sectorNumbY * 3 + sectorNumbX);
 
-            streetType = 21;
+        switch(dis.getBiomType()) {
 
-            gameMap.getMap()[y][x][1].setTileNr(streetType);
+            case Gras:
+                return 21;
+            case Sand:
+                return 22;
+            case Desert:
+                return 23;
+            case Snow:
+                return 24;
         }
-            if (x != targetX || y != targetY) drawStreet(x, y, targetX, targetY, xAllowed, yAllowed);
+
+        return 21;
 
     }
-
 }

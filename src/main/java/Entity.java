@@ -5,16 +5,20 @@ import main.java.Network.EntityData;
 import main.java.map.Tile;
 
 import java.awt.*;
+import java.io.Serializable;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.round;
 
 
-public abstract class Entity {
+public abstract class Entity implements Serializable {
 
     protected double xPos;
     protected double yPos;
     protected double size;
     protected Point target;
+
+    protected CopyOnWriteArrayList<Point> targets = new CopyOnWriteArrayList<>();
 
     protected boolean noCollision = false;
 
@@ -29,7 +33,7 @@ public abstract class Entity {
     // represents the state of movement
     protected int moveCounter = 1;
 
-    protected double speed = 120 * Game.FRAMES / 50 * 5;
+    protected double speed = 240 * Game.FRAMES / 50;
 
 
 
@@ -178,7 +182,7 @@ public abstract class Entity {
 
         // sofern am Ziel, dann Bild auf Stillstand setzen
         if(Math.abs(target.x - xPos) < movementSize && Math.abs(target.y - yPos) < movementSize) {
-            moveCounter = 1;
+                moveCounter = 1;
         }
     }
 
@@ -203,8 +207,10 @@ public abstract class Entity {
             this.yPos = entityData.getyPos();
         }
         else {
-            this.xPos = (entityData.getxPos() + xPos) / 2;
-            this.yPos = (entityData.getyPos() + yPos) / 2;
+            this.xPos = entityData.getxPos();
+            this.yPos = entityData.getyPos();
+            //this.xPos = (entityData.getxPos() + xPos) / 2;
+            //this.yPos = (entityData.getyPos() + yPos) / 2;
         }
 
         this.size = entityData.getSize();
@@ -231,6 +237,14 @@ public abstract class Entity {
 
     public void setNoCollision(boolean noCollision) {
         this.noCollision = noCollision;
+    }
+
+    public CopyOnWriteArrayList<Point> getTargets() {
+        return targets;
+    }
+
+    public void setTargets(CopyOnWriteArrayList<Point> targets) {
+        this.targets = targets;
     }
 
 }

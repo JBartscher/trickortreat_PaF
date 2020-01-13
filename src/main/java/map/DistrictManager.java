@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DistrictManager {
 
-    private final ArrayList<District> mapDistircts = new ArrayList<>();
+    private final ArrayList<District> mapDistricts = new ArrayList<>();
 
     /**
      * the constructor of the SectorManger takes a list of sectors and checks that they dont overlap.
@@ -35,7 +35,7 @@ public class DistrictManager {
             }
         }
         // sector manager has all sectors.
-        this.mapDistircts.addAll(districts);
+        this.mapDistricts.addAll(districts);
     }
 
     /**
@@ -44,7 +44,7 @@ public class DistrictManager {
      * @param obj placeable which will be assigned to a sector.
      */
     public void assignDistrict(MapObject obj) {
-        for (District district : this.mapDistircts) {
+        for (District district : this.mapDistricts) {
             // is fully enclosed in Sector
             if (district.getSector().contains(obj)) {
                 // placeble is fully contained by a sector. No further checkin necessary.
@@ -68,7 +68,7 @@ public class DistrictManager {
      */
     public List<District> belongsToDistricts(MapObject obj) throws PlaceableBelongsToNoSectorException {
         ArrayList<District> districts = new ArrayList<>();
-        for (District district : mapDistircts) {
+        for (District district : mapDistricts) {
             if (district.getSector().getAllContainingMapObjects().contains(obj))
                 districts.add(district);
         }
@@ -84,15 +84,15 @@ public class DistrictManager {
      * @return a district in which the new placeble can possibly be placed.
      */
     public District getDistrict(Placeable placeable) throws PlaceableBelongsToNoSectorException {
-        for (District district : mapDistircts) {
+        for (District district : mapDistricts) {
             if (placeable.intersects(district.getSector()))
                 return district;
         }
         throw new PlaceableBelongsToNoSectorException("a placeble cannot intersect with no sector");
     }
 
-    public ArrayList<District> getMapDistircts() {
-        return mapDistircts;
+    public ArrayList<District> getMapDistricts() {
+        return mapDistricts;
     }
 
 

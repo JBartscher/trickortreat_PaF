@@ -3,6 +3,7 @@ package main.java.map;
 import java.io.Serializable;
 
 public class Placeable implements Serializable {
+    private static final long serialVersionUID = 4762734196222645657L;
     private int x;
     private int y;
     // in tiles

@@ -14,8 +14,16 @@ import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Placeable;
 import main.java.map.Tile;
+import main.java.pathfinding.AStar;
+import main.java.pathfinding.Node;
+import main.java.pathfinding.PathWorker;
 
+import java.awt.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static java.lang.Math.round;
 
 public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
@@ -28,6 +36,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
     private Map map;
     private Game game;
+    private AStar aStar;
 
 
     // There are three different kinds of movement types
@@ -51,6 +60,9 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         // register the player to movement strategies
         registerPlayerInputs(player1);
         registerPlayerInputs(player2);
+
+        // init Pathfinding
+        this.aStar = new AStar(game.getMap());
 
     }
 
@@ -82,8 +94,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
     {
         if(inputMOUSE == null) return;
         if(event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-
-
             if(inputMOUSE != null) {
 
                 double currentRenderX = inputMOUSE.xPos - inputMOUSE.getxOffSet() + Tile.TILE_SIZE / 2;
@@ -103,15 +113,16 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             }
 
             if(event.getCode() == KeyCode.P) {
+                if(game.getNetworkController() != null) {
                 if(game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
                     game.getNetworkController().changeGameStateObject("PAUSED", Event.EventType.PAUSED);
                     game.paused = true;
+                }
                 } else if (game.getGameMode() == Game.GameMode.LOCAL) {
                     game.paused = true;
                 }
 
             }
-
 
             if(event.getCode() == KeyCode.A) {
                 if(inputAWSD != null) {
@@ -137,14 +148,16 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                 }
             }
 
-
-
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
 
             if(event.getCode() == KeyCode.R) {
-                game.paused = false;
-                if(game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                    game.getNetworkController().changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
+                if(game.getNetworkController() != null) {
+                    if (game.getNetworkController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                        game.getNetworkController().changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
+                        game.paused = false;
+                    }
+                } else if(game.getGameMode() == Game.GameMode.LOCAL) {
+                    game.paused = false;
                 }
             }
 
@@ -227,37 +240,116 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         }
     }
 
+    public void findPath(Entity entity, Point start, Point target) {
+
+        aStar.setStartPosition(start);
+        aStar.setTargetPosition(target);
+        aStar.fillMap(game.getMap().getMap());
+
+        CopyOnWriteArrayList<Point> targets = entity.getTargets();
+        targets.clear();
+        ArrayList<Node> nodes = aStar.executeAStar();
+
+        if(nodes == null) {
+            System.out.println("KEIN PFAD GEFUNDEN");
+            return; } else {
+        }
+
+        for(Node node : nodes) {
+            targets.add(node.getPosition());
+        }
+
+
+        // Terminieren, wenn kein Ziel existiert
+        if(targets.size() < 1) return;
+
+        // Setze erstes und letztes Ziel
+        // Das letzte Ziel wird genutzt, um zu entscheiden, ob pathfinding erneut berechnet werden muss oder nicht
+        int transformedX = targets.get(0).x * Tile.TILE_SIZE;
+        int transformedY = targets.get(0).y * Tile.TILE_SIZE;
+        entity.setTarget(new Point(transformedX, transformedY));
+
+        int transformedLastX = targets.get(targets.size() - 1).x * Tile.TILE_SIZE;
+        int transformedLastY = targets.get(targets.size() - 1).y * Tile.TILE_SIZE;
+        if(entity instanceof Witch) {
+            Witch witch = (Witch)entity;
+            witch.setFinalTargetPos(new Point(transformedLastX, transformedLastY));
+        }
+    }
+
+    public void checkTarget(Entity entity, double movementSize) {
+
+        if(entity instanceof Witch) {
+            Witch witch = (Witch)entity;
+            if(Math.abs(witch.getxPos() - witch.getHomeX()) <= Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) <= Tile.TILE_SIZE ) {
+                witch.setOnReturn(false);
+            }
+        }
+
+        CopyOnWriteArrayList<Point> targets = entity.getTargets();
+        if(targets.size() > 0 ) {
+            Point transformedPoint =  new Point((int) round(entity.getTarget().x / Tile.TILE_SIZE), (int) round(entity.getTarget().y / Tile.TILE_SIZE));
+                //if( Math.abs(entity.getxPos() - entity.getTarget().x) < movementSize * 0.1 && Math.abs(entity.getyPos() - entity.getTarget().y) < movementSize * 0.1 ) {
+                    if(entity.getEntityPos().x == transformedPoint.x && entity.getEntityPos().y == transformedPoint.y) {
+                    if (targets.size() > 1) {
+                        targets.remove(0);
+                        if(targets.size() > 0) {
+                            int transformedX = targets.get(0).x * Tile.TILE_SIZE;
+                            int transformedY = targets.get(0).y * Tile.TILE_SIZE;
+                            entity.setTarget(new Point(transformedX, transformedY));
+                        }
+                }
+            }
+        }
+    }
+
     // move-method - uses speed from entity class and Game FRAMES
     public void moveObject(Entity entity) {
 
         double movementSize = entity.getSpeed() / Game.FRAMES;
 
+        if(entity == game.getWitch()) checkTarget(entity, movementSize);
+
         // TODO: FUNKTIONIERT ÜBER NETZWERK WEGEN NULLPOINTER NICHT
             //int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
             // if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
 
-
         double moveX = 0.0;
         double moveY = 0.0;
 
-        if( (entity.target.x - entity.xPos) >= movementSize) {
-            moveX = movementSize;
+        if(entity.target.x > entity.getxPos()) {
+            if(entity.target.x - entity.getxPos() < movementSize) {
+                moveX = entity.target.x - entity.getxPos();
+            } else {
+                moveX = movementSize;
+            }
             entity.setMoveDirection(MoveDirection.RIGHT);
-        } else if ( (entity.xPos >= entity.target.x + movementSize)) {
-            moveX = - movementSize;
-            entity.setMoveDirection(MoveDirection.LEFT);
-        } else {
+
+        } else if (entity.target.x < entity.getxPos()) {
+            if(Math.abs(entity.target.x - entity.getxPos()) < movementSize) {
+                moveX = - Math.abs(entity.target.x - entity.getxPos());
+            } else {
+                moveX = - movementSize;
+                entity.setMoveDirection(MoveDirection.LEFT);
+            }
 
         }
 
-        if( (entity.target.y - entity.yPos) > movementSize) {
-            moveY = movementSize;
+        if(entity.target.y > entity.getyPos()) {
+            if(entity.target.y - entity.getyPos() < movementSize) {
+                moveY = entity.target.y - entity.getyPos();
+            } else {
+                moveY = movementSize;
+            }
             entity.setMoveDirection(MoveDirection.DOWN);
-        } else if (entity.yPos >= entity.target.y + movementSize) {
-            moveY = -movementSize;
-            entity.setMoveDirection(MoveDirection.UP);
-        } else {
 
+        } else if (entity.target.y < entity.getyPos()) {
+            if(Math.abs(entity.target.y - entity.getyPos()) < movementSize) {
+                moveY = - Math.abs(entity.target.y - entity.getyPos());
+            } else {
+                moveY = - movementSize;
+                entity.setMoveDirection(MoveDirection.UP);
+            }
         }
 
 
@@ -279,6 +371,90 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         entity.setEntityImage(false);
     }
 
+    public void moveAllEntites(NetworkController networkController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
+        for(Player player : listOPlayers)
+        {
+            if(player.getChildrenCount() > 0)
+                moveObject(player);
+        }
+
+        //move NPC
+        if( (game.getGameMode() == Game.GameMode.LOCAL || networkController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.getGameTime() <= 30000) {
+            if (game.ticks % 10 == 0 /*|| game.ticks == 1 */) {
+
+                Point target = findTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
+                Point start = witch.getEntityPos();
+
+                boolean doPathfinding = true;
+                double deltaTargetX = Math.abs(target.x - witch.getFinalTargetPos().x);
+                double deltaTargetY = Math.abs(target.y - witch.getFinalTargetPos().y);
+
+                double deltaPosTargetX = Math.abs(witch.getxPos() - witch.getFinalTargetPos().x);
+                double deltaPosTargetY = Math.abs(witch.getxPos() - witch.getFinalTargetPos().y);
+
+                /*
+                if(game.ticks == 2) {
+                    doPathfinding = true;
+                }
+                else if (deltaTargetX <= 0.5 * Tile.TILE_SIZE && deltaTargetY <= 0.5 * Tile.TILE_SIZE) {
+                    doPathfinding = false;
+                } else if(  (deltaPosTargetX > game.getMap().getSize() * 0.2 && game.ticks % 20 != 0) || (deltaPosTargetY > game.getMap().getSize() * 0.2 && game.ticks % 20 != 0)   ) {
+                    doPathfinding = false;
+                }
+
+                 */
+
+
+                if ( doPathfinding ) {
+
+                    if (!witch.isOnReturn()) {
+                        if (witch.getFinalTargetPos() != target) {
+                            new PathWorker(witch, start, target, this).start();
+                        }
+                    } else {
+                        if (witch.getFinalTargetPos() != witch.getHomePos()) {
+                            new PathWorker(witch, start, witch.getHomePos(), this).start();
+                        }
+                    }
+                }
+            }
+        }
+
+        if(game.getGameTime() < 30000) {
+            moveObject(witch);
+        }
+    }
+
+    // find a target for the witch
+    public Point findTarget(Witch witch, Player player, Player otherPlayer) {
+
+        if(player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
+            return new Point(0, 0);
+        }
+
+        if(player.isInside() || player.getChildrenCount() <= 0) {
+
+            if(otherPlayer.getChildrenCount() > 0) {
+                return otherPlayer.getEntityPos();
+            } else return new Point(0, 0);
+        }  else if(otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
+            if(player.getChildrenCount() > 0) {
+                return player.getEntityPos();
+            } else return new Point(0, 0);
+        }
+
+        double distancePlayer = Math.sqrt( (player.getxPos() - witch.getxPos()) * (player.getxPos() - witch.getxPos()) + (player.getyPos() - witch.getyPos()) * (player.getyPos() - witch.getyPos()) );
+        double distanceOtherPlayer = Math.sqrt( (otherPlayer.getxPos() - witch.getxPos()) * (otherPlayer.getxPos() - witch.getxPos()) + (otherPlayer.getyPos() - witch.getyPos()) * (otherPlayer.getyPos() - witch.getyPos()) );
+
+        if(distancePlayer < distanceOtherPlayer) {
+            return player.getEntityPos();
+        } else {
+            return otherPlayer.getEntityPos();
+        }
+
+
+    }
+
 
     /**
      *
@@ -293,7 +469,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             // collision with door
             if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
 
-                System.out.println("COLLIDE WITH DOOR!");
+                //System.out.println("COLLIDE WITH DOOR!");
 
                 for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                     try {
@@ -318,24 +494,14 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
 
             } else {
-                System.out.println("COLLIDE!");
+                //System.out.println("COLLIDE!");
                 entity.setyPos(entity.getyPos() - size);
             }
 
 
-            // TODO: LÖST die Kollision zwischen zwei Spielern, muss noch auf alle Entitäten erweitert werden
+            // TODO: LÖST die Kollision zwischen Entitäten
         } else {
-
-            for(Entity e : game.getListOfAllEntites()) {
-                if(e == entity) continue;
-
-                if (Math.abs(entity.getxPos() - e.getxPos()) < 0.5 * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * 0.5 ) {
-                    entity.setyPos(entity.getyPos() - size);
-                    if(e instanceof AliceCooper && entity instanceof Player) {
-                        ((AliceCooper)e).playSong((Player)entity);
-                    }
-                }
-            }
+            checkCollisionsBetweenEntities(entity, size, false);
         }
     }
 
@@ -353,7 +519,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
             if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
 
             } else {
-                System.out.println("COLLIDE!");
+                //System.out.println("COLLIDE!");
                 entity.setxPos(entity.getxPos() - size);
             }
 
@@ -362,29 +528,52 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
         } else {
 
             // überprüft die Kollision zwischen Entitäten
-            checkCollisionsBetweenEntities(entity, size);
+            checkCollisionsBetweenEntities(entity, size, true);
 
         }
     }
 
-
-    public void checkCollisionsBetweenEntities(Entity entity, double size) {
-
+    public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
         for(Entity e : game.getListOfAllEntites()) {
             if(e == entity) continue;
 
-            if (Math.abs(entity.getxPos() - e.getxPos()) < 0.5 * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * 0.5 ) {
-                entity.setxPos(entity.getxPos() - size);
+            double offset = 0.5;
+            if(e instanceof Witch) {
+                offset = 1.2;
+            } else {
+                offset = 0.5;
+            }
+
+            if (Math.abs(entity.getxPos() - e.getxPos()) < offset * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * offset ) {
+
                 if(e instanceof AliceCooper && entity instanceof Player) {
                     ((AliceCooper)e).playSong((Player)entity);
                 } else if(e instanceof Witch && entity instanceof Player) {
-                    System.out.println("KOLLIDIERT MIT HEXE!");
-                    ((Player)entity).setChildrenCount(1);
+                    Witch witch = (Witch)e;
+                    Player player = (Player)entity;
+                    if(player.getChildrenCount() <= 0) return;
+
+                    if(player.getProtectedTicks() > 0 ) {
+                        System.out.println("NO COLLISION WEGEN PROTECTION!!"); return;
+                    }
+
+                    witch.setOnReturn(true);
+                    player.setChildrenCount(player.getChildrenCount() - 1);
+                    player.setProtectedTicks(100);
+
+                    if(game.getGameMode() == Game.GameMode.REMOTE) {
+                        game.getNetworkController().changeGameStateObject(witch, Event.EventType.COLLISION);
+                    }
                 }
+
+                if(directionX) {
+                    entity.setxPos(entity.getxPos() - size);
+                } else {
+                    entity.setyPos(entity.getyPos() - size);
+                }
+
             }
         }
-
-
     }
 
 
@@ -410,8 +599,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
     }
 
     private boolean outOfBoundsInside(Player player, MapObject o) {
-
-
         int e_x = player.getEntityPos().x;
         int e_y = player.getEntityPos().y;
         int o_x = o.getY();
@@ -427,7 +614,6 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                         (player.getEntityPosWithCurrency(+.33).x == o_x + o_width && e_y >= o_y && e_y <= o_y + o_height)
 
         );
-
     }
 
 

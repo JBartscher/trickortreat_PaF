@@ -59,7 +59,6 @@ public class MapRenderer {
             // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
             for(int z = 0; z < 3; z++) {
 
-
                 for (int y = 0; y < tileMap.length; y++) {
                     for (int x = 0; x < tileMap[y].length; x++) {
                         int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
@@ -72,13 +71,16 @@ public class MapRenderer {
 
                             ImageView imageTile = new ImageView(GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr()));
                             GraphicsUtility.setImageProperties(imageTile, xPos, yPos);
+                            if(obj.getChildrenCount() == 0) {
+
+                                imageTile.setOpacity(0.7);
+                            }
                             root.getChildren().add(imageTile);
 
                         }
                     }
                 }
             }
-
 
             // Eigenen Spieler und Anhang zeichnen
             for(int i = 0; i < obj.getChildrenCount(); i++) {
@@ -201,21 +203,20 @@ public class MapRenderer {
         } else {
             textCandy = new Text("Spieler 1 - Candy: " + game.getPlayer().getCandy());
             textCandy2 = new Text("Spieler 2 - Candy: " + game.getOtherPlayer().getCandy());
-
         }
 
 
         textCandy.setStyle("-fx-font: 32 arial;");
-        GraphicsUtility.setTextProperties(textCandy, "-fx-font: 32 arial;", Color.WHITE, 100, 50.0 );
+        GraphicsUtility.setTextProperties(textCandy, "-fx-font: 32 arial;", Color.WHITE, 150, 50.0 );
 
         textCandy2.setStyle("-fx-font: 32 arial;");
-        GraphicsUtility.setTextProperties(textCandy2, "-fx-font: 32 arial;", Color.WHITE, 850, 50.0 );
+        GraphicsUtility.setTextProperties(textCandy2, "-fx-font: 32 arial;", Color.WHITE, 800, 50.0 );
 
         ImageView imageCandyPlayer  = new ImageView(GraphicsUtility.getCandyImage());
-        GraphicsUtility.setImageProperties(imageCandyPlayer, Window.WIDTH / 3 - 10, 22);
+        GraphicsUtility.setImageProperties(imageCandyPlayer, Window.WIDTH / 3 + 40, 22);
 
         ImageView imageCandyPlayer2  = new ImageView(GraphicsUtility.getCandyImage());
-        GraphicsUtility.setImageProperties(imageCandyPlayer2, 1170, 22);
+        GraphicsUtility.setImageProperties(imageCandyPlayer2, 1120, 22);
 
         text.setText(calculateTime(game));
 

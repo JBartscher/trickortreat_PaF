@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class Map implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private static Map instance;
     final Sector mapSector;
     private final int size;

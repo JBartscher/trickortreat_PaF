@@ -22,6 +22,9 @@ public class Player extends Entity {
     private boolean noCollision;
     private MapObject insideObject;
 
+    // Nach einer Kollision mit einer Hexe ist ein Spieler eine Zeit lang geschützt, um Mehrfachkollisionen zu vermeiden
+    private double protectedTicks;
+
 
     public Player(List children, MovementManager.MovementType type) {
         super();
@@ -112,6 +115,7 @@ public class Player extends Entity {
         this.inside = playerData.isInside();
         this.noCollision = playerData.isNoCollision();
         this.insideObject = playerData.getInsideObject();
+        this.protectedTicks = playerData.getProtectedTicks();
     }
 
     public boolean isInside() {
@@ -136,6 +140,14 @@ public class Player extends Entity {
 
     public void setInsideObject(MapObject insideObject) {
         this.insideObject = insideObject;
+    }
+
+    public double getProtectedTicks() {
+        return protectedTicks;
+    }
+
+    public void setProtectedTicks(double protectedTicks) {
+        this.protectedTicks = protectedTicks;
     }
 
 

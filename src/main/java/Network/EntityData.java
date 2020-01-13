@@ -8,7 +8,7 @@ import java.awt.*;
 import java.io.Serializable;
 
 public class EntityData implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5611352444651877561L;
 
     protected double xPos;
 

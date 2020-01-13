@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 public class Tile implements Serializable {
+    private static final long serialVersionUID = 4862360600686727902L;
     boolean isDoorTile;
     int tileNr;
     static final Properties tileColors = new Properties();

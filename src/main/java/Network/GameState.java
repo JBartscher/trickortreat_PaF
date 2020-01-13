@@ -2,19 +2,19 @@ package main.java.Network;
 
 import main.java.map.Map;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
-public class GameState implements Serializable {
+public class GameState implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1287629170864898744L;
 
     private Map map;
     private PlayerData playerData;
     private PlayerData otherPlayerData;
 
     private CooperData cooperData;
-    private EntityData witchData;
+    private WitchData witchData;
 
     private ArrayList<Event> eventQueue = new ArrayList<>();
     private Event event;
@@ -22,7 +22,7 @@ public class GameState implements Serializable {
 
     private int gameTime;
 
-    public GameState(Map map, PlayerData playerData, PlayerData otherPlayerData, EntityData witchData, CooperData cooperData, Event event, int gameTime) {
+    public GameState(Map map, PlayerData playerData, PlayerData otherPlayerData,WitchData witchData, CooperData cooperData, Event event, int gameTime) {
         this.map = map;
         this.playerData  = playerData;
         this.otherPlayerData = otherPlayerData;
@@ -61,7 +61,7 @@ public class GameState implements Serializable {
         return witchData;
     }
 
-    public void setWitchData(EntityData witchData) {
+    public void setWitchData(WitchData witchData) {
         this.witchData = witchData;
     }
 

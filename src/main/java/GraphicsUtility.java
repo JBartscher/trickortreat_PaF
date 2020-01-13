@@ -37,9 +37,8 @@ public class GraphicsUtility {
 
 
     public static Image centreTile;
-
-
     public static Image borderTile;
+
 
     public static void initGraphics(){
         initTileImages();
@@ -357,7 +356,7 @@ public class GraphicsUtility {
             return streetTileSnow;
         } else if(nr == 25) {
             return centreTile;
-        } else {
+        }  else {
             return tileImages[54];
         }
 

@@ -102,7 +102,7 @@ public class MainMenu {
     }
 
     private void addTitle() {
-        MenuTitle title = new MenuTitle("TRICK OR TREAT V.0.3", 48);
+        MenuTitle title = new MenuTitle("TRICK OR TREAT V.0.4", 48);
         title.setTranslateX(WIDTH / 2 - title.getTitleWidth() / 2);
         title.setTranslateY(HEIGHT / 4);
 

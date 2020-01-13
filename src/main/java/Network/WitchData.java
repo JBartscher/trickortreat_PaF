@@ -1,13 +1,10 @@
-package main.java;
+package main.java.Network;
 
-import main.java.Network.WitchData;
-import main.java.map.Tile;
+import main.java.Witch;
 
 import java.awt.*;
 
-import static java.lang.Math.round;
-
-public class Witch extends Entity {
+public class WitchData extends EntityData {
 
     private double homeX;
     private double homeY;
@@ -15,20 +12,14 @@ public class Witch extends Entity {
 
     private Point finalTargetPos;
 
+    public WitchData(Witch witch) {
+        super(witch);
 
-    public Witch(){
-        this.homeX = xPos;
-        this.homeY = yPos;
-        this.speed = getSpeed() * 2;
-        this.finalTargetPos = new Point(0, 0);
-    }
+        homeX = witch.getHomeX();
+        homeY = witch.getHomeY();
+        onReturn = witch.isOnReturn();
+        this.finalTargetPos = witch.getFinalTargetPos();
 
-    public void setGameStateData(WitchData witchData) {
-        super.setGameStateData(witchData);
-        this.homeX = witchData.getHomeX();
-        this.homeY = witchData.getHomeY();
-        this.onReturn = witchData.isOnReturn();
-        this.finalTargetPos = witchData.getFinalTargetPos();
     }
 
     public double getHomeX() {
@@ -55,10 +46,6 @@ public class Witch extends Entity {
         this.onReturn = onReturn;
     }
 
-    public Point getHomePos() {
-        return new Point((int) round(homeX / Tile.TILE_SIZE), (int) round(homeY / Tile.TILE_SIZE));
-    }
-
     public Point getFinalTargetPos() {
         return finalTargetPos;
     }
@@ -66,4 +53,6 @@ public class Witch extends Entity {
     public void setFinalTargetPos(Point finalTargetPos) {
         this.finalTargetPos = finalTargetPos;
     }
+
+
 }

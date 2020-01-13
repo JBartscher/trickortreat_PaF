@@ -23,6 +23,8 @@ public class PlayerData extends EntityData {
     private boolean noCollision;
     private MapObject insideObject;
 
+    private double protectedTicks;
+
     public PlayerData(Player player) {
         super(player);
         //this.childrenSnake = player.getChildrenSnake();
@@ -34,6 +36,7 @@ public class PlayerData extends EntityData {
         this.inside = player.isInside();
         this.noCollision = player.isNoCollision();
         this.insideObject = player.getInsideObject();
+        this.protectedTicks = player.getProtectedTicks();
     }
 
 
@@ -108,10 +111,13 @@ public class PlayerData extends EntityData {
         this.insideObject = insideObject;
     }
 
+    public double getProtectedTicks() {
+        return protectedTicks;
+    }
 
-
-
-
+    public void setProtectedTicks(double protectedTicks) {
+        this.protectedTicks = protectedTicks;
+    }
 
 
 }

@@ -9,15 +9,11 @@ import javafx.stage.Stage;
 import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
-import main.java.gameobjects.mapobjects.House;
-import main.java.map.MapObject;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClientEngine extends Thread implements Network {
 
@@ -27,12 +23,14 @@ public class ClientEngine extends Thread implements Network {
     private String ip;
 
     private Game game;
+    private NetworkController networkController;
     private GameState gameState;
 
     private boolean ready;
 
     private ObjectOutputStream output;
     private ObjectInputStream input;
+
 
     // Movement
     private MovementManager.MovementType movementType;
@@ -119,6 +117,7 @@ public class ClientEngine extends Thread implements Network {
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
 
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,10 +132,10 @@ public class ClientEngine extends Thread implements Network {
             Platform.runLater( () -> {
                 System.out.println(gameStateReceived);
                 game = new Game(this, gameStateReceived, stage, movementType);
+                networkController = game.getNetworkController();
 
 
                 //TODO: beim Client ist die Map-Instance nicht gesetzt, führt zu Problemen beim colliden mit Türen, daher diese unschöne Lösung
-
                 game.getMap().setInstance(game.getMap());
 
                 gameLauncher.startGame(game);
@@ -155,74 +154,28 @@ public class ClientEngine extends Thread implements Network {
 
     @Override
     public void communicate() {
-
         System.out.println("Starte Kommunikation vom Client zum Server!");
         try{
 
-            ArrayList<Event> eventQueue = new ArrayList<>();
             while(true) {
 
-                Message.Type messageType = Message.Type.GAMESTATE;
-
-                // Wenn ein Event existiert, was noch nicht übermittelt wurde -> auslesen und MessageType setzen
-                if(!gameState.isEventTransmitted()) {
-                    gameState.setEventTransmitted(true);
-                    messageType = Message.Type.EVENT;
-
-                } else {
-                    gameState.clearEventQueue();
-                    game.getNetworkController().getGameState().clearEventQueue();
-                    gameState.setEvent(null);
-                    game.getNetworkController().getGameState().setEvent(null);
-                }
-
-
-                // Nachricht erstellen und an Server verschicken
-                Message message = new Message(messageType, game.getNetworkController().getGameState());
-                output.writeObject(message);
-                output.flush();
-
+                // GameState über ObjectOutputStream an den Server verschicken
+                networkController.sendMessage(output, gameState);
 
                 // GameState vom Server lesen
                 Message msg = (Message)input.readObject();
                 GameState gameStateReceived = msg.getGameState();
 
+                // Eigene Daten anhand des erhaltenen GameStates aktualisieren
+                updateClientData(gameStateReceived);
 
-                // Daten an den neuen GameState anpassen
-                game.setGameTime(gameStateReceived.getGameTime());
-                game.getOtherPlayer().setGameStateData(gameStateReceived.getPlayerData());
-                game.getWitch().setGameStateData(gameStateReceived.getWitchData());
-
-
-                // Es ist ein Event aufgetreten
+                // Erhaltenen GameState auf Events überprüfen und ggf. behandeln
                 if(msg.getMessageType() == Message.Type.EVENT) {
-                    handleEvents(gameStateReceived);
+                    networkController.handleEvents(gameStateReceived);
                 }
 
-                GameState newGameState = new GameState(null, new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new EntityData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
-
-                if(!gameState.isEventTransmitted()) {
-
-                    Event event = gameState.getEvent();
-
-                    game.getNetworkController().setGameState(newGameState);
-                    game.getNetworkController().getGameState().setEvent(event);
-                    game.getNetworkController().setGameState(newGameState);
-                    gameState.setEventTransmitted(false);
-                    game.getNetworkController().getGameState().setEventTransmitted(false);
-
-                    System.out.println("ANZAHL:" + gameState.getEventQueue().size());
-
-
-                } else {
-                    game.getNetworkController().setGameState(newGameState);
-                    //gameState.clearEventQueue();
-                    //game.getNetworkController().getGameState().clearEventQueue();
-                    game.getNetworkController().getGameState().setEvent(null);
-                    gameState.setEvent(null);
-
-
-                }
+                // neuen GameState ermitteln, im Controller updaten und alles delegieren
+                networkController.createAndUpdateGameState();
             }
 
         } catch(Exception e) {
@@ -231,45 +184,19 @@ public class ClientEngine extends Thread implements Network {
         }
     }
 
+    // Eigene Daten an den neuen GameState anpassen
+    public void updateClientData(GameState gameStateReceived) {
+        game.setGameTime(gameStateReceived.getGameTime());
+        game.getOtherPlayer().setGameStateData(gameStateReceived.getPlayerData());
+        game.getWitch().setGameStateData(gameStateReceived.getWitchData());
+
+
+    }
+
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
-    public GameState getGameState() {
-        return gameState;
-    }
+
     public Game getGame() { return game; }
-
-
-    public void handleEvents(GameState gameStateReceived){
-
-        Event event = gameStateReceived.getEvent();
-        if(event == null) return;
-
-            switch(event.getType()) {
-
-                case VISITED:
-                    // Über alle Objekte iterieren und Objekt updatensdd
-                    List mapObjects = game.getMapRenderer().getMap().getMapSector().getAllContainingMapObjects();
-                    for(Object o : mapObjects ) {
-                        MapObject obj = (MapObject)o;
-                        MapObject eventMapObject = (MapObject)event.getObject();
-                        if(  (obj.getX() == eventMapObject.getX() && obj.getY() == eventMapObject.getY()) || ( obj == eventMapObject) ) {
-                            House h = (House)o;
-                            h.repaintAfterVisit();
-                            h.updateMap();
-                            h.setUnvisited(((House)eventMapObject).isUnvisited());
-
-                            System.out.println("GEFUNDEN: " + event.getObject());
-                        }
-                    }
-                    break;
-                case PAUSED:
-                    game.paused = true;
-                    break;
-                case UNPAUSED:
-                    game.paused = false;
-                    break;
-            }
-    }
 
 }

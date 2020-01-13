@@ -11,13 +11,12 @@ import main.java.map.Map;
 import main.java.map.MapGenerator;
 import main.java.map.Tile;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game {
     public static final int FRAMES = 50;
-    public final static int TIME = 180000;
+    public final static int TIME = 30000;
 
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
@@ -32,14 +31,14 @@ public class Game {
     // repräsentiert alle Objekte, die von EINER Spielinstanz verwaltet werde
     // LOKAL = Ein Spiel verwaltet 2 Spieler => Liste enthält Spieler 1 und Spieler 2
     // REMOTE = Jedes Spiel kümmert sich nur um seine EIGENEN Spieler - Liste enthält 1 Objekt
-    private ArrayList<Player> listOfPlayers = new ArrayList<>();
+    private CopyOnWriteArrayList<Player> listOfPlayers = new CopyOnWriteArrayList<>();
 
     private Witch witch;
     private AliceCooper aliceCooper;
 
     // enthält die Liste ALLER Entitäten : Spieler 1 + Spieler 2 + Hexe , zukünftig noch Alice Cooper
     // wichtig zur Kollisionserkennung
-    private ArrayList<Entity> listOfAllEntites = new ArrayList<>();
+    private CopyOnWriteArrayList<Entity> listOfAllEntites = new CopyOnWriteArrayList<>();
 
 
     private Window window;
@@ -50,6 +49,9 @@ public class Game {
     private MovementManager movementManager;
 
     private GameLauncher launcher;
+
+    // Eine Iteration der GameLoop
+    public int ticks = 0;
 
     public boolean paused;
 
@@ -82,13 +84,14 @@ public class Game {
     // get GameState from Server - get only called by CLIENT
     public Game(Network networkEngine, GameState gameState, Stage stage, MovementManager.MovementType movementType) {
 
-        this.networkController = new NetworkController(networkEngine, NetworkController.NetworkRole.CLIENT);
-        networkController.setGameState(gameState);
+        this.networkController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT);
+        networkController.updateGameState(gameState);
         this.gameMode = GameMode.REMOTE;
 
         this.player = new Player(movementType);
         this.otherPlayer = new Player(null);
 
+        System.out.println("GAMESTATE: " + gameState);
         this.player.setGameStateData(gameState.getPlayerData());
         this.otherPlayer.setGameStateData(gameState.getOtherPlayerData());
 
@@ -100,7 +103,7 @@ public class Game {
 
         this.listOfPlayers.add(player);
 
-        this.listOfAllEntites.addAll(Arrays.asList(player, otherPlayer, aliceCooper, witch));
+        this.listOfAllEntites.addAll(Arrays.asList(player, otherPlayer, /*aliceCooper, */witch));
 
         this.map = gameState.getMap();
 
@@ -144,12 +147,12 @@ public class Game {
         // setzt die Rolle im Netzwerk auf Server
         // instanziert den NetworkController, der die Netzwerkeigenschaften bündelt
         else {
-            this.networkController = new NetworkController(networkEngine, NetworkController.NetworkRole.SERVER);
+            this.networkController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.SERVER);
             this.otherPlayer = new Player(null);
         }
 
         otherPlayer.setxPos(player.getxPos());
-        otherPlayer.setyPos(player.getyPos() + Tile.TILE_SIZE);
+        otherPlayer.setyPos(player.getyPos() + 5 * Tile.TILE_SIZE);
 
         this.witch = new Witch();
         witch.setxPos(map.getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
@@ -159,13 +162,17 @@ public class Game {
         aliceCooper.setxPos(map.getSize() / 2 * Tile.TILE_SIZE + Tile.TILE_SIZE * 2);
         aliceCooper.setyPos(map.getSize() / 2 * Tile.TILE_SIZE + Tile.TILE_SIZE * 2);
 
-        this.listOfAllEntites.addAll(Arrays.asList(player, otherPlayer, aliceCooper, witch));
+        this.listOfAllEntites.addAll(Arrays.asList(player, otherPlayer, /*aliceCooper, */witch));
     }
 
 
     public void update() {
 
-        moveAllEntities();
+        if(paused) return;
+
+        checkGameOver();
+        updateProtection();
+        movementManager.moveAllEntites(networkController, listOfPlayers, witch);
         if(gameMode == GameMode.REMOTE) {
 
             // Das Animationsbild der anderen Entität wird gesetzt - true setzt für den Aufruf aus einem Netzwerk-Kontext
@@ -183,15 +190,29 @@ public class Game {
         }
     }
 
-    public void moveAllEntities() {
-        for(Player player : listOfPlayers)
-        {
-            movementManager.moveObject(player);
+    public void checkGameOver() {
+
+        if(player.getChildrenCount() == 0 && otherPlayer.getChildrenCount() == 0) {
+            gameTime = 0;
+        }
+    }
+
+    public void updateProtection() {
+
+        if(player.getChildrenCount() <= 0) {
+            //listOfPlayers.remove(player);
+            listOfAllEntites.remove(player);
         }
 
-        if(gameMode == GameMode.LOCAL) {
-            witch.setTarget(new Point((int)player.getxPos(), (int)player.getyPos()));
-            movementManager.moveObject(witch);
+        if(otherPlayer.getChildrenCount() <= 0) {
+            //listOfPlayers.remove(otherPlayer);
+            listOfAllEntites.remove(otherPlayer);
+        }
+
+        for(Player player : listOfPlayers) {
+            if(player.getProtectedTicks() > 0) {
+                player.setProtectedTicks(player.getProtectedTicks() - 1);
+            }
         }
     }
 
@@ -200,6 +221,8 @@ public class Game {
     public Player getOtherPlayer() { return otherPlayer; }
 
     public Witch getWitch() { return witch; }
+
+    public void setWitch(Witch witch) { this.witch = witch; }
 
     public AliceCooper getAliceCooper() { return aliceCooper; }
 
@@ -219,7 +242,7 @@ public class Game {
         return mapRenderer;
     }
 
-    public ArrayList<Player> getListOfPlayers() {
+    public CopyOnWriteArrayList<Player> getListOfPlayers() {
         return listOfPlayers;
     }
 
@@ -237,7 +260,7 @@ public class Game {
 
     public GameMode getGameMode() { return gameMode;  }
 
-    public ArrayList<Entity> getListOfAllEntites() {
+    public CopyOnWriteArrayList<Entity> getListOfAllEntites() {
         return listOfAllEntites;
     }
 
