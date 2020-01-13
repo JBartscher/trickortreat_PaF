@@ -23,13 +23,16 @@ public class Window {
     }
 
 
-    public void createGUI(){
+    public void createGUI() {
         this.root = new Group();
         this.scene = new Scene(root, WIDTH, HEIGHT);
 
 
     }
 
+    /**
+     * wird aufgerufen wenn das eigentliche Spiel gestartet wird
+     */
     public void showGameGUI() {
         stage.show();
         stage.setScene(scene);
