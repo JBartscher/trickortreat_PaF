@@ -21,11 +21,8 @@ public class SmallHouse extends House {
     public void visit(Player player) {
         /*
         if (isUnvisited) {
-            try {
-                Sound.playRing();
-            } catch (NoClassDefFoundError ex) {
-                ex.printStackTrace();
-            }
+
+            Sound.playRing();
 
             // Berechne die Menge der Süßigkeiten
             int candies = 0;

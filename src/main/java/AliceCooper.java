@@ -18,8 +18,8 @@ public class AliceCooper extends Entity {
 
         if(!isPlaying){
             isPlaying = true;
-            Sound.playMusic();
 
+            Sound.playCooper();
         }
     }
 

@@ -3,6 +3,7 @@ package main.java.Network;
 import main.java.*;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
+import main.java.map.Map;
 import main.java.map.MapObject;
 
 import java.io.ObjectOutputStream;
@@ -114,7 +115,7 @@ public class NetworkController extends GameController {
 
             case VISITED:
                 // Über alle Objekte iterieren und Objekt updatensdd
-                List<MapObject> mapObjects = game.getMapRenderer().getMap().getMapSector().getAllContainingMapObjects();
+                List<MapObject> mapObjects = Map.getInstance().getMapSector().getAllContainingMapObjects();
                 for (MapObject obj : mapObjects) {
                     MapObject eventMapObject = (MapObject) event.getObject();
                     if ((obj.getX() == eventMapObject.getX() && obj.getY() == eventMapObject.getY()) || (obj == eventMapObject)) {

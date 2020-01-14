@@ -3,6 +3,7 @@ package main.java;
 import javafx.scene.image.Image;
 import main.java.Network.EntityData;
 import main.java.map.Tile;
+import main.java.ui.GameMenu;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -11,7 +12,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static java.lang.Math.round;
 
 
-public abstract class Entity implements Serializable {
+public abstract class Entity extends Observable implements Serializable {
+    /**
+     * Entity is now extending Observable, because Player Objects which inherit Entity
+     * are now Observed by the GameMenu class.
+     *
+     * @see GameMenu#getFirstPlayerObserver()
+     * @see GameMenu#getSecondPlayerObserver()
+     */
 
     protected double xPos;
     protected double yPos;
@@ -36,13 +44,12 @@ public abstract class Entity implements Serializable {
     protected double speed = 240 * Game.FRAMES / 50;
 
 
-
     // Default-Werte
     protected Entity() {
         xPos = 0;
         yPos = 0;
         size = Tile.TILE_SIZE;
-        target = new Point((int)xPos, (int)yPos);
+        target = new Point((int) xPos, (int) yPos);
         this.spriteSheet = new SpriteSheet("player.png", 4, 3);
         this.sprite = spriteSheet.getSpriteImage(0, 1);
 
@@ -54,7 +61,7 @@ public abstract class Entity implements Serializable {
         xPos = 0;
         yPos = 0;
         size = Tile.TILE_SIZE;
-        target = new Point((int)xPos, (int)yPos);
+        target = new Point((int) xPos, (int) yPos);
         this.spriteSheet = new SpriteSheet("player.png", 4, 3);
         this.sprite = spriteSheet.getSpriteImage(0, 1);
     }
@@ -106,11 +113,11 @@ public abstract class Entity implements Serializable {
     }
 
     public void setTarget(double x, double y) {
-        target.x = (int)x;
-        target.y = (int)y;
+        target.x = (int) x;
+        target.y = (int) y;
     }
 
-    public void setInput(){
+    public void setInput() {
     }
 
     public double getSpeed() {
@@ -166,13 +173,13 @@ public abstract class Entity implements Serializable {
     }
 
     // every 7 Frames the image of "movement" get replaced by the following image
-    void changeMoveImages(){
+    void changeMoveImages() {
         animCounter++;
 
         double movementSize = getSpeed() / Game.FRAMES;
 
-        if(animCounter >= 5) {
-            if(moveCounter == 2) {
+        if (animCounter >= 5) {
+            if (moveCounter == 2) {
                 moveCounter = 0;
             } else {
                 moveCounter++;
@@ -181,14 +188,14 @@ public abstract class Entity implements Serializable {
         }
 
         // sofern am Ziel, dann Bild auf Stillstand setzen
-        if(Math.abs(target.x - xPos) < movementSize && Math.abs(target.y - yPos) < movementSize) {
-                moveCounter = 1;
+        if (Math.abs(target.x - xPos) < movementSize && Math.abs(target.y - yPos) < movementSize) {
+            moveCounter = 1;
         }
     }
 
 
     public void setEntityImage(boolean calledByNetworkContext) {
-        if(!calledByNetworkContext) changeMoveImages();
+        if (!calledByNetworkContext) changeMoveImages();
         Image currentImage = this.sprite;
         this.sprite = spriteSheet.getSpriteImage(moveCounter, moveDirection.ordinal());
 
@@ -199,14 +206,14 @@ public abstract class Entity implements Serializable {
     }
 
     public boolean init = true;
+
     public void setGameStateData(EntityData entityData) {
 
-        if(init) {
+        if (init) {
             init = false;
             this.xPos = entityData.getxPos();
             this.yPos = entityData.getyPos();
-        }
-        else {
+        } else {
             this.xPos = entityData.getxPos();
             this.yPos = entityData.getyPos();
             //this.xPos = (entityData.getxPos() + xPos) / 2;

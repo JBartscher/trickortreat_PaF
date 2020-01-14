@@ -6,8 +6,6 @@ import main.java.Network.PlayerData;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 
-import java.util.List;
-
 public class Player extends Entity {
 
     // represents amount of children
@@ -25,16 +23,13 @@ public class Player extends Entity {
     // Nach einer Kollision mit einer Hexe ist ein Spieler eine Zeit lang geschützt, um Mehrfachkollisionen zu vermeiden
     private double protectedTicks;
 
-
-    public Player(List children, MovementManager.MovementType type) {
+    /**
+     * constructor which creates a player Object with a specific MovementType
+     *
+     * @param type MovementType
+     */
+    public Player(MovementManager.MovementType type) {
         super();
-        this.movementType = type;
-    }
-
-    public Player(MovementManager.MovementType type)
-    {
-        super();
-        //TODO: BEHELFSMÄSSIG SOLANGE ES NOCH KEINE MOVEMENT-QUEUE GIBT!
         this.movementType = type;
     }
 
@@ -91,24 +86,20 @@ public class Player extends Entity {
         return movementType;
     }
 
-    public void setMovementType(MovementManager.MovementType movementType) {
-        this.movementType = movementType;
-    }
-
     public void setChildrenCount(int value) {
         this.childrenCount = value;
     }
 
-    public void setCandy(int candy) {
-        this.candy = candy;
-    }
-
+    /**
+     * makeshift method to make the gameState of a player object interchangeable between network players,
+     * without sending large objects like images via network.
+     *
+     * @param playerData PlayerData
+     */
     public void setGameStateData(PlayerData playerData) {
         super.setGameStateData(playerData);
 
-        //this.childrenSnake = playerData.getChildrenSnake();
         this.childrenCount = playerData.getChildrenCount();
-        //this.children = playerData.getChildren();
         this.candy = playerData.getCandy();
         this.xOffSet = playerData.getxOffSet();
         this.yOffSet = playerData.getyOffSet();
@@ -149,7 +140,6 @@ public class Player extends Entity {
     public void setProtectedTicks(double protectedTicks) {
         this.protectedTicks = protectedTicks;
     }
-
 
 
 }

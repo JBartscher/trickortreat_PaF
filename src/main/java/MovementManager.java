@@ -420,6 +420,12 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
         if(game.getGameTime() < 30000) {
             moveObject(witch);
+
+            try {
+                Sound.playCountdown();
+            } catch (NoClassDefFoundError ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -554,6 +560,8 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
                         System.out.println("NO COLLISION WEGEN PROTECTION!!"); return;
                     }
 
+                    Sound.playChild();
+                    
                     witch.setOnReturn(true);
                     player.setChildrenCount(player.getChildrenCount() - 1);
                     player.setProtectedTicks(100);

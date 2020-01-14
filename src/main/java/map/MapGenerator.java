@@ -16,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MapGenerator {
 
     private static final Random r = new Random();
+    private static final Configuration<Object> config = new Configuration<Object>();
 
     DistrictManager districtManager;
 
@@ -46,7 +47,6 @@ public class MapGenerator {
      * TODO: Switch with Builder Pattern.
      */
     public void createMap() {
-        Configuration<Object> config = new Configuration<Object>();
 
         generateBioms();
 

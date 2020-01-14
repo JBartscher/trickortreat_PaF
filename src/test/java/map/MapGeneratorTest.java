@@ -5,6 +5,7 @@ import main.java.map.MapGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 class MapGeneratorTest {
 
 
@@ -25,7 +26,7 @@ class MapGeneratorTest {
         mapGenerator.createMap();
         long endTime = System.currentTimeMillis();
         System.out.println(String.format("time needed %s for map creation", endTime - startTime));
-        TestMapPrinter.printMap(gameMap);
+        // TestMapPrinter.printMap(gameMap);
     }
 
     @Test
