@@ -94,6 +94,6 @@ public class GameController implements Observer {
         House h = (House)o;
         h.repaintAfterVisit();
         h.updateMap();
-        
+
     }
 }
