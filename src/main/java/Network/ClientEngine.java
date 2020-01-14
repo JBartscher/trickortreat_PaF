@@ -173,6 +173,8 @@ public class ClientEngine extends Thread implements Network {
 
                 // neuen GameState ermitteln, im Controller updaten und alles delegieren
                 networkController.createAndUpdateGameState();
+
+
             }
 
         } catch(Exception e) {
