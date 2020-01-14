@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import main.java.Game;
 import main.java.GameLauncher;
 import main.java.GraphicsUtility;
+import main.java.Sound;
 import main.java.Network.NetworkController;
 import main.java.Window;
 import main.java.gameobjects.Player;
@@ -64,6 +65,8 @@ public class GameOver {
                 new HighScoreGUI().checkScore(new int[]{player2.getCandy()}, 0, false);
             }
         }
+
+        Sound.playGameover();
 
         ImageView imageView = new ImageView(new Image(MainMenu.class.getResource("main_menu_converted.png").toExternalForm()));
         imageView.setOpacity(0.7);
@@ -128,6 +131,7 @@ public class GameOver {
                 //startGame(game.gameMode, game.getNetworkController().getNetworkEngine(), movementTypePlayer1, movementTypePlayer2);
             }
 
+            Sound.playMusic();
         });
 
         buttonMainMenu.setOnAction( (e) -> {

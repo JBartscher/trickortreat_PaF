@@ -14,7 +14,6 @@ import java.util.List;
 
 public class GameController implements Observer {
 
-
     protected Game game;
 
     public GameController(Game game) {
@@ -37,12 +36,8 @@ public class GameController implements Observer {
         // Movement - Weiterleiten an Controller-Klasse
         game.getWindow().getScene().addEventHandler(InputEvent.ANY, game.getMovementManager());
 
-        try {
-            //Sound.playMusic();
-        } catch (NoClassDefFoundError ex) {
-            ex.printStackTrace();
-        }
-
+        // Hintergrundmusik
+        Sound.playMusic();
     }
 
     public void initNetwork() {
