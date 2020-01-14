@@ -124,7 +124,7 @@ public class ClientEngine extends Thread implements Network {
 
         try {
             Message msg = (Message)input.readObject();
-            GameState gameStateReceived = msg.getGameState();
+            GameStateInit gameStateReceived = (GameStateInit)(msg.getGameState());
             this.gameState = gameStateReceived;
             Platform.runLater( () -> {
                 System.out.println(gameStateReceived);
@@ -155,7 +155,6 @@ public class ClientEngine extends Thread implements Network {
         try{
 
             while(true) {
-
                 // GameState über ObjectOutputStream an den Server verschicken
                 networkController.sendMessage(output, gameState);
 

@@ -65,8 +65,8 @@ public class GameController implements Observer {
         game.setGameCameraEnemy(setGameCameraEnemy());
 
 
-        game.getOtherPlayer().setyPos(game.getPlayer().getxPos());
-        game.getOtherPlayer().setyPos(game.getPlayer().getyPos() + 5 * Tile.TILE_SIZE);
+        game.getOtherPlayer().setxPos(game.getPlayer().getxPos());
+        game.getOtherPlayer().setyPos(game.getOtherPlayer().getyPos() + 5 * Tile.TILE_SIZE);
 
         game.setWitch(new Witch());
 

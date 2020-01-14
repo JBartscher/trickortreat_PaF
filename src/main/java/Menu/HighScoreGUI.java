@@ -43,7 +43,7 @@ public class HighScoreGUI {
             if (!file.exists()) {
                 file.createNewFile();
                 ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
-                // Wichtig zur einmaligen Erstellung des Overheads, den der ObjectInputStream ben�tigt
+                // Wichtig zur einmaligen Erstellung des Overheads, den der ObjectInputStream benötigt
                 os.writeObject(new ArrayList<HighScoreItem>());
                 os.flush();
                 os.close();

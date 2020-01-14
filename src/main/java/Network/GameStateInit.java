@@ -1,12 +1,14 @@
 package main.java.Network;
 
-import java.io.Serializable;
+import main.java.map.Map;
+
 import java.util.ArrayList;
 
-public class GameState implements Serializable, Cloneable {
+public class GameStateInit extends GameState {
 
     private static final long serialVersionUID = 1287629170864898744L;
 
+    private Map map;
     private PlayerData playerData;
     private PlayerData otherPlayerData;
 
@@ -19,7 +21,9 @@ public class GameState implements Serializable, Cloneable {
 
     private int gameTime;
 
-    public GameState(PlayerData playerData, PlayerData otherPlayerData,WitchData witchData, CooperData cooperData, Event event, int gameTime) {
+    public GameStateInit(Map map, PlayerData playerData, PlayerData otherPlayerData,WitchData witchData, CooperData cooperData, Event event, int gameTime) {
+        super(playerData, otherPlayerData, witchData, cooperData, event, gameTime);
+        this.map = map;
         this.playerData  = playerData;
         this.otherPlayerData = otherPlayerData;
         this.cooperData = cooperData;
@@ -27,6 +31,14 @@ public class GameState implements Serializable, Cloneable {
         this.event = event;
 
         this.gameTime = gameTime;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
     }
 
     public PlayerData getPlayerData() {
@@ -107,6 +119,4 @@ public class GameState implements Serializable, Cloneable {
         eventQueue.clear();
         eventTransmitted = true;
     }
-
-
 }
