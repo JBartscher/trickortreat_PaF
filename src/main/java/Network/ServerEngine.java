@@ -131,7 +131,7 @@ public class ServerEngine extends Thread implements Network {
                 labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
                 game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
                 networkController = (NetworkController)game.getGameController();
-                networkController.updateGameState(new GameState(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), null, Game.TIME));
+                networkController.updateGameState(new GameStateInit(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), null, Game.TIME));
 
             });
 
@@ -185,7 +185,6 @@ public class ServerEngine extends Thread implements Network {
         }
 
         public void sendFirstGameStateToClient() {
-
             Platform.runLater(() -> {
                 // Instanziert ein neues Game-Objekt - sendet GameState zum Client
 
@@ -218,7 +217,7 @@ public class ServerEngine extends Thread implements Network {
             while(true) {
 
                 long start = System.currentTimeMillis();
-                Thread.sleep(20);
+                Thread.sleep(10);
 
                 // Nachricht vom Client lesen, in GameState konvertieren u. eigenen GameState aktualisieren
                 Message msg = (Message)input.readObject();
@@ -233,13 +232,13 @@ public class ServerEngine extends Thread implements Network {
                 }
 
                 // Neuen GameState ermitteln u. überprüfen (sind noch eigene Events nicht verschicken wurden?)
-                GameState newGameState = new GameState(null, new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
+                GameState newGameState = new GameState(new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
                 networkController.updateGameState(newGameState);
 
                 // neuen GameState nach Überprüfung verschicken
                 networkController.sendMessage(output, newGameState);
 
-                //System.out.println(System.currentTimeMillis() - start);
+                System.out.println(System.currentTimeMillis() - start);
             }
 
         } catch(Exception e) {

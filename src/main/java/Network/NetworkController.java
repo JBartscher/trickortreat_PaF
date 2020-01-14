@@ -67,7 +67,7 @@ public class NetworkController extends GameController {
     }
 
     public void createAndUpdateGameState() {
-        GameState newGameState = new GameState(null, new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
+        GameState newGameState = new GameState(new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
         updateGameState(newGameState);
 
     }
@@ -169,3 +169,4 @@ public class NetworkController extends GameController {
         return null;
     }
 }
+

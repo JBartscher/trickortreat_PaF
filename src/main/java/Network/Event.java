@@ -1,15 +1,16 @@
 package main.java.Network;
 
-import java.io.Serializable;
+import java.io.*;
 
 public class Event implements Serializable, Cloneable {
+
 
     private static final long serialVersionUID = 744265289056445070L;
     private Object object;
     private EventType type;
 
     public enum EventType implements Serializable {
-        VISITED, COLLISION, PAUSED, UNPAUSED
+       VISITED, COLLISION, PAUSED, UNPAUSED
     }
 
     public Event(Object o, EventType type) {

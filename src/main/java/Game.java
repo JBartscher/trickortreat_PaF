@@ -1,7 +1,7 @@
 package main.java;
 
 import javafx.stage.Stage;
-import main.java.Network.GameState;
+import main.java.Network.GameStateInit;
 import main.java.Network.Network;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game {
     public static final int FRAMES = 50;
-    public final static int TIME = 35000;
+    public final static int TIME = 180000;
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
@@ -90,7 +90,7 @@ public class Game {
     }
 
     // get GameState from Server - get only called by CLIENT
-    public Game(Network networkEngine, GameState gameState, Stage stage, MovementManager.MovementType movementType) {
+    public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType) {
 
         this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT);
         ((NetworkController)gameController).updateGameState(gameState);
