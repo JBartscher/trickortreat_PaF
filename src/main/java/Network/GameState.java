@@ -7,17 +7,17 @@ public class GameState implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1287629170864898744L;
 
-    private PlayerData playerData;
-    private PlayerData otherPlayerData;
+    protected PlayerData playerData;
+    protected PlayerData otherPlayerData;
 
-    private CooperData cooperData;
-    private WitchData witchData;
+    protected CooperData cooperData;
+    protected WitchData witchData;
 
-    private ArrayList<Event> eventQueue = new ArrayList<>();
-    private Event event;
-    private boolean eventTransmitted = true;
+    //private ArrayList<Event> eventQueue = new ArrayList<>();
+    protected Event event;
+    protected boolean eventTransmitted = true;
 
-    private int gameTime;
+    protected int gameTime;
 
     public GameState(PlayerData playerData, PlayerData otherPlayerData,WitchData witchData, CooperData cooperData, Event event, int gameTime) {
         this.playerData  = playerData;
@@ -78,7 +78,7 @@ public class GameState implements Serializable, Cloneable {
     }
 
     public void addEvent(Object o, Event.EventType type) {
-        this.eventQueue.add(new Event(o, type));
+        //this.eventQueue.add(new Event(o, type));
         eventTransmitted = false;
         this.event = new Event(o, type);
     }
@@ -91,20 +91,20 @@ public class GameState implements Serializable, Cloneable {
         return this.event;
     }
 
-    public ArrayList<Event> getEventQueue() {
-        return eventQueue;
-    }
+    //public ArrayList<Event> getEventQueue() {
+     //   return eventQueue;
+    //}
 
     public void setEventQueue(ArrayList<Event> eventQueue) {
 
-        this.eventQueue.clear();
-        this.eventQueue.addAll(eventQueue);
+        //this.eventQueue.clear();
+        //this.eventQueue.addAll(eventQueue);
 
         //this.eventQueue = eventQueue;
     }
 
     public void clearEventQueue() {
-        eventQueue.clear();
+        //eventQueue.clear();
         eventTransmitted = true;
     }
 
