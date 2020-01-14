@@ -7,6 +7,7 @@ import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
+import main.java.ui.GameMenu;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,7 +39,7 @@ public class Game {
 
     // enthält die Liste ALLER Entitäten : Spieler 1 + Spieler 2 + Hexe , zukünftig noch Alice Cooper
     // wichtig zur Kollisionserkennung
-    private CopyOnWriteArrayList<Entity> listOfAllEntites = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Entity> listOfAllEntities = new CopyOnWriteArrayList<>();
 
     private Window window;
 
@@ -84,7 +85,6 @@ public class Game {
         // instanziert die Entitäten, setzt die Steuerung und ggf. Netzwerk
         //initPlayerAndNetwork(networkEngine, movementTypePlayer1, movementTypePlayer2);
         gameController.initEntities(movementTypePlayer1, movementTypePlayer2);
-        gameController.initNetwork();
         gameController.initGUIandSound(stage);
         gameController.initObservers();
     }
@@ -102,6 +102,11 @@ public class Game {
         this.player.setGameStateData(gameState.getPlayerData());
         this.otherPlayer.setGameStateData(gameState.getOtherPlayerData());
 
+        System.out.println(gameState.getOtherPlayerData().getxPos());
+
+        player.addObserver(GameMenu.getInstance().getSecondPlayerObserver());
+        otherPlayer.addObserver(GameMenu.getInstance().getFirstPlayerObserver());
+
         this.aliceCooper = new AliceCooper();
         this.witch = new Witch();
         this.aliceCooper.setGameStateData(gameState.getCooperData());
@@ -109,7 +114,7 @@ public class Game {
 
         this.listOfPlayers.add(player);
 
-        this.listOfAllEntites.addAll(Arrays.asList(player, otherPlayer, /*aliceCooper, */witch));
+        this.listOfAllEntities.addAll(Arrays.asList(player, otherPlayer, /*aliceCooper, */witch));
 
         this.map = gameState.getMap();
 
@@ -147,12 +152,12 @@ public class Game {
 
         if(player.getChildrenCount() <= 0) {
             //listOfPlayers.remove(player);
-            listOfAllEntites.remove(player);
+            listOfAllEntities.remove(player);
         }
 
         if(otherPlayer.getChildrenCount() <= 0) {
             //listOfPlayers.remove(otherPlayer);
-            listOfAllEntites.remove(otherPlayer);
+            listOfAllEntities.remove(otherPlayer);
         }
 
         for(Player player : listOfPlayers) {
@@ -203,8 +208,8 @@ public class Game {
 
     public GameMode getGameMode() { return gameMode;  }
 
-    public CopyOnWriteArrayList<Entity> getListOfAllEntites() {
-        return listOfAllEntites;
+    public CopyOnWriteArrayList<Entity> getListOfAllEntities() {
+        return listOfAllEntities;
     }
 
     public void setWindow(Window window) {

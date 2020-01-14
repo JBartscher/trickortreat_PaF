@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.round;
 
-public class MovementManager implements EventHandler<InputEvent>, Serializable {
+public class MovementManager implements EventHandler<InputEvent> {
 
     Player player1;
     Player player2;
@@ -537,7 +537,7 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
     }
 
     public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
-        for(Entity e : game.getListOfAllEntites()) {
+        for(Entity e : game.getListOfAllEntities()) {
             if(e == entity) continue;
 
             double offset = 0.5;

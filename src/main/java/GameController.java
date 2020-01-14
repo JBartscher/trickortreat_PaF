@@ -40,9 +40,6 @@ public class GameController implements Observer {
         Sound.playMusic();
     }
 
-    public void initNetwork() {
-
-    }
 
     /**
      * the players have now each a Observer to change the Score when visiting a house.
@@ -66,7 +63,7 @@ public class GameController implements Observer {
 
 
         game.getOtherPlayer().setxPos(game.getPlayer().getxPos());
-        game.getOtherPlayer().setyPos(game.getOtherPlayer().getyPos() + 5 * Tile.TILE_SIZE);
+        game.getOtherPlayer().setyPos(game.getPlayer().getyPos() + 5 * Tile.TILE_SIZE);
 
         game.setWitch(new Witch());
 
@@ -75,12 +72,11 @@ public class GameController implements Observer {
 
         game.setAliceCooper(new AliceCooper());
 
-        game.getListOfAllEntites().addAll(Arrays.asList(game.getPlayer(), game.getOtherPlayer(), game.getWitch()));
+        game.getListOfAllEntities().addAll(Arrays.asList(game.getPlayer(), game.getOtherPlayer(), game.getWitch()));
 
     }
 
     public void initObservers() {
-
         List<MapObject> mapObjects = game.getMap().getMapSector().getAllContainingMapObjects();
         for (MapObject mapObject : mapObjects) {
             mapObject.addObserver(this);
