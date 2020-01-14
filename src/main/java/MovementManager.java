@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.round;
 
-public class MovementManager implements EventHandler<InputEvent>, Serializable {
+public class MovementManager implements EventHandler<InputEvent> {
 
     Player player1;
     Player player2;
@@ -40,12 +40,12 @@ public class MovementManager implements EventHandler<InputEvent>, Serializable {
 
 
     // There are three different kinds of movement types
-    public enum MovementType implements Serializable {
+    public enum MovementType {
         KEYBOARD_AWSD, KEYBOARD_ARROW, MOUSE;
     }
 
     // represents the move directions to animate the entities
-    public enum MoveDirection implements Serializable {
+    public enum MoveDirection {
         DOWN, LEFT, RIGHT, UP
     }
 

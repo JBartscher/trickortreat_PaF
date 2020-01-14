@@ -83,6 +83,7 @@ public class EntityData implements Serializable {
         this.moveDirection = moveDirection;
     }
 
+
     public int getAnimCounter() {
         return animCounter;
     }

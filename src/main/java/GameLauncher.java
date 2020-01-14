@@ -23,7 +23,6 @@ public class GameLauncher extends Application {
         mainMenu.showMainMenu();
     }
 
-
     public void startGame(Game.GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
         this.movementTypePlayer1 = movementTypePlayer1;
         this.movementTypePlayer2 = movementTypePlayer2;
@@ -59,6 +58,7 @@ public class GameLauncher extends Application {
 
                 try {
                     int sleepTime = (int) (1000 / FRAMES - (endTime - startTime));
+                    System.out.println("Benötigte Zeit: " + sleepTime);
                     if (sleepTime < 0) sleepTime = 0;
                     Thread.sleep(sleepTime);
 
