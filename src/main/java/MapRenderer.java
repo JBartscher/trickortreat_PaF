@@ -9,7 +9,7 @@ import javafx.scene.text.Text;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.Tile;
-import main.java.ui.GameUI;
+import main.java.ui.GameMenu;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +19,6 @@ public class MapRenderer {
     private Window window;
     private Tile[][][] tileMap;
     private Game game;
-    private GameUI gameMenu = new GameUI();
 
     public MapRenderer(Map map, Window window, Game game) {
         this.map = map;
@@ -164,9 +163,11 @@ public class MapRenderer {
             root.getChildren().addAll(textPaused, rect);
 
         }
-
-        gameMenu.updateTimeText(calculateTime(game));
-        gameMenu.addGameMenuToScene(root);
+        /**
+         * Singleton GameMenu-JavaFx Group, welche alle InGameMenu Elemente hält, und so nicht in jeder draw() neu initialisiert werden muss
+         */
+        GameMenu.getInstance().updateTimeText(calculateTime(game));
+        GameMenu.getInstance().addGameMenuToScene(root);
     }
 
     public void drawEntity(Group root, Entity entity, GameCamera gameCamera, int widthOffset, double xPosOffset, double yPosOffset, double scaleFactor) {
@@ -190,73 +191,6 @@ public class MapRenderer {
             root.getChildren().add(entityImage);
         }
 
-
     }
-
-    public void setHeadlineIcons(Group root) {
-        root.getChildren();
-        /*
-        // HEADLINE
-        Image head = new Image(MapRenderer.class.getResourceAsStream("headline.png"));
-        ImageView headLine = new ImageView(head);
-        root.getChildren().add(headLine);
-
-
-        // Zeitanzeige
-        // Text text = (Text) root.lookup("#timerText");
-        System.out.println((Text)  root.getScene().lookup("timerText"));
-        System.out.println((Text) root.getScene().lookup("#timerText"));
-
-        // Text text = new Text();
-        // GraphicsUtility.setTextProperties(text, "-fx-font: 32 arial;", Color.WHITE, Window.WIDTH / 2 - 10, 50.0);
-
-        // Zeitanzeige
-        Text textSound = new Text("MUTE SOUND with KEY M");
-        GraphicsUtility.setTextProperties(textSound, "-fx-font: 16 arial;", Color.WHITE, Window.WIDTH / 2 - 80, 70);
-
-        textSound.setOnMouseClicked( (e) -> {
-            Sound.muteSound();
-        });
-
-        Text textCandy;
-        Text textCandy2;
-
-        if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-            textCandy = new Text("Spieler 1 - Candy: " + game.getPlayer().getCandy());
-            textCandy2 = new Text("Spieler 2 - Candy: " + game.getOtherPlayer().getCandy());
-
-        } else if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
-            textCandy = new Text("Spieler 1 - Candy: " + game.getOtherPlayer().getCandy());
-            textCandy2 = new Text("Spieler 2 - Candy: " + game.getPlayer().getCandy());
-        } else {
-            textCandy = new Text("Spieler 1 - Candy: " + game.getPlayer().getCandy());
-            textCandy2 = new Text("Spieler 2 - Candy: " + game.getOtherPlayer().getCandy());
-        }
-
-
-        textCandy.setStyle("-fx-font: 32 arial;");
-        GraphicsUtility.setTextProperties(textCandy, "-fx-font: 32 arial;", Color.WHITE, 150, 50.0 );
-
-        textCandy2.setStyle("-fx-font: 32 arial;");
-        GraphicsUtility.setTextProperties(textCandy2, "-fx-font: 32 arial;", Color.WHITE, 800, 50.0 );
-
-        ImageView imageCandyPlayer  = new ImageView(GraphicsUtility.getCandyImage());
-        GraphicsUtility.setImageProperties(imageCandyPlayer, Window.WIDTH / 3 + 40, 22);
-
-        ImageView imageCandyPlayer2  = new ImageView(GraphicsUtility.getCandyImage());
-        GraphicsUtility.setImageProperties(imageCandyPlayer2, 1120, 22);
-
-        // text.setText(calculateTime(game));
-
-        // text.setStrokeWidth(5.0);
-
-        root.getChildren().addAll(textCandy, imageCandyPlayer, textCandy2, imageCandyPlayer2, textSound);
-        */
-    }
-
-    public Map getMap() {
-        return map;
-    }
-
 
 }

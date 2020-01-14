@@ -27,11 +27,12 @@ public abstract class House extends MapObject {
 
     /**
      * House constructor.
-     *
+     * <p>
      * fills the whole tileset with House-Tiles and creates a Door-Tile at a suitable place.
-     * @param x x coordinate on game map
-     * @param y y coordinate on game map
-     * @param tileWidth width
+     *
+     * @param x          x coordinate on game map
+     * @param y          y coordinate on game map
+     * @param tileWidth  width
      * @param tileHeight height
      */
     public House(int x, int y, int tileWidth, int tileHeight) {
@@ -41,6 +42,7 @@ public abstract class House extends MapObject {
 
     /**
      * gets an Tile of the House by its row and column index
+     *
      * @param r row index
      * @param c column index
      * @return the tile that is indexed by r and c
@@ -76,16 +78,17 @@ public abstract class House extends MapObject {
             // Berechne die Menge der Süßigkeiten
             int candies = 0;
             Random random = new Random();
-            for(int i = 0; i < player.getChildrenCount(); i++) {
+            for (int i = 0; i < player.getChildrenCount(); i++) {
                 int zahl = random.nextInt(2);
-                candies += (int)(this.district.getCandy_multiplikator() + zahl);
+                candies += (int) (this.district.getCandy_multiplikator() + zahl);
             }
 
             player.addCandy(candies);
+            player.notifyObservers(player);
         }
         this.isUnvisited = false;
         notifyObservers(observers);
-        
+
     }
 
     public void updateMap() {
@@ -100,7 +103,6 @@ public abstract class House extends MapObject {
 
         Map.getInstance().setMap(map);
     }
-
 
 
     public boolean isUnvisited() {

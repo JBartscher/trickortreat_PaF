@@ -7,6 +7,7 @@ import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 import main.java.map.Tile;
+import main.java.ui.GameMenu;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,12 +49,22 @@ public class GameController implements Observer {
 
     }
 
+    /**
+     * the players have now each a Observer to change the Score when visiting a house.
+     *
+     * @param movementTypePlayer1
+     * @param movementTypePlayer2
+     */
     public void initEntities(MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
 
         game.setPlayer(new Player(movementTypePlayer1));
         game.getListOfPlayers().add(game.getPlayer());
+        // add Score-Observer which notifyes its Score text when this player visits a house
+        game.getPlayer().addObserver(GameMenu.getInstance().getFirstPlayerObserver());
 
         game.setOtherPlayer(new Player(movementTypePlayer2));
+        // add Score-Observer which notifyes its Score text when this otherPlayer visits a house
+        game.getOtherPlayer().addObserver(GameMenu.getInstance().getSecondPlayerObserver());
         game.getListOfPlayers().add(game.getOtherPlayer());
         Game.WIDTH = Window.WIDTH / 2 - Tile.TILE_SIZE;
         game.setGameCameraEnemy(setGameCameraEnemy());
@@ -76,7 +87,7 @@ public class GameController implements Observer {
     public void initObservers() {
 
         List<MapObject> mapObjects = game.getMap().getMapSector().getAllContainingMapObjects();
-        for(MapObject mapObject : mapObjects){
+        for (MapObject mapObject : mapObjects) {
             mapObject.addObserver(this);
         }
     }
@@ -91,9 +102,9 @@ public class GameController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        House h = (House)o;
+        House h = (House) o;
         h.repaintAfterVisit();
         h.updateMap();
-        
+
     }
 }
