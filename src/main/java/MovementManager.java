@@ -421,11 +421,7 @@ public class MovementManager implements EventHandler<InputEvent> {
         if(game.getGameTime() < 30000) {
             moveObject(witch);
 
-            try {
-                Sound.playCountdown();
-            } catch (NoClassDefFoundError ex) {
-                ex.printStackTrace();
-            }
+            Sound.playCountdown();
         }
     }
 
