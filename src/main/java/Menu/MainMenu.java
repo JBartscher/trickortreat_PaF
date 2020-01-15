@@ -34,17 +34,40 @@ public class MainMenu {
     private GameLauncher gameLauncher;
     private Game.GameMode gameMode;
 
-
     private static Scene scene;
     private static final int WIDTH = Window.WIDTH;
     private static final int HEIGHT = Window.HEIGHT;
 
+    private Pane root = new Pane();
+    private VBox menuBox = new VBox(-5);
+    private VBox localMenuBox = new VBox(-5);
+
+    private Line line;
+
+    private List<Pair<String, Runnable>> localMenuData = Arrays.asList(
+        new Pair<String, Runnable>("Play the Game", () -> {
+
+            gameMode = Game.GameMode.LOCAL;
+            gameLauncher.startGame(Game.GameMode.LOCAL, null, MovementManager.MovementType.KEYBOARD_AWSD, MovementManager.MovementType.KEYBOARD_ARROW);
+        }),
+        new Pair<String, Runnable>("Player One WASD ", () -> {
+        }),
+        new Pair<String, Runnable>("Player Two Arrows", () -> {
+        }),
+        new Pair<String, Runnable>("Audio enabled", () -> {
+        })
+    );
+
     private List<Pair<String, Runnable>> menuData = Arrays.asList(
             new Pair<String, Runnable>("Play local", () -> {
 
-                gameMode = Game.GameMode.LOCAL;
-                gameLauncher.startGame(Game.GameMode.LOCAL, null, MovementManager.MovementType.KEYBOARD_AWSD, MovementManager.MovementType.KEYBOARD_ARROW);
+                removeMenu(menuBox);
+                removeLine(line);
 
+                addMenu(WIDTH / 2 - 100 + 5, HEIGHT / 3 + 50 + 5, localMenuData, localMenuBox);
+                addLine(WIDTH / 2 - 100, HEIGHT / 3 + 50, 180);
+
+                startAnimation(localMenuBox);
             }),
             new Pair<String, Runnable>("Host a Game", () -> {
                 gameMode = Game.GameMode.REMOTE;
@@ -60,41 +83,37 @@ public class MainMenu {
             new Pair<String, Runnable>("Highscore", () -> {
                 //gameMode = Game.GameMode.REMOTE;
                 //new ClientEngine(gameLauncher, stage);
-
+                
             }),
 
             new Pair<String, Runnable>("Credits", () -> {}),
             new Pair<String, Runnable>("Exit to Desktop", Platform::exit)
     );
 
-
     public MainMenu(Stage stage, GameLauncher gameLauncher) {
+
         this.stage = stage;
         this.gameLauncher = gameLauncher;
     }
 
-
-
-    private Pane root = new Pane();
-    private VBox menuBox = new VBox(-5);
-    private Line line;
-
     private Parent createContent() {
+
         addBackground();
         addTitle();
 
         double lineX = WIDTH / 2 - 100;
         double lineY = HEIGHT / 3 + 50;
 
-        addLine(lineX, lineY);
-        addMenu(lineX + 5, lineY + 5);
+        addLine(lineX, lineY, 260);
+        addMenu(lineX + 5, lineY + 5, menuData, menuBox);
 
-        startAnimation();
+        startAnimation(menuBox);
 
         return root;
     }
 
     private void addBackground() {
+
         ImageView imageView = new ImageView(new Image(getClass().getResource("main_menu_converted.png").toExternalForm()));
         imageView.setOpacity(0.9);
         ColorAdjust colorAdjust = new ColorAdjust();
@@ -108,6 +127,7 @@ public class MainMenu {
     }
 
     private void addTitle() {
+
         MenuTitle title = new MenuTitle("TRICK OR TREAT V.0.4", 48);
         title.setTranslateX(WIDTH / 2 - title.getTitleWidth() / 2);
         title.setTranslateY(HEIGHT / 4);
@@ -115,8 +135,9 @@ public class MainMenu {
         root.getChildren().add(title);
     }
 
-    private void addLine(double x, double y) {
-        line = new Line(x, y, x, y + 300);
+    private void addLine(double x, double y, int height) {
+
+        line = new Line(x, y, x, y + height);
         line.setStrokeWidth(3);
         line.setStroke(Color.color(1, 1, 1, 0.75));
         line.setEffect(new DropShadow(5, Color.BLACK));
@@ -125,13 +146,14 @@ public class MainMenu {
         root.getChildren().add(line);
     }
 
-    private void startAnimation() {
+    private void startAnimation(VBox box) {
+
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), line);
         st.setToY(1);
         st.setOnFinished(e -> {
 
-            for (int i = 0; i < menuBox.getChildren().size(); i++) {
-                Node n = menuBox.getChildren().get(i);
+            for (int i = 0; i < box.getChildren().size(); i++) {
+                Node n = box.getChildren().get(i);
 
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(1 + i * 0.15), n);
                 tt.setToX(0);
@@ -139,13 +161,15 @@ public class MainMenu {
                 tt.play();
             }
         });
+
         st.play();
     }
 
-    private void addMenu(double x, double y) {
-        menuBox.setTranslateX(x);
-        menuBox.setTranslateY(y);
-        menuData.forEach(data -> {
+    private void addMenu(double x, double y, List<Pair<String, Runnable>> type, VBox box) {
+
+        box.setTranslateX(x);
+        box.setTranslateY(y);
+        type.forEach(data -> {
             MenuItem item = new MenuItem(data.getKey());
             item.setOnAction(data.getValue());
             item.setTranslateX(-300);
@@ -155,14 +179,23 @@ public class MainMenu {
 
             item.setClip(clip);
 
-            menuBox.getChildren().addAll(item);
+            box.getChildren().addAll(item);
         });
 
-        root.getChildren().add(menuBox);
+        root.getChildren().add(box);
     }
 
-    public void showMainMenu() {
+    private void removeMenu(VBox box) {
 
+        root.getChildren().remove(box);
+    }   
+
+    private void removeLine(Line line) {
+
+        root.getChildren().remove(line);
+    }   
+
+    public void showMainMenu() {
 
         if(scene == null)
             scene = new Scene(createContent());
