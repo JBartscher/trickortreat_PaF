@@ -62,7 +62,7 @@ public class GameLauncher extends Application {
 
             gesamtTime += (System.currentTimeMillis() - startTime);
 
-            System.out.println("Gesamtzeit: " + gesamtTime + " ms - UpdateZeit: " + updateTime + " ms - Renderzeit: " + renderTime + " ms");
+            //System.out.println("Gesamtzeit: " + gesamtTime + " ms - UpdateZeit: " + updateTime + " ms - Renderzeit: " + renderTime + " ms");
         }
 
         public void calculateGameTime(long startTime) {

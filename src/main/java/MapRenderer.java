@@ -94,7 +94,6 @@ public class MapRenderer {
                 }
             }
 
-
             // Eigenen Spieler und Anhang zeichnen
             for (int i = 0; i < obj.getChildrenCount(); i++) {
                Image imagePlayer = obj.getEntityImage();
@@ -110,11 +109,8 @@ public class MapRenderer {
                     yPos += 0.33 * Tile.TILE_SIZE;
                 }
 
-
-
                 gc.drawImage(imagePlayer, xPos, yPos, 32, 32);
             }
-
 
             Rectangle middleTile = null;
             // zeichnet jeweils den anderen Spieler und seinen Anhang
@@ -144,7 +140,7 @@ public class MapRenderer {
             }
 
             drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1);
-            drawEntity(gc, game.getAliceCooper(), gameCamera, widthOffset, 0, 0, 1);
+            //drawEntity(gc, game.getAliceCooper(), gameCamera, widthOffset, 0, 0, 1);
 
             // Mittelstück wird hinzugefügt, sofern ein Splitscreen existiert
             if (middleTile != null)
@@ -154,7 +150,6 @@ public class MapRenderer {
 
             widthOffset += Game.WIDTH + 2 * Tile.TILE_SIZE;
         }
-
 
         if (game.paused) {
             Text textPaused = new Text("PAUSED");

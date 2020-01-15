@@ -10,9 +10,7 @@ import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientEngine extends Thread implements Network {
@@ -111,8 +109,9 @@ public class ClientEngine extends Thread implements Network {
         try {
             socket = new Socket(ip, ServerEngine.PORT);
 
-            output = new ObjectOutputStream(socket.getOutputStream());
-            input = new ObjectInputStream(socket.getInputStream());
+            output = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            output.flush();
+            input = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
 
         } catch (IOException e) {
