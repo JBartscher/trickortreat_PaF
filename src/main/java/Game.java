@@ -8,13 +8,17 @@ import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
 import main.java.ui.GameMenu;
+import main.java.Configuration;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game {
-    public static final int FRAMES = 50;
-    public final static int TIME = 180000;
+
+    private final static Configuration<Object> config = new Configuration<Object>();
+
+    public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
+    public final static int TIME = ((Number) config.getParam("time")).intValue();
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
