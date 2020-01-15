@@ -22,5 +22,5 @@
   "tileSize":64,"scorePlayerTwo":0,"controlsPlayerTwo":"keyboard",
   "ringFile":"src\/main\/java\/sounds\/Doorbell-SoundBible.com-516741062.mp3",
   "musicFile":"src\/main\/java\/sounds\/looperman-l-2384498-0185175-halloween-type-melody.wav",
-  "frames":50,
+  "frames":30,
   "time":180000}
