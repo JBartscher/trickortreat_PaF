@@ -1,7 +1,6 @@
 package main.java.Network;
 
 import main.java.*;
-import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.Map;
 import main.java.map.MapObject;
@@ -114,6 +113,7 @@ public class NetworkController extends GameController {
         switch (event.getType()) {
 
             case VISITED:
+
                 // Über alle Objekte iterieren und Objekt updatensdd
                 List<MapObject> mapObjects = Map.getInstance().getMapSector().getAllContainingMapObjects();
                 for (MapObject obj : mapObjects) {
@@ -124,12 +124,13 @@ public class NetworkController extends GameController {
                         h.repaintAfterVisit();
                         h.updateMap();
                         h.setUnvisited(((House) eventMapObject).isUnvisited());
+                        game.getOtherPlayer().notifyObservers(game.getOtherPlayer());
+
                     }
                 }
                 break;
 
             case COLLISION:
-
                 //Witch witch = (Witch)(gameStateReceived.getEvent().getObject());
                 //game.setWitch(witch);
                 game.getWitch().setGameStateData(gameStateReceived.getWitchData());
@@ -145,13 +146,6 @@ public class NetworkController extends GameController {
                 break;
         }
     }
-
-    @Override
-    public void initNetwork() {
-
-        game.setOtherPlayer(new Player(null));
-    }
-
 
     @Override
     public void update(Observable o, Object arg) {

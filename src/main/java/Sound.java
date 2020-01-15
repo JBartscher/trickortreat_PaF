@@ -42,6 +42,7 @@ public class Sound {
                 cooperPlayer.stop();
                 countdownPlayer.stop();
     
+                // loop
                 musicPlayer.setOnEndOfMedia(() -> {
                     musicPlayer.seek(Duration.ZERO);
                     musicPlayer.play();
@@ -63,12 +64,6 @@ public class Sound {
 
                 musicPlayer.stop();
                 cooperPlayer.stop();
-
-                countdownPlayer.setOnEndOfMedia(() -> {
-                    countdownPlayer.seek(Duration.ZERO);
-                    countdownPlayer.play();
-                });
-
                 countdownPlayer.play();
             }
 
@@ -84,12 +79,6 @@ public class Sound {
 
                 musicPlayer.stop();
                 countdownPlayer.stop();
-
-                cooperPlayer.setOnEndOfMedia(() -> {
-                    cooperPlayer.seek(Duration.ZERO);
-                    cooperPlayer.play();
-                });
-
                 cooperPlayer.play();
             }
         } catch (NoClassDefFoundError ex) {

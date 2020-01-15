@@ -155,6 +155,7 @@ public class ClientEngine extends Thread implements Network {
         try{
 
             while(true) {
+
                 // GameState über ObjectOutputStream an den Server verschicken
                 networkController.sendMessage(output, gameState);
 

@@ -421,11 +421,7 @@ public class MovementManager implements EventHandler<InputEvent> {
         if(game.getGameTime() < 30000) {
             moveObject(witch);
 
-            try {
-                Sound.playCountdown();
-            } catch (NoClassDefFoundError ex) {
-                ex.printStackTrace();
-            }
+            Sound.playCountdown();
         }
     }
 
@@ -537,7 +533,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     }
 
     public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
-        for(Entity e : game.getListOfAllEntites()) {
+        for(Entity e : game.getListOfAllEntities()) {
             if(e == entity) continue;
 
             double offset = 0.5;

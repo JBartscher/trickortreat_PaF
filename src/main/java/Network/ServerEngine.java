@@ -16,6 +16,7 @@ import main.java.MovementManager;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -233,6 +234,7 @@ public class ServerEngine extends Thread implements Network {
                 // Neuen GameState ermitteln u. überprüfen (sind noch eigene Events nicht verschicken wurden?)
                 GameState newGameState = new GameState(new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
                 networkController.updateGameState(newGameState);
+                //GameState newGameState = new GameState(null, null, null, null, null, 20);
 
                 // neuen GameState nach Überprüfung verschicken
                 networkController.sendMessage(output, newGameState);
@@ -242,6 +244,22 @@ public class ServerEngine extends Thread implements Network {
 
         } catch(Exception e) {
 
+        }
+    }
+
+    public long sizeOf(Serializable object){
+        if (object == null) {
+            return 0;
+        }
+
+        try{
+            final ByteCountingOutputStream out = new ByteCountingOutputStream();
+            new ObjectOutputStream(out).writeObject(object);
+            out.close();
+            return out.size();
+        }catch (IOException e){
+
+            return -1;
         }
     }
 

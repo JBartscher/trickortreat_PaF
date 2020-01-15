@@ -97,7 +97,6 @@ public abstract class House extends MapObject {
                 map[x + this.getX()][y + this.getY()][1] = tileset[x][y];
             }
         }
-
         Map.getInstance().setMap(map);
     }
 
