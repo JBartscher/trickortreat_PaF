@@ -18,6 +18,11 @@ public class GameLauncher extends Application {
     private MovementManager.MovementType movementTypePlayer2;
     public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
 
+
+    public int renderTime = 0;
+    public int updateTime = 0;
+    public int gesamtTime = 0;
+
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         mainMenu = new MainMenu(stage, this);
@@ -49,8 +54,15 @@ public class GameLauncher extends Application {
             game.ticks++;
             game.update();
 
+            updateTime += (System.currentTimeMillis() - startTime);
+            long middleTime = System.currentTimeMillis();
             game.getMapRenderer().drawMap();
+            renderTime += (System.currentTimeMillis() - middleTime);
             calculateGameTime(startTime);
+
+            gesamtTime += (System.currentTimeMillis() - startTime);
+
+            System.out.println("Gesamtzeit: " + gesamtTime + " ms - UpdateZeit: " + updateTime + " ms - Renderzeit: " + renderTime + " ms");
         }
 
         public void calculateGameTime(long startTime) {
@@ -60,6 +72,7 @@ public class GameLauncher extends Application {
 
                 try {
                     int sleepTime = (int) (1000 / FRAMES - (endTime - startTime));
+
                     if (sleepTime < 0) sleepTime = 0;
                     Thread.sleep(sleepTime);
 
