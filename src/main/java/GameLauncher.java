@@ -9,13 +9,14 @@ import main.java.Network.Network;
 
 public class GameLauncher extends Application {
 
+    private final static Configuration<Object> config = new Configuration<Object>();
     private Game game;
-    public final static int FRAMES = 50;
     private Stage stage;
     private GameLoop gameLoop;
     private MainMenu mainMenu;
     private MovementManager.MovementType movementTypePlayer1;
     private MovementManager.MovementType movementTypePlayer2;
+    public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
 
     public void start(Stage stage) throws Exception {
         this.stage = stage;
