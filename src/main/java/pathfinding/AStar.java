@@ -25,7 +25,7 @@ public class AStar {
         targetPosition = new Point(0, 0);
         openNodes = new Heap<Node>();
         closedNodes = new HashSet<Node>();
-        fillMap(gameMap.getMap());
+        fillMap(gameMap.getMap(), false);
     }
 
     public Node getMapCell(Point coord){
@@ -171,7 +171,7 @@ public class AStar {
     }
 
 
-    public void fillMap(Tile[][][] tileMap) {
+    public void fillMap(Tile[][][] tileMap, boolean ignoreObstacles) {
 
         //System.out.println("Fill NodeMap");
         for(int y = 0; y < map.length; y++){
@@ -179,7 +179,7 @@ public class AStar {
 
                 Node.Type type;
 
-                if(tileMap[y][x][1].getTileNr() > 25 ) {
+                if(tileMap[y][x][1].getTileNr() > 25 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
                     type = Node.Type.OBSTACLE;
                 } else {
                     type = Node.Type.NORMAL;

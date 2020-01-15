@@ -1,13 +1,15 @@
 package main.java.gameobjects.mapobjects;
 
+import main.java.Game;
+import main.java.Sound;
 import main.java.gameobjects.Player;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
 public class Mansion extends House implements Visitible {
 
-    public static final int MANSION_WIDTH = 8;
-    public static final int MANSION_HEIGHT = 5;
+    public static final int MANSION_WIDTH = 4;
+    public static final int MANSION_HEIGHT = 3;
 
     public Player insidePlayer = null;
 
@@ -24,15 +26,22 @@ public class Mansion extends House implements Visitible {
 
     @Override
     public void visit(Player player) {
+        if(player.getProtectedTicks() > 0) return;
         if(isUnvisited()) {
             setInsideMode(player);
-        } else if (!isUnvisited() && player == insidePlayer) {
+            Sound.playCooper();
 
+
+        } else if (!isUnvisited() && player == insidePlayer) {
             setInsideMode(insidePlayer);
+            if(Game.DRAMATIC) {
+                Sound.playCountdown();
+            } else {
+                Sound.playMusic();
+            }
         }
 
         notifyObservers(this);
-
 
         // super.visit(player);
 
@@ -54,16 +63,18 @@ public class Mansion extends House implements Visitible {
             isUnvisited = false;
             player.setNoCollision(true);
             player.setInside(true);
-            player.setyPos(player.getyPos() + -Tile.TILE_SIZE);
+            player.setyPos(player.getyPos() + -Tile.TILE_SIZE * 1);
             player.setInsideObject(this);
+            player.setProtectedTicks(25);
 
         } else {
             insidePlayer = null;
             isUnvisited = true;
             player.setNoCollision(false);
             player.setInside(false);
-            player.setyPos(player.getyPos() + Tile.TILE_SIZE);
+            player.setyPos(player.getyPos() + Tile.TILE_SIZE * 1);
             player.setInsideObject(null);
+            player.setProtectedTicks(25);
         }
 
     }

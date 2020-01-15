@@ -53,7 +53,7 @@ public class MapGenerator {
 
         // supply the center of the map
         createTownHall(gameMap.getSize() / 2 - TownHall.TOWN_HALL_HEIGHT / 2, gameMap.getSize() / 2  - TownHall.TOWN_HALL_WIDTH / 2 + 1);
-        createMansion(5, 5);
+        createMansion(4, 3);
 
         createCentreSmallHouses(5);
 
@@ -86,13 +86,25 @@ public class MapGenerator {
                 for(int j = 0; j < mapThirdSize; j++) {
                     for(int i = 0; i < mapThirdSize; i++) {
 
-                        Tile currentTile = gameMap.getMap()[y * mapThirdSize + j][x * mapThirdSize + i][0];
+                        int yTotal = y * mapThirdSize + j;
+                        int xTotal = x * mapThirdSize + i;
+
+                        Tile currentTile = gameMap.getMap()[yTotal][xTotal][0];
+                        Tile currentTileDeko = gameMap.getMap()[yTotal][xTotal][1];
 
                         switch(biomType) {
 
                             case Gras:
                                 zahl = random.nextInt(100);
-                                if(zahl < 60) nr = 1;
+                                if(zahl < 60) { nr = 1;
+                                if(zahl < 15)
+                                    if(buildableWithDeko(yTotal, xTotal)) {
+                                        if(zahl < 5) currentTileDeko.setTileNr(-7);
+                                        else
+                                        currentTileDeko.setTileNr(-5);
+                                    }
+
+                                }
                                 if(zahl >= 60 && zahl < 70) nr = 2;
                                 if(zahl >= 66 && zahl < 80) nr = 3;
                                 if(zahl >= 80) nr = 4;
@@ -101,11 +113,33 @@ public class MapGenerator {
                                 break;
 
                             case Sand:
-                                currentTile.setTileNr(5);
+                                zahl = random.nextInt(100);
+                                if(zahl < 12)
+                                    if(buildableWithDeko(yTotal, xTotal)) {
+                                        if(zahl < 8) currentTileDeko.setTileNr(-3);
+                                        else
+                                            currentTileDeko.setTileNr(-7);
+                                    }
+
+                                if(zahl < 60) nr = 5;
+                                if(zahl >= 60 && zahl < 70) nr = 11;
+                                if(zahl >= 66 && zahl < 80) nr = 12;
+                                if(zahl >= 80) nr = 13;
+
+                                currentTile.setTileNr(nr);
+
+
                                 break;
 
                             case Desert:
                                 currentTile.setTileNr(6);
+                                zahl = random.nextInt(100);
+                                if(zahl < 10)
+                                    if(buildableWithDeko(yTotal, xTotal)) {
+                                        if(zahl < 5) currentTileDeko.setTileNr(-3);
+                                        else
+                                            currentTileDeko.setTileNr(-6);
+                                    }
                                 break;
 
                             case Snow:
@@ -164,7 +198,6 @@ public class MapGenerator {
         } catch (PlaceableBelongsToNoSectorException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -200,8 +233,6 @@ public class MapGenerator {
 
         }
     }
-
-
 
     /**
      * tries to place at max the number of small Houses
@@ -349,18 +380,18 @@ public class MapGenerator {
                 if(nr.length() == 1) nr = "0" + nr;
                 if(nr.length() == 3 || tileNr >= 90) nr = "XX";
 
-                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85) {
+                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85 || tileNr == 221 || tileNr == 222) {
 
                     //nr = "DD";
                     doorPoints.add(new Point(x, y + 1));
                 }
 
-                System.out.print(nr + " ");
+                //System.out.print(nr + " ");
             }
-            System.out.println();
+            //System.out.println();
         }
 
-        System.out.println(doorPoints.size());
+        //System.out.println(doorPoints.size());
 
         // Start
         int size = doorPoints.size() - 1;
@@ -395,7 +426,7 @@ public class MapGenerator {
 
         CopyOnWriteArrayList<Point> targets = new CopyOnWriteArrayList<>();
         targets.clear();
-        aStar.fillMap(gameMap.getMap());
+        aStar.fillMap(gameMap.getMap(), true);
         ArrayList<Node> nodes = aStar.executeAStar();
 
         if(nodes != null) {
@@ -408,6 +439,15 @@ public class MapGenerator {
             System.out.println("KEIN PFAD GEFUNDEN!");
         }
     }
+
+    public boolean buildableWithDeko(int yTotal, int xTotal) {
+
+        if(  (xTotal <= 1 && yTotal <= 1) || (xTotal >= 58 && yTotal >= 58) ) return false;
+
+        return gameMap.getMap()[yTotal][xTotal][1].getTileNr() == 0;
+    }
+
+
 
     public Point findLowestDistance(ArrayList<Point> doorPoints, int x, int y) {
 

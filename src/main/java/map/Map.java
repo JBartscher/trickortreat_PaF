@@ -36,12 +36,15 @@ public class Map implements Serializable {
                         // Zentrumsteine generieren
                         if(x > size * 0.35 && x < size * 0.66 && y > size * 0.35 && y < size * 0.66) {
                             map[y][x][z] = new Tile(25);
+                            map[y][x][0] = new Tile(25);
+
                             continue;
                         }
 
                         // Abtrennungen zwischen den Stadteilen - horizontal und vertikal
                         if ( (x == size / 3 || x == (size / 3 + 1) || y == size / 3 || y == (size / 3 + 1)   ) || (x == size * 2 / 3 || x == (size * 2 / 3 + 1) || y == size * 2/ 3 || y == (size * 2 / 3 + 1) ) )  {
                             map[y][x][z] = new Tile(20);
+                            map[y][x][0] = new Tile(20);
                             continue;
                         }
 

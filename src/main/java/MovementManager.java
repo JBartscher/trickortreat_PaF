@@ -10,6 +10,7 @@ import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.Mansion;
+import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Placeable;
@@ -244,7 +245,7 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         aStar.setStartPosition(start);
         aStar.setTargetPosition(target);
-        aStar.fillMap(game.getMap().getMap());
+        aStar.fillMap(game.getMap().getMap(), false);
 
         CopyOnWriteArrayList<Point> targets = entity.getTargets();
         targets.clear();
@@ -419,11 +420,14 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
 
         if(game.getGameTime() < 30000) {
+            game.DRAMATIC = true;
             moveObject(witch);
 
             Sound.playCountdown();
         }
     }
+
+
 
     // find a target for the witch
     public Point findTarget(Witch witch, Player player, Player otherPlayer) {
@@ -464,30 +468,10 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void moveVertical(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
 
-        // check collisions in vertical direction
-        if (map.getMapSector().intersectsWithContainingItems(p)) {
-            // collision with door
-            if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
+        if ( (map.getMapSector().intersectsWithContainingItems(p) ||
+                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0) ) {
 
-
-                for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
-                    try {
-                        House h = (House) obj;
-                        if (h.intersects(p)) {
-                            if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer))) {
-                                h.visit((Player) entity);
-
-                                //if(game.getGameMode() == Game.GameMode.REMOTE) {
-                                //    ((NetworkController)game.getGameController()).changeGameStateObject(h, Event.EventType.VISITED);
-                                //}
-                            }
-                        }
-                    } catch (ClassCastException ex) {
-                        // the Object is not a House
-                        continue;
-                    }
-                }
-            }
+            checkCollisionWithDoor(p, entity);
 
             // revert movement when entity is not a player and has a collision detection
             if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
@@ -497,8 +481,6 @@ public class MovementManager implements EventHandler<InputEvent> {
                 entity.setyPos(entity.getyPos() - size);
             }
 
-
-            // TODO: LÖST die Kollision zwischen Entitäten
         } else {
             checkCollisionsBetweenEntities(entity, size, false);
         }
@@ -511,7 +493,10 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public void moveHorizontal(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
-        if (map.getMapSector().intersectsWithContainingItems(p) && !entity.isNoCollision()) {
+        if ( (map.getMapSector().intersectsWithContainingItems(p) && !entity.isNoCollision()
+                ||
+                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0)
+        ) {
 
 
             // revert movement when entity is not a player and has a collision detection
@@ -532,6 +517,28 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    public void checkCollisionWithDoor(Placeable p, Entity entity) {
+
+        // collision with door
+        if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
+            for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
+                try {
+                    House h = (House) obj;
+                    if (h.intersects(p)) {
+                        if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall))) {
+                            h.visit((Player) entity);
+                        }
+                    }
+                } catch (ClassCastException ex) {
+                    // the Object is not a House
+                    continue;
+                }
+            }
+        }
+
+
+    }
+
     public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
         for(Entity e : game.getListOfAllEntities()) {
             if(e == entity) continue;
@@ -544,7 +551,6 @@ public class MovementManager implements EventHandler<InputEvent> {
             }
 
             if (Math.abs(entity.getxPos() - e.getxPos()) < offset * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * offset ) {
-
                 if(e instanceof AliceCooper && entity instanceof Player) {
                     ((AliceCooper)e).playSong((Player)entity);
                 } else if(e instanceof Witch && entity instanceof Player) {
@@ -606,6 +612,8 @@ public class MovementManager implements EventHandler<InputEvent> {
         int o_y = o.getX();
         int o_width = o.getHeight();
         int o_height = o.getWidth();
+
+
 
         return (
                 (e_x >= o_x && e_x <= o_x + o_width && e_y == o_y - 1) ||

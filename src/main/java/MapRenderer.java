@@ -69,7 +69,6 @@ public class MapRenderer {
             // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
             for (int z = 0; z < 3; z++) {
 
-
                 for (int y = 0; y < tileMap.length; y++) {
                     for (int x = 0; x < tileMap[y].length; x++) {
                         int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;

@@ -14,6 +14,7 @@ public class TileCollection {
     private final static int STREET = 2;
     public final static Tile STREET_TILE = new Tile(STREET, true);
 
+
     //Poor Houses
     public static Tile[][] getPoorSmallHouseUnvisitedTiles() {
         Tile[][] smallHouse = new Tile[2][2];
@@ -163,14 +164,26 @@ public class TileCollection {
     public final static Tile[][] getMansonTiles() {
         Tile[][] mansion = new Tile[Mansion.MANSION_HEIGHT][Mansion.MANSION_WIDTH];
 
-        for(int y = 0; y < mansion.length; y ++) {
-            for(int x = 0; x < mansion[y].length; x++) {
-                mansion[y][x] = new Tile(100);
+        mansion[0][0] = new Tile(212);
+        mansion[0][1] = new Tile(213);
+        mansion[0][2] = new Tile(214);
+        mansion[0][3] = new Tile(215);
 
-            }
-        }
+        mansion[1][0] = new Tile(216);
+        mansion[1][1] = new Tile(217);
+        mansion[1][2] = new Tile(218);
+        mansion[1][3] = new Tile(219);
 
-        mansion[4][3] = new Tile(34, true);
+        mansion[2][0] = new Tile(220);
+        mansion[2][1] = new Tile(221, true);
+        mansion[2][2] = new Tile(222, true);
+        mansion[2][3] = new Tile(223);
+
+
+
+
+
+        //mansion[4][3] = new Tile(34, true);
 
         return mansion;
     }
