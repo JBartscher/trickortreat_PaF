@@ -106,6 +106,7 @@ public class GraphicsUtility {
         img.setY(y);
     }
 
+
     public static Image getTileImage(int nr) {
 
         if(nr == 1) {
@@ -369,5 +370,10 @@ public class GraphicsUtility {
 
     public static Image getCandyImage() {
         return imageCandy;
+
+
+
     }
+
+
 }

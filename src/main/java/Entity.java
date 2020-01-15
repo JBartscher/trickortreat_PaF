@@ -11,7 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.round;
 
-
 public abstract class Entity extends Observable implements Serializable {
     /**
      * Entity is now extending Observable, because Player Objects which inherit Entity
