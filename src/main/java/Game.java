@@ -8,7 +8,6 @@ import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
 import main.java.ui.GameMenu;
-import main.java.Configuration;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -105,8 +104,6 @@ public class Game {
 
         this.player.setGameStateData(gameState.getPlayerData());
         this.otherPlayer.setGameStateData(gameState.getOtherPlayerData());
-
-        System.out.println(gameState.getOtherPlayerData().getxPos());
 
         player.addObserver(GameMenu.getInstance().getSecondPlayerObserver());
         otherPlayer.addObserver(GameMenu.getInstance().getFirstPlayerObserver());

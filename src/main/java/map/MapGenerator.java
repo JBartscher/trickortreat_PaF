@@ -1,6 +1,7 @@
 package main.java.map;
 
 import main.java.Configuration;
+import main.java.HouseFactory;
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
 import main.java.gameobjects.mapobjects.*;
@@ -57,15 +58,18 @@ public class MapGenerator {
         createCentreSmallHouses(5);
 
 
-        createSmallHouses(((Number) config.getParam("smallHouses")).intValue());
-        createBigHouses(((Number) config.getParam("bigHouses")).intValue());
+        //createSmallHouses(((Number) config.getParam("smallHouses")).intValue());
+        //createBigHouses(((Number) config.getParam("bigHouses")).intValue());
+        createHouses();
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
         createStreetNetwork();
 
     }
 
-    // Generiert für jeden Distrikt ein Biom
+    /**
+     * generates biomes for every district
+     */
     public void generateBioms() {
         ArrayList<District> mapDistricts = districtManager.getMapDistricts();
         int mapThirdSize = gameMap.getSize() / 3;
@@ -162,6 +166,42 @@ public class MapGenerator {
         }
 
     }
+
+
+    /**
+     * reads amount of houses from configs and creates houses with FactoryPattern
+     */
+    private void createHouses() {
+        ArrayList<String> amountOfHouses = new ArrayList<>();
+
+        for(int i = 0; i < ((Number) config.getParam("smallHouses")).intValue(); i++) {
+            amountOfHouses.add("small"); }
+
+        for(int i = 0; i < ((Number) config.getParam("bigHouses")).intValue(); i++) {
+            amountOfHouses.add("big");
+        }
+
+        /**
+         * create HouseObject for every Item in ArrayList with HouseFactory
+         * find free location and assign house to a district
+         */
+        for(String type : amountOfHouses) {
+            House house = HouseFactory.createNewInstance(type);
+            findObjectSpot(house);
+
+            // put the right district to the house object
+            try {
+                District districtOfHouse = districtManager.getDistrict(house);
+                System.out.println(districtOfHouse);
+                house.setDistrict(districtOfHouse);
+            } catch (PlaceableBelongsToNoSectorException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
 
     /**
      * tries to place at max the number of small Houses
@@ -273,10 +313,9 @@ public class MapGenerator {
 
     private void createCentreSmallHouses(int numberOfHouses) {
         // 2x2
-        int width = 2, height = 2;
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
-            House smallHouse = new SmallHouse(0, 0, width, height);
+            House smallHouse = HouseFactory.createNewInstance("small");
 
             int x = (int) (gameMap.getSize() * 0.4) + i * 3;
             int y = (int) (gameMap.getSize() * 0.40);
