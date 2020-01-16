@@ -38,10 +38,7 @@ public class Sound {
     public static void playMusic() {
 
         try {
-            if (!(Boolean) config.getParam("muted")) {
-
-                cooperPlayer.stop();
-                countdownPlayer.stop();
+                stopMusic();
     
                 // loop
                 musicPlayer.setOnEndOfMedia(() -> {
@@ -50,23 +47,22 @@ public class Sound {
                 });
     
                 musicPlayer.play();
-            }
+
+                if ((Boolean) config.getParam("muted")) musicPlayer.setMute(true);
 
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
-
     }
 
     public static void playCountdown() {
 
         try {
-            if (!(Boolean) config.getParam("muted")) {
+                stopMusic();
 
-                musicPlayer.stop();
-                cooperPlayer.stop();
                 countdownPlayer.play();
-            }
+
+                if ((Boolean) config.getParam("muted")) countdownPlayer.setMute(true);
 
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
@@ -76,12 +72,12 @@ public class Sound {
     public static void playCooper() {
 
         try {
-            if (!(Boolean) config.getParam("muted")) {
+                stopMusic();
 
-                musicPlayer.stop();
-                countdownPlayer.stop();
                 cooperPlayer.play();
-            }
+
+                if ((Boolean) config.getParam("muted")) cooperPlayer.setMute(true);
+                
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
@@ -91,11 +87,11 @@ public class Sound {
     public static void playRing() {
 
         try {
-            if (!(Boolean) config.getParam("muted")) {
+            ringPlayer.seek(Duration.ZERO);
+            ringPlayer.play();
 
-                ringPlayer.seek(Duration.ZERO);
-                ringPlayer.play();
-            }
+            if ((Boolean) config.getParam("muted")) ringPlayer.setMute(true);
+
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
@@ -104,11 +100,11 @@ public class Sound {
     public static void playChild() {
 
         try {
-            if (!(Boolean) config.getParam("muted")) {
+            childPlayer.seek(Duration.ZERO);
+            childPlayer.play();
 
-                childPlayer.seek(Duration.ZERO);
-                childPlayer.play();
-            }
+            if ((Boolean) config.getParam("muted")) childPlayer.setMute(true);
+
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
@@ -117,15 +113,13 @@ public class Sound {
     public static void playGameover() {
 
         try {
-            if (!(Boolean) config.getParam("muted")) {
+            stopMusic();
 
-                musicPlayer.stop();
-                cooperPlayer.stop();
-                countdownPlayer.stop();
+            gameoverPlayer.seek(Duration.ZERO);
+            gameoverPlayer.play();
 
-                gameoverPlayer.seek(Duration.ZERO);
-                gameoverPlayer.play();
-            }
+            if ((Boolean) config.getParam("muted")) gameoverPlayer.setMute(true);
+
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
@@ -161,5 +155,12 @@ public class Sound {
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static void stopMusic() {
+
+        musicPlayer.stop();
+        countdownPlayer.stop();
+        cooperPlayer.stop();
     }
 }
