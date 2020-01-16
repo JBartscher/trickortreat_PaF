@@ -233,6 +233,7 @@ public abstract class Entity extends Observable implements Serializable {
         return sprite;
     }
 
+
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
     }

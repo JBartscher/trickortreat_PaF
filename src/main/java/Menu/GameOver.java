@@ -1,5 +1,6 @@
 package main.java.Menu;
 
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
@@ -9,12 +10,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import main.java.Game;
-import main.java.GameLauncher;
-import main.java.GraphicsUtility;
-import main.java.Sound;
+import main.java.*;
+import main.java.Network.ClientEngine;
+import main.java.Network.Event;
 import main.java.Network.NetworkController;
-import main.java.Window;
+import main.java.Network.ServerEngine;
 import main.java.gameobjects.Player;
 
 public class GameOver {
@@ -25,15 +25,18 @@ public class GameOver {
     private Stage stage;
     private MainMenu mainMenu;
 
-    public GameOver(Game game, GameLauncher gameLauncher, Stage stage, MainMenu mainMenu) {
+    public static boolean restart;
+    public static String text ="Send Replay-Request";
 
+    public static Button buttonRestart;
+
+    public GameOver(Game game, GameLauncher gameLauncher, Stage stage, MainMenu mainMenu) {
 
         this.game = game;
         this.gameLauncher = gameLauncher;
         this.stage = stage;
         this.mainMenu = mainMenu;
     }
-
 
     public void showGameOver() {
 
@@ -119,18 +122,41 @@ public class GameOver {
         GraphicsUtility.setTextProperties(textCandyPlayer2, "-fx-font: 40 arial;", Color.WHITE, Window.WIDTH / 4 * 3 + 10, Window.HEIGHT - 100);
 
 
-        Button buttonRestart = new Button("Restart the game");
+
+
+        buttonRestart = new Button(text);
         Button buttonMainMenu = new Button("Back to main menu");
 
         buttonRestart.setOnAction( (e) -> {
+
             if(game.gameMode == Game.GameMode.LOCAL) {
                 gameLauncher.startGame(game.gameMode, null, game.getPlayer().getMovementType(), game.getOtherPlayer().getMovementType());
             }
             // TODO: Replay von Client / Server implementieren
             else {
+
+
+                NetworkController networkController = (NetworkController)game.getGameController();
+                NetworkController.NetworkRole networkRole = networkController.getNetworkRole();
+
+                if(networkRole == NetworkController.NetworkRole.SERVER) {
+                    if(!ClientEngine.restart) {
+                        GameOver.setMessage("Wait for client respond");
+                        ServerEngine.restart = true;
+                        networkController.changeGameStateObject("", Event.EventType.REPLAY);
+                    }
+
+                } else if(networkRole == NetworkController.NetworkRole.CLIENT) {
+                    if(!ServerEngine.restart) {
+                        GameOver.setMessage("Wait for server respond ");
+                        ClientEngine.restart = true;
+                        networkController.changeGameStateObject("", Event.EventType.REPLAY);
+                    }
+                }
+
+
                 //startGame(game.gameMode, game.getNetworkController().getNetworkEngine(), movementTypePlayer1, movementTypePlayer2);
             }
-
             Sound.playMusic();
         });
 
@@ -150,5 +176,11 @@ public class GameOver {
 
 
         stage.setScene(scene);
+    }
+
+    public static void setMessage(String message){
+        Platform.runLater( () -> {
+            buttonRestart.setText(message);
+        });
     }
 }

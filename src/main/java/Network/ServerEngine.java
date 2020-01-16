@@ -44,6 +44,8 @@ public class ServerEngine extends Thread implements Network {
     Label labelRequests;
     private Game game;
 
+    public static boolean restart;
+
     // Movement
     private MovementManager.MovementType movementType;
     RadioButton radioButtonAWSD;
@@ -120,6 +122,7 @@ public class ServerEngine extends Thread implements Network {
 
     }
 
+
     // Erstellt bereits ein Game-Objekt
     public void startServer() {
         try {
@@ -127,9 +130,7 @@ public class ServerEngine extends Thread implements Network {
             Platform.runLater( () -> {
 
                 labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
-                game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
-                networkController = (NetworkController)game.getGameController();
-                networkController.updateGameState(new GameStateInit(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), null, Game.TIME));
+                initGameAndController();
 
             });
 
@@ -168,7 +169,6 @@ public class ServerEngine extends Thread implements Network {
                 e.printStackTrace();
             }
 
-
             Platform.runLater(() -> {
                 labelRequests.setText("Verbindung eingegangen von " + socket.getRemoteSocketAddress());
             });
@@ -180,6 +180,7 @@ public class ServerEngine extends Thread implements Network {
 
             }
             communicate();
+            if(ClientEngine.restart && ServerEngine.restart) initReplay();
 
         }
 
@@ -204,6 +205,32 @@ public class ServerEngine extends Thread implements Network {
                 ready = true;
             });
         }
+
+        public void initReplay() {
+            System.out.println("SERVER AUFRUF REPLAY!");
+
+            ready = false;
+            ClientEngine.restart = false; ServerEngine.restart = false;
+            initGameAndController();
+
+            sendFirstGameStateToClient();
+
+            // Wartet auf die Initalisierung der GUI
+            while(!ready) {
+                System.out.println("Serverseitig warten");
+
+            }
+            communicate();
+            if(ServerEngine.restart && ClientEngine.restart) initReplay();
+        }
+    }
+
+
+    public void initGameAndController() {
+        game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
+        networkController = (NetworkController)game.getGameController();
+        networkController.updateGameState(new GameStateInit(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), null, Game.TIME));
+
     }
 
     // Diese Methode repräsentiert die Kommunikation zwischen Client u. Server
@@ -217,6 +244,8 @@ public class ServerEngine extends Thread implements Network {
 
                 long start = System.currentTimeMillis();
                 Thread.sleep(10);
+
+                if(ClientEngine.restart && ServerEngine.restart) return;
 
                 // Nachricht vom Client lesen, in GameState konvertieren u. eigenen GameState aktualisieren
                 Message msg = (Message)input.readObject();
@@ -238,7 +267,7 @@ public class ServerEngine extends Thread implements Network {
                 // neuen GameState nach Überprüfung verschicken
                 networkController.sendMessage(output, newGameState);
 
-                System.out.println("Dauer einer Verbindung:" + (System.currentTimeMillis() - start));
+                //System.out.println("Dauer einer Verbindung:" + (System.currentTimeMillis() - start));
             }
 
         } catch(Exception e) {
@@ -271,6 +300,10 @@ public class ServerEngine extends Thread implements Network {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 
     public Game getGame() { return game; }

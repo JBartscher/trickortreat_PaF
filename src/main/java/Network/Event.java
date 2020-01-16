@@ -10,7 +10,7 @@ public class Event implements Serializable, Cloneable {
     private EventType type;
 
     public enum EventType implements Serializable {
-       VISITED, COLLISION, PAUSED, UNPAUSED
+       VISITED, COLLISION, COLLECTED, PAUSED, UNPAUSED, REPLAY
     }
 
     public Event(Object o, EventType type) {

@@ -30,4 +30,14 @@ public class NormalDistrict extends District {
     public Tile[][] getBigHouseVisitedTileset() {
         return TileCollection.getNormalBigHouseVisitedTiles();
     }
+
+    @Override
+    public Tile[][] getGingerbreadHouseVisitedTileset(){
+        return TileCollection.getGingerbreadHouseVisitedTiles();
+    }
+
+    @Override
+    public Tile[][] getGingerbreadHouseUnvisitedTileset(){
+        return TileCollection.getGingerbreadHouseUnvisitedTiles();
+    }
 }

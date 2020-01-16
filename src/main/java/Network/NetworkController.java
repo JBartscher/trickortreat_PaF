@@ -1,6 +1,7 @@
 package main.java.Network;
 
 import main.java.*;
+import main.java.Menu.GameOver;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.Map;
 import main.java.map.MapObject;
@@ -29,6 +30,7 @@ public class NetworkController extends GameController {
         this.networkEngine = networkEngine;
         this.networkRole = networkRole;
     }
+
 
 
     public NetworkRole getNetworkRole() {
@@ -121,9 +123,11 @@ public class NetworkController extends GameController {
                     if ((obj.getX() == eventMapObject.getX() && obj.getY() == eventMapObject.getY()) || (obj == eventMapObject)) {
                         House h = (House) obj;
 
+                        System.out.println("EVENT-Obj " + h);
+
+                        h.setUnvisited(((House) eventMapObject).isUnvisited());
                         h.repaintAfterVisit();
                         h.updateMap();
-                        h.setUnvisited(((House) eventMapObject).isUnvisited());
                         game.getOtherPlayer().notifyObservers(game.getOtherPlayer());
 
                     }
@@ -144,13 +148,36 @@ public class NetworkController extends GameController {
             case UNPAUSED:
                 game.paused = false;
                 break;
+            case REPLAY:
+                System.out.println("EVENT REPLAY!");
+                if(networkRole == NetworkRole.SERVER) {
+                    ClientEngine.restart = true;
+                    if(!ServerEngine.restart) {
+                        GameOver.setMessage("Client wants a replay!");
+                    }
+
+                } else if(networkRole == NetworkRole.CLIENT) {
+                    ServerEngine.restart = true;
+                    if(!ClientEngine.restart) {
+                        GameOver.setMessage("Server wants a replay!");
+                    }
+                }
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
         super.update(o, arg);
-        changeGameStateObject(o, Event.EventType.VISITED);
+
+        Event.EventType eventType;
+
+        if(o instanceof House) {
+            eventType = Event.EventType.VISITED;
+        } else {
+            eventType = Event.EventType.COLLECTED;
+        }
+
+        changeGameStateObject(o, eventType);
     }
 
     @Override

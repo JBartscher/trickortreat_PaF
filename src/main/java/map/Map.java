@@ -24,7 +24,6 @@ public class Map implements Serializable {
         // 2D Arrays throw ArrayStoreException if one tryes to fill them just with Arrays.fill([],val)
         Random r = new Random();
 
-
         // TODO: ERSTMAL HARDGECODET ZUR GENERIERUNG VON BIOMEN
         for(int z = 0; z < 3; z++) {
             for (int y = 0; y < size; y++) {

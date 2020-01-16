@@ -93,9 +93,11 @@ public class GameController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        House h = (House) o;
-        h.repaintAfterVisit();
-        h.updateMap();
+        if(o instanceof House) {
+            House h = (House) o;
+            h.repaintAfterVisit();
+            h.updateMap();
+        }
 
     }
 }

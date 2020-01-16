@@ -82,6 +82,33 @@ public class TileCollection {
         return bigHouse;
     }
 
+    public static Tile[][] getGingerbreadHouseUnvisitedTiles() {
+        Tile[][] gingerbreadHouseHouse = new Tile[2][3];
+        gingerbreadHouseHouse[0][0] = new Tile(61);
+        gingerbreadHouseHouse[0][1] = new Tile(62);
+        gingerbreadHouseHouse[0][2] = new Tile(63);
+
+        gingerbreadHouseHouse[1][0] = new Tile(64);
+        gingerbreadHouseHouse[1][1] = new Tile(300, true);
+        gingerbreadHouseHouse[1][2] = new Tile(66);
+        return gingerbreadHouseHouse;
+    }
+
+    // TODO: Ändern
+    public static Tile[][] getGingerbreadHouseVisitedTiles() {
+        Tile[][] gingerbreadHouseHouse = new Tile[2][3];
+        gingerbreadHouseHouse[0][0] = new Tile(61);
+        gingerbreadHouseHouse[0][1] = new Tile(62);
+        gingerbreadHouseHouse[0][2] = new Tile(63);
+
+        gingerbreadHouseHouse[1][0] = new Tile(1000);
+        gingerbreadHouseHouse[1][1] = new Tile(300, true);
+        gingerbreadHouseHouse[1][2] = new Tile(66);
+        return gingerbreadHouseHouse;
+    }
+
+
+
     public final static Tile[][] getNormalBigHouseVisitedTiles() {
         Tile[][] bigHouse = getNormalBigHouseUnvisitedTiles();
         bigHouse[1][0] = new Tile(67);

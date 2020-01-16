@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import main.java.Network.Event;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
+import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.Mansion;
 import main.java.gameobjects.mapobjects.TownHall;
@@ -498,7 +499,6 @@ public class MovementManager implements EventHandler<InputEvent> {
                 game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0)
         ) {
 
-
             // revert movement when entity is not a player and has a collision detection
             if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
 
@@ -525,7 +525,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 try {
                     House h = (House) obj;
                     if (h.intersects(p)) {
-                        if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall))) {
+                        if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
                             h.visit((Player) entity);
                         }
                     }

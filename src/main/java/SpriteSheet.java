@@ -13,7 +13,7 @@ public class SpriteSheet {
         spriteSet = new Image[directions][amountOfMovements];
 
         try {
-            sprite = new Image(SpriteSheet.class.getResourceAsStream("player.png"));
+            sprite = new Image(SpriteSheet.class.getResourceAsStream(path));
 
         } catch(Exception e){
             e.printStackTrace();

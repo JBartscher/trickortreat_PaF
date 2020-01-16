@@ -29,6 +29,7 @@ public class ClientEngine extends Thread implements Network {
     private ObjectOutputStream output;
     private ObjectInputStream input;
 
+    public static boolean restart;
 
     // Movement
     private MovementManager.MovementType movementType;
@@ -103,6 +104,7 @@ public class ClientEngine extends Thread implements Network {
 
 
         communicate();
+        if(ServerEngine.restart && ClientEngine.restart) initReplay();
     }
 
     public void joinServer() {
@@ -148,12 +150,32 @@ public class ClientEngine extends Thread implements Network {
         }
     }
 
+    public void initReplay() {
+        ready = false;
+        ClientEngine.restart = false;
+        ServerEngine.restart = false;
+
+        receiveFirstGameState();
+
+        int index = 0;
+        while(!ready) {
+            index ++;
+            if(index % 10000000 == 0) System.out.println("Warten");
+        }
+
+
+        communicate();
+        if(ServerEngine.restart && ClientEngine.restart) initReplay();
+    }
+
     @Override
     public void communicate() {
         System.out.println("Starte Kommunikation vom Client zum Server!");
         try{
 
             while(true) {
+
+                if(ClientEngine.restart && ServerEngine.restart) return;
 
                 // GameState über ObjectOutputStream an den Server verschicken
                 networkController.sendMessage(output, gameState);
@@ -189,6 +211,10 @@ public class ClientEngine extends Thread implements Network {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 
     public Game getGame() { return game; }

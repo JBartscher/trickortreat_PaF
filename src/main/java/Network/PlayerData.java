@@ -22,6 +22,7 @@ public class PlayerData extends EntityData {
     private boolean inside;
     private boolean noCollision;
     private MapObject insideObject;
+    private boolean hasKey;
 
     private double protectedTicks;
 
@@ -37,6 +38,7 @@ public class PlayerData extends EntityData {
         this.noCollision = player.isNoCollision();
         this.insideObject = player.getInsideObject();
         this.protectedTicks = player.getProtectedTicks();
+        this.hasKey = player.hasKey();
     }
 
 
@@ -117,6 +119,14 @@ public class PlayerData extends EntityData {
 
     public void setProtectedTicks(double protectedTicks) {
         this.protectedTicks = protectedTicks;
+    }
+
+    public boolean hasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
     }
 
 

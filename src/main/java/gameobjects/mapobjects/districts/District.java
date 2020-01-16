@@ -48,4 +48,9 @@ public abstract class District implements Serializable {
     public abstract Tile[][] getBigHouseUnvisitedTileset();
 
     public abstract Tile[][] getBigHouseVisitedTileset();
+
+    public abstract Tile[][] getGingerbreadHouseUnvisitedTileset();
+
+    public abstract Tile[][] getGingerbreadHouseVisitedTileset();
+
 }

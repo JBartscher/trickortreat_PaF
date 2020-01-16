@@ -18,7 +18,7 @@ public class GraphicsUtility {
     public static Image[] tileTreesImages = new Image[40];
 
 
-    public  static Image imageCandy;
+    public  static Image candyImage;
 
     // TODO: ÜBERGANGSWEISE, wird später zum TileSet hinzugefügt
     public static Image streetTileGras;
@@ -45,17 +45,22 @@ public class GraphicsUtility {
     public static Image snowDeko2Tile;
     public static Image snowDeko3Tile;
 
-
-
+    public static Image keyImage;
 
 
     public static Image centreTile;
     public static Image borderTile;
 
+    public static Image witchDoor;
+
+
+
 
     public static void initGraphics(){
         initTileImages();
-        initCandyImage();
+        initImages();
+
+
     }
 
     public static void initTileImages()
@@ -427,6 +432,11 @@ public class GraphicsUtility {
             return tileMansionImages[11];
         }
 
+        if ( nr == 300) {
+
+            return witchDoor;
+        }
+
 
 
         if ( nr == -1) {
@@ -479,19 +489,20 @@ public class GraphicsUtility {
         }  else {
             return tileImages[54];
         }
-
-
     }
 
-    public static void initCandyImage() {
-        imageCandy = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
+    public static void initImages() {
+        candyImage = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
+        keyImage = new Image(GraphicsUtility.class.getResourceAsStream("key.png"));
+        witchDoor = new Image(GraphicsUtility.class.getResourceAsStream("witch_door.png"));
     }
 
     public static Image getCandyImage() {
-        return imageCandy;
+        return candyImage;
+    }
 
-
-
+    public static Image getKeyImage() {
+        return keyImage;
     }
 
 

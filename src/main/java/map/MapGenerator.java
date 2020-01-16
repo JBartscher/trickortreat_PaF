@@ -57,7 +57,6 @@ public class MapGenerator {
 
         createCentreSmallHouses(5);
 
-
         //createSmallHouses(((Number) config.getParam("smallHouses")).intValue());
         //createBigHouses(((Number) config.getParam("bigHouses")).intValue());
         createHouses();
@@ -206,6 +205,12 @@ public class MapGenerator {
      */
     private void createHouses() {
         ArrayList<String> amountOfHouses = new ArrayList<>();
+        amountOfHouses.add("witch");
+        amountOfHouses.add("witch");
+        amountOfHouses.add("witch");
+        amountOfHouses.add("witch");
+        amountOfHouses.add("witch");
+        amountOfHouses.add("witch");
 
         for(int i = 0; i < ((Number) config.getParam("smallHouses")).intValue(); i++) {
             amountOfHouses.add("small"); }
@@ -380,7 +385,7 @@ public class MapGenerator {
                 if(nr.length() == 1) nr = "0" + nr;
                 if(nr.length() == 3 || tileNr >= 90) nr = "XX";
 
-                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85 || tileNr == 221 || tileNr == 222) {
+                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85 || tileNr == 221 || tileNr == 222 || tileNr == 300) {
 
                     //nr = "DD";
                     doorPoints.add(new Point(x, y + 1));

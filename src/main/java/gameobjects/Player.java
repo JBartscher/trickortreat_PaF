@@ -1,8 +1,10 @@
 package main.java.gameobjects;
 
+import javafx.scene.image.Image;
 import main.java.Entity;
 import main.java.MovementManager;
 import main.java.Network.PlayerData;
+import main.java.SpriteSheet;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 
@@ -15,13 +17,22 @@ public class Player extends Entity {
     // necessary to get  the right coordinates when playing with mouse
     private int xOffSet, yOffSet;
 
-
     private boolean inside;
     private boolean noCollision;
+
+    private boolean hasKey = true;
     private MapObject insideObject;
 
     // Nach einer Kollision mit einer Hexe ist ein Spieler eine Zeit lang geschützt, um Mehrfachkollisionen zu vermeiden
     private double protectedTicks;
+
+    private SpriteSheet spriteSheet2;
+    private Image sprite2;
+    private SpriteSheet spriteSheet3;
+    private Image sprite3;
+    private SpriteSheet spriteSheet4;
+    private Image sprite4;
+
 
     /**
      * constructor which creates a player Object with a specific MovementType
@@ -31,6 +42,9 @@ public class Player extends Entity {
     public Player(MovementManager.MovementType type) {
         super();
         this.movementType = type;
+        spriteSheet2 = new SpriteSheet("jacko.png", 4, 3);
+        spriteSheet3 = new SpriteSheet("player.png", 4, 3);
+        spriteSheet4 = new SpriteSheet("jacko.png", 4, 3);
     }
 
     public int getxOffSet() {
@@ -107,6 +121,7 @@ public class Player extends Entity {
         this.noCollision = playerData.isNoCollision();
         this.insideObject = playerData.getInsideObject();
         this.protectedTicks = playerData.getProtectedTicks();
+        this.hasKey = playerData.hasKey();
     }
 
     public boolean isInside() {
@@ -139,6 +154,60 @@ public class Player extends Entity {
 
     public void setProtectedTicks(double protectedTicks) {
         this.protectedTicks = protectedTicks;
+    }
+
+    public boolean hasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
+    }
+
+    public Image getEntityImage2() {
+        return sprite2;
+    }
+
+    public Image getEntityImage3() {
+        return sprite3;
+    }
+
+    public Image getEntityImage4() {
+        return sprite4;
+    }
+
+    public SpriteSheet getSpriteSheet2() {
+        return spriteSheet2;
+    }
+
+    public void setSpriteSheet2(SpriteSheet spriteSheet2) {
+        this.spriteSheet2 = spriteSheet2;
+    }
+
+    public SpriteSheet getSpriteSheet3() {
+        return spriteSheet3;
+    }
+
+    public void setSpriteSheet3(SpriteSheet spriteSheet3) {
+        this.spriteSheet3 = spriteSheet3;
+    }
+
+    public SpriteSheet getSpriteSheet4() {
+        return spriteSheet4;
+    }
+
+    public void setSpriteSheet4(SpriteSheet spriteSheet4) {
+        this.spriteSheet4 = spriteSheet4;
+    }
+
+    public void setEntityImage(boolean calledByNetworkContext) {
+        super.setEntityImage(calledByNetworkContext);
+
+        this.sprite2 = spriteSheet2.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite3 = spriteSheet3.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite4 = spriteSheet4.getSpriteImage(moveCounter, moveDirection.ordinal());
+
+
     }
 
 

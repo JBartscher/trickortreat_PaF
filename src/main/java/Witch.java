@@ -21,6 +21,8 @@ public class Witch extends Entity {
         this.homeY = yPos;
         this.speed = getSpeed() * 2;
         this.finalTargetPos = new Point(0, 0);
+        this.setSpriteSheet(new SpriteSheet("witch_image.png", 4, 3));
+        this.sprite = spriteSheet.getSpriteImage(0, 1);
     }
 
     public void setGameStateData(WitchData witchData) {
