@@ -1,13 +1,13 @@
 package main.java;
 
 import javafx.stage.Stage;
+import main.java.Menu.GameMenu;
 import main.java.Network.GameStateInit;
 import main.java.Network.Network;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
-import main.java.ui.GameMenu;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;

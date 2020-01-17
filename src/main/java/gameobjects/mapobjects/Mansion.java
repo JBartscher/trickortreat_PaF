@@ -8,20 +8,20 @@ import main.java.map.TileCollection;
 
 public class Mansion extends House implements Visitible {
 
-    public static final int MANSION_WIDTH = 4;
+    public static final int MANSION_WIDTH = 5;
     public static final int MANSION_HEIGHT = 3;
 
     public Player insidePlayer = null;
 
     /**
-     * create the manison of Alice Cooper
+     * create the mansion of Alice Cooper
      *
      * @param x
      * @param y
      */
     public Mansion(int x, int y) {
         super(x, y, MANSION_HEIGHT, MANSION_WIDTH);
-        this.tileset = TileCollection.getMansonTiles();
+        this.tileset = TileCollection.getMansionOutsideTiles();
     }
 
     @Override
@@ -53,7 +53,6 @@ public class Mansion extends House implements Visitible {
 
     @Override
     public void repaintAfterVisit() {
-
     }
 
     @Override
@@ -66,6 +65,7 @@ public class Mansion extends House implements Visitible {
             player.setyPos(player.getyPos() + -Tile.TILE_SIZE * 1);
             player.setInsideObject(this);
             player.setProtectedTicks(25);
+            this.tileset = TileCollection.getMansionInsideTiles();
 
         } else {
             insidePlayer = null;
@@ -75,6 +75,7 @@ public class Mansion extends House implements Visitible {
             player.setyPos(player.getyPos() + Tile.TILE_SIZE * 1);
             player.setInsideObject(null);
             player.setProtectedTicks(25);
+            this.tileset = TileCollection.getMansionOutsideTiles();
         }
 
     }

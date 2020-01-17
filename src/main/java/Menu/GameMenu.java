@@ -1,4 +1,4 @@
-package main.java.ui;
+package main.java.Menu;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.java.*;
 import main.java.gameobjects.Player;
+import main.java.sprites.GraphicsUtility;
 
 public class GameMenu {
 

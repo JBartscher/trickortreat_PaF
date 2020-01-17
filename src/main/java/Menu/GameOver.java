@@ -10,12 +10,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import main.java.*;
+import main.java.Game;
+import main.java.GameLauncher;
 import main.java.Network.ClientEngine;
 import main.java.Network.Event;
 import main.java.Network.NetworkController;
 import main.java.Network.ServerEngine;
+import main.java.Sound;
+import main.java.Window;
 import main.java.gameobjects.Player;
+import main.java.sprites.GraphicsUtility;
 
 public class GameOver {
 
@@ -114,11 +118,11 @@ public class GameOver {
         imageViewCandy2.setScaleX(3);
         imageViewCandy2.setScaleY(3);
 
-        Text textCandyPlayer1 = new Text(String.valueOf(player1.getCandy()) + "x");
+        Text textCandyPlayer1 = new Text(player1.getCandy() + "x");
         GraphicsUtility.setTextProperties(textCandyPlayer1, "-fx-font: 40 arial;", Color.WHITE, Window.WIDTH / 4 - 50, Window.HEIGHT - 100);
 
 
-        Text textCandyPlayer2 = new Text(String.valueOf(player2.getCandy())+ "x");
+        Text textCandyPlayer2 = new Text(player2.getCandy() + "x");
         GraphicsUtility.setTextProperties(textCandyPlayer2, "-fx-font: 40 arial;", Color.WHITE, Window.WIDTH / 4 * 3 + 10, Window.HEIGHT - 100);
 
 

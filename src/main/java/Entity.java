@@ -1,9 +1,10 @@
 package main.java;
 
 import javafx.scene.image.Image;
+import main.java.Menu.GameMenu;
 import main.java.Network.EntityData;
 import main.java.map.Tile;
-import main.java.ui.GameMenu;
+import main.java.sprites.SpriteSheet;
 
 import java.awt.*;
 import java.io.Serializable;

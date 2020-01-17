@@ -4,9 +4,9 @@ import javafx.scene.image.Image;
 import main.java.Entity;
 import main.java.MovementManager;
 import main.java.Network.PlayerData;
-import main.java.SpriteSheet;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
+import main.java.sprites.SpriteSheet;
 
 public class Player extends Entity {
 

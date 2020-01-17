@@ -2,12 +2,12 @@ package main.java;
 
 import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
+import main.java.Menu.GameMenu;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 import main.java.map.Tile;
-import main.java.ui.GameMenu;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,7 +93,7 @@ public class GameController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if(o instanceof House) {
+        if (o instanceof House) {
             House h = (House) o;
             h.repaintAfterVisit();
             h.updateMap();

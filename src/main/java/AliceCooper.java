@@ -1,14 +1,12 @@
 package main.java;
 
-import javafx.scene.image.Image;
 import main.java.gameobjects.Player;
 
 public class AliceCooper extends Entity {
 
 
     public AliceCooper() {
-
-        this.sprite = new Image(AliceCooper.class.getResourceAsStream("alice_cooper.png"));
+        // this.sprite = new Image(AliceCooper.class.getResourceAsStream("alice_cooper.png"));
     }
 
 

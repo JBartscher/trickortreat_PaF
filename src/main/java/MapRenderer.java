@@ -7,10 +7,11 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import main.java.Menu.GameMenu;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.Tile;
-import main.java.ui.GameMenu;
+import main.java.sprites.GraphicsUtility;
 
 import java.util.concurrent.TimeUnit;
 

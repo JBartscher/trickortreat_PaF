@@ -1,4 +1,4 @@
-package main.java;
+package main.java.sprites;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;

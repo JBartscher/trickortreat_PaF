@@ -1,4 +1,4 @@
-package main.java;
+package main.java.sprites;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,11 +14,12 @@ public class GraphicsUtility {
 
     // tileset 12x12 => 144 tiles
     public static Image[] tileImages = new Image[72];
-    public static Image[] tileMansionImages = new Image[12];
     public static Image[] tileTreesImages = new Image[40];
+    public static Image[][] tileMansionImages = new Image[5][6];
+    public static Image[][] tileTownHallImages = new Image[5][9];
 
 
-    public  static Image candyImage;
+    public static Image candyImage;
 
     // TODO: ÜBERGANGSWEISE, wird später zum TileSet hinzugefügt
     public static Image streetTileGras;
@@ -54,17 +55,14 @@ public class GraphicsUtility {
     public static Image witchDoor;
 
 
-
-
-    public static void initGraphics(){
+    public static void initGraphics() {
         initTileImages();
         initImages();
 
 
     }
 
-    public static void initTileImages()
-    {
+    public static void initTileImages() {
         Image image = new Image(GraphicsUtility.class.getResourceAsStream("tileset.png"));
 
         for (int y = 0; y < 9; y++) {
@@ -73,10 +71,10 @@ public class GraphicsUtility {
             }
         }
 
-        Image imageMansion = new Image(GraphicsUtility.class.getResourceAsStream("alice_cooper_villa_complete.png"));
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 4; x++) {
-                tileMansionImages[y * 4 + x] = new WritableImage(imageMansion.getPixelReader(), x * (Tile.TILE_SIZE), y * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
+        Image imageTownhall = new Image(GraphicsUtility.class.getResourceAsStream("townhall.png"));
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 5; x++) {
+                tileTownHallImages[x][y] = new WritableImage(imageTownhall.getPixelReader(), x * (Tile.TILE_SIZE), y * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
             }
         }
 
@@ -87,53 +85,56 @@ public class GraphicsUtility {
             }
         }
 
+        Image imageMansion = new Image(GraphicsUtility.class.getResourceAsStream("mansion.png"));
+        for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 5; x++) {
+                tileMansionImages[x][y] = new WritableImage(imageMansion.getPixelReader(), x * (Tile.TILE_SIZE), y * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
+            }
+        }
+
 
         System.out.println("fertig");
 
 
-
-
-
         // TODO: ÜBERGANGSWEISE, wird später überarbeitet
-
 
 
         Image imageTileSetGras = new Image(GraphicsUtility.class.getResourceAsStream("tileset_gras.png"));
         Image imageTileSet = new Image(GraphicsUtility.class.getResourceAsStream("tileset_ground.png"));
 
 
-        centreTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        centreTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 
         //grasGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
-        grasGroundTile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
+        grasGroundTile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE);
 
-        grasDeko1Tile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        grasDeko2Tile = new WritableImage(imageTileSetGras.getPixelReader(), 1 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        grasDeko3Tile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        grasDeko1Tile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        grasDeko2Tile = new WritableImage(imageTileSetGras.getPixelReader(), 1 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        grasDeko3Tile = new WritableImage(imageTileSetGras.getPixelReader(), 0 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 
         //sandGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
-        sandGroundTile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        sandDeko1Tile = new WritableImage(imageTileSetGras.getPixelReader(), 4 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        sandDeko2Tile = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        sandDeko3Tile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        sandGroundTile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        sandDeko1Tile = new WritableImage(imageTileSetGras.getPixelReader(), 4 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        sandDeko2Tile = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        sandDeko3Tile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 
-        desertGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
-        snowGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
+        desertGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE);
+        snowGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE);
 
-        streetTileGras = new WritableImage(imageTileSetGras.getPixelReader(), 2 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        streetTileSand = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        streetTileDesert = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        streetTileSnow = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        streetTileGras = new WritableImage(imageTileSetGras.getPixelReader(), 2 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        streetTileSand = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        streetTileDesert = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        streetTileSnow = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
-        snowDeko1Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        snowDeko2Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
-        snowDeko3Tile = new WritableImage(imageTileSet.getPixelReader(), 4 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        snowDeko1Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        snowDeko2Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        snowDeko3Tile = new WritableImage(imageTileSet.getPixelReader(), 4 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 
-        borderTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE );
+        borderTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
     }
 
@@ -153,11 +154,11 @@ public class GraphicsUtility {
 
     public static Image getTileImage(int nr) {
 
-        if(nr == 1) {
+        if (nr == 1) {
             return grasGroundTile;
-        } else if(nr == 2) {
+        } else if (nr == 2) {
             return grasDeko1Tile;
-        } else if(nr == 3) {
+        } else if (nr == 3) {
             return grasDeko2Tile;
         } else if (nr == 4) {
             return grasDeko3Tile;
@@ -171,16 +172,15 @@ public class GraphicsUtility {
             return snowDeko1Tile;
         } else if (nr == 9) {
             return snowDeko2Tile;
-        }else if (nr == 10) {
+        } else if (nr == 10) {
             return snowDeko3Tile;
-        } else if(nr == 11) {
+        } else if (nr == 11) {
             return sandDeko1Tile;
-        } else if(nr == 12) {
+        } else if (nr == 12) {
             return sandDeko2Tile;
-        } else if(nr == 13) {
+        } else if (nr == 13) {
             return sandDeko3Tile;
         }
-
 
 
         // SmallHouse - poor
@@ -314,165 +314,293 @@ public class GraphicsUtility {
             return tileImages[4];
         } //down-right lights-out
 
-        // Townhall
+        // TownHall - outside
         // first row
         if (nr == 90) {
-            return tileImages[47];
+            return tileTownHallImages[0][0];
         }
         if (nr == 91) {
-            return tileImages[1];
+            return tileTownHallImages[1][0];
         }
         if (nr == 92) {
-            return tileImages[1];
+            return tileTownHallImages[2][0];
         }
         if (nr == 93) {
-            return tileImages[1];
+            return tileTownHallImages[3][0];
         }
         if (nr == 94) {
-            return tileImages[1];
+            return tileTownHallImages[4][0];
         }
-        if (nr == 95) {
-            return tileImages[48];
-        }
+
         //second row
         if (nr == 96) {
-            return tileImages[3];
+            return tileTownHallImages[0][1];
         }
         if (nr == 97) {
-            return tileImages[22];
+            return tileTownHallImages[1][1];
         }
         if (nr == 98) {
-            return tileImages[24];
+            return tileTownHallImages[2][1];
         }
         if (nr == 99) {
-            return tileImages[43];
+            return tileTownHallImages[3][1];
         }
         if (nr == 100) {
-            return tileImages[61];
+            return tileTownHallImages[4][1];
         }
-        if (nr == 101) {
-            return tileImages[45];
-        }
+
         //third row
         if (nr == 102) {
-            return tileImages[5];
+            return tileTownHallImages[0][2];
         }
         if (nr == 103) {
-            return tileImages[6];
+            return tileTownHallImages[1][2];
         }
         if (nr == 104) {
-            return tileImages[19];
+            return tileTownHallImages[2][2];
         }
         if (nr == 105) {
-            return tileImages[20];
+            return tileTownHallImages[3][2];
         }
         if (nr == 106) {
-            return tileImages[33];
+            return tileTownHallImages[4][2];
         }
-        if (nr == 107) {
-            return tileImages[34];
-        }
+
         //fourth row
         if (nr == 108) {
-            return tileImages[12];
+            return tileTownHallImages[0][3];
         }
         if (nr == 109) {
-            return tileImages[13];
+            return tileTownHallImages[1][3];
         }
         if (nr == 110) {
-            return tileImages[26];
+            return tileTownHallImages[2][3];
         }
         if (nr == 111) {
-            return tileImages[27];
+            return tileTownHallImages[3][3];
         }
         if (nr == 112) {
-            return tileImages[40];
-        }
-        if (nr == 113) {
-            return tileImages[41];
+            return tileTownHallImages[4][3];
         }
 
-        // Villa
+        // TownHall - outside
+        // first row
+        if (nr == 113) {
+            return tileTownHallImages[0][4];
+        }
+        if (nr == 114) {
+            return tileTownHallImages[1][4];
+        }
+        if (nr == 115) {
+            return tileTownHallImages[2][4];
+        }
+        if (nr == 116) {
+            return tileTownHallImages[3][4];
+        }
+        if (nr == 117) {
+            return tileTownHallImages[4][4];
+        }
+
+        //second row
+        if (nr == 118) {
+            return tileTownHallImages[0][5];
+        }
+        if (nr == 119) {
+            return tileTownHallImages[1][5];
+        }
+        if (nr == 120) {
+            return tileTownHallImages[2][5];
+        }
+        if (nr == 121) {
+            return tileTownHallImages[3][5];
+        }
+        if (nr == 122) {
+            return tileTownHallImages[4][5];
+        }
+
+        //third row
+        if (nr == 123) {
+            return tileTownHallImages[0][6];
+        }
+        if (nr == 124) {
+            return tileTownHallImages[1][6];
+        }
+        if (nr == 125) {
+            return tileTownHallImages[2][6];
+        }
+        if (nr == 126) {
+            return tileTownHallImages[3][6];
+        }
+        if (nr == 127) {
+            return tileTownHallImages[4][6];
+        }
+
+        //fourth row
+        if (nr == 128) {
+            return tileTownHallImages[0][7];
+        }
+        if (nr == 129) {
+            return tileTownHallImages[1][7];
+        }
+        if (nr == 130) {
+            return tileTownHallImages[2][7];
+        }
+        if (nr == 131) {
+            return tileTownHallImages[3][7];
+        }
+        if (nr == 132) {
+            return tileTownHallImages[4][7];
+        }
+
+        // townhall EmptyKey Field/Table
+        if (nr == 133) {
+            return tileTownHallImages[0][8];
+        }
+
+
+        // Villa - outside
+        // first row
         if (nr == 212) {
-            return tileMansionImages[0];
+            return tileMansionImages[0][0];
         }
         if (nr == 213) {
-            return tileMansionImages[1];
+            return tileMansionImages[1][0];
         }
         if (nr == 214) {
-            return tileMansionImages[2];
+            return tileMansionImages[2][0];
         }
         if (nr == 215) {
-            return tileMansionImages[3];
+            return tileMansionImages[3][0];
         }
-
         if (nr == 216) {
-            return tileMansionImages[4];
+            return tileMansionImages[4][0];
         }
+        // second row
+
         if (nr == 217) {
-            return tileMansionImages[5];
+            return tileMansionImages[0][1];
         }
         if (nr == 218) {
-            return tileMansionImages[6];
+            return tileMansionImages[1][1];
         }
         if (nr == 219) {
-            return tileMansionImages[7];
+            return tileMansionImages[2][1];
         }
-
         if (nr == 220) {
-            return tileMansionImages[8];
+            return tileMansionImages[3][1];
         }
         if (nr == 221) {
-            return tileMansionImages[9];
+            return tileMansionImages[4][1];
         }
+        // third row
+
         if (nr == 222) {
-            return tileMansionImages[10];
+            return tileMansionImages[0][2];
         }
         if (nr == 223) {
-            return tileMansionImages[11];
+            return tileMansionImages[1][2];
+        }
+        if (nr == 224) {
+            return tileMansionImages[2][2];
+        }
+        if (nr == 225) {
+            return tileMansionImages[3][2];
+        }
+        if (nr == 226) {
+            return tileMansionImages[4][2];
         }
 
-        if ( nr == 300) {
+        // Villa - inside
+        // first row
+        if (nr == 227) {
+            return tileMansionImages[0][3];
+        }
+        if (nr == 228) {
+            return tileMansionImages[1][3];
+        }
+        if (nr == 229) {
+            return tileMansionImages[2][3];
+        }
+        if (nr == 230) {
+            return tileMansionImages[3][3];
+        }
+        if (nr == 231) {
+            return tileMansionImages[4][3];
+        }
+        // second row
+        if (nr == 232) {
+            return tileMansionImages[0][4];
+        }
+        if (nr == 233) {
+            return tileMansionImages[1][4];
+        }
+        if (nr == 234) {
+            return tileMansionImages[2][4];
+        }
+        if (nr == 235) {
+            return tileMansionImages[3][4];
+        }
+        if (nr == 236) {
+            return tileMansionImages[4][4];
+        }
+        // third row
+        if (nr == 237) {
+            return tileMansionImages[0][5];
+        }
+        if (nr == 238) {
+            return tileMansionImages[1][5];
+        }
+        if (nr == 239) {
+            return tileMansionImages[2][5];
+        }
+        if (nr == 240) {
+            return tileMansionImages[3][5];
+        }
+        if (nr == 241) {
+            return tileMansionImages[4][5];
+        }
+
+
+        if (nr == 300) {
 
             return witchDoor;
         }
 
 
-
-        if ( nr == -1) {
+        if (nr == -1) {
             return tileTreesImages[0];
         }
 
-        if ( nr == -2) {
+        if (nr == -2) {
             return tileTreesImages[1];
         }
 
-        if ( nr == -3) {
+        if (nr == -3) {
             return tileTreesImages[2];
         }
 
-        if ( nr == -4) {
+        if (nr == -4) {
             return tileTreesImages[3];
         }
 
-        if ( nr == -5) {
+        if (nr == -5) {
             return tileTreesImages[4];
         }
 
-        if ( nr == -6) {
+        if (nr == -6) {
             return tileTreesImages[5];
         }
 
-        if ( nr == -7) {
+        if (nr == -7) {
             return tileTreesImages[6];
         }
 
-        if ( nr == -8) {
+        if (nr == -8) {
             return tileTreesImages[7];
         }
 
 
-        if (nr == 20 ) {
+        if (nr == 20) {
             return borderTile;
         }
         // TODO: VORERST STREET-TILE
@@ -482,11 +610,11 @@ public class GraphicsUtility {
             return streetTileSand;
         } else if (nr == 23) {
             return streetTileDesert;
-        } else if(nr == 24) {
+        } else if (nr == 24) {
             return streetTileSnow;
-        } else if(nr == 25) {
+        } else if (nr == 25) {
             return centreTile;
-        }  else {
+        } else {
             return tileImages[54];
         }
     }

@@ -2,6 +2,7 @@ package main.java;
 
 import main.java.Network.WitchData;
 import main.java.map.Tile;
+import main.java.sprites.SpriteSheet;
 
 import java.awt.*;
 
