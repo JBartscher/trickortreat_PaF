@@ -54,6 +54,7 @@ public class MainMenu {
 
     private String ip;
     private Stage controlsStage;
+    private Scene controlsScene;
     private VBox controlsBox;
     private RadioButton radioButtonWASD = new RadioButton("KEYBOARD - WASD");;
     private RadioButton radioButtonARROW = new RadioButton("KEYBOARD - ARROWS");
@@ -66,8 +67,35 @@ public class MainMenu {
     private MovementManager.MovementType movementType;
     private MovementManager.MovementType movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_AWSD;
     private MovementManager.MovementType movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_ARROW;
+    private List<Pair<String, Runnable>> menuData;
+    private List<Pair<String, Runnable>> localMenuData;
+    private List<Pair<String, Runnable>> hostMenuData;
+    private List<Pair<String, Runnable>> clientMenuData;
 
-    private List<Pair<String, Runnable>> localMenuData = Arrays
+    private void loadData() {
+
+        menuData = Arrays
+            .asList(new Pair<String, Runnable>("Play local", () -> {
+
+                initMenu(localMenuData, 40);
+
+            }), new Pair<String, Runnable>("Host a Game", () -> {
+
+                initMenu(hostMenuData, 90);
+
+            }), new Pair<String, Runnable>("Join a Game", () -> {
+
+                initMenu(clientMenuData, 40);
+
+            }), new Pair<String, Runnable>("Highscore", () -> {
+                // gameMode = Game.GameMode.REMOTE;
+                // new ClientEngine(gameLauncher, stage);
+
+            }), new Pair<String, Runnable>("Credits", () -> {
+
+            }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
+
+        localMenuData = Arrays
             .asList(new Pair<String, Runnable>("Play the Game", () -> {
 
                 gameMode = Game.GameMode.LOCAL;
@@ -128,10 +156,10 @@ public class MainMenu {
                     setAudio();
                     controlsStage.close();
                 });
-
+                
             }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
 
-    private List<Pair<String, Runnable>> hostMenuData = Arrays
+        hostMenuData = Arrays
             .asList(new Pair<String, Runnable>("Start the Game", () -> {
 
                 gameMode = Game.GameMode.REMOTE;
@@ -176,7 +204,7 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
 
-        private List<Pair<String, Runnable>> clientMenuData = Arrays
+        clientMenuData = Arrays
             .asList(new Pair<String, Runnable>("Start the Game", () -> {
 
                 gameMode = Game.GameMode.REMOTE;
@@ -234,26 +262,7 @@ public class MainMenu {
                 });
 
             }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
-
-    private List<Pair<String, Runnable>> menuData = Arrays.asList(new Pair<String, Runnable>("Play local", () -> {
-
-                initMenu(localMenuData, 40);
-
-            }), new Pair<String, Runnable>("Host a Game", () -> {
-
-                initMenu(hostMenuData, 90);
-
-            }), new Pair<String, Runnable>("Join a Game", () -> {
-
-                initMenu(clientMenuData, 40);
-
-            }), new Pair<String, Runnable>("Highscore", () -> {
-                // gameMode = Game.GameMode.REMOTE;
-                // new ClientEngine(gameLauncher, stage);
-
-            }), new Pair<String, Runnable>("Credits", () -> {
-
-            }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
+    }
 
     private void initMenu(List<Pair<String, Runnable>> data, int height) {
 
@@ -277,8 +286,8 @@ public class MainMenu {
 
     private void initScene(VBox box, int width, int height) {
 
-        Scene scene = new Scene(box, width, height);
-        controlsStage.setScene(scene);
+        controlsScene = new Scene(box, width, height);
+        controlsStage.setScene(controlsScene);
         controlsStage.show();
     }
 
@@ -314,7 +323,8 @@ public class MainMenu {
 
         addBackground();
         addTitle();
-
+        loadData();
+        
         addLine(lineX, lineY, lineHeight);
         addMenu(lineX + 5, lineY + 5, menuData, menuBox);
 
