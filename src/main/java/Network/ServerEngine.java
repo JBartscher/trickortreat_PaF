@@ -3,15 +3,16 @@ package main.java.Network;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+// import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+// import javafx.scene.control.RadioButton;
+// import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
+import main.java.MovementManager.MovementType;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -48,80 +49,68 @@ public class ServerEngine extends Thread implements Network {
 
     // Movement
     private MovementManager.MovementType movementType;
-    RadioButton radioButtonAWSD;
-    RadioButton radioButtonARROW;
-    RadioButton radioButtonMOUSE;
+    // RadioButton radioButtonAWSD;
+    // RadioButton radioButtonARROW;
+    // RadioButton radioButtonMOUSE;
 
-
-    public ServerEngine(GameLauncher gameLauncher, Stage stage) {
+    public ServerEngine(GameLauncher gameLauncher, Stage stage, MovementType movementType) {
         this.gameLauncher = gameLauncher;
         this.stage = stage;
+        this.movementType = movementType;
         start();
     }
 
     @Override
     public void run () {
 
-        Button buttonHost = new Button("HOST GAME");
+        // Button buttonHost = new Button("HOST GAME");
 
         Platform.runLater( () -> {
 
-            stage.setTitle("Trick or Treat - Server");
+            // stage.setTitle("Trick or Treat - Server");
 
             vBox = new VBox(10);
 
             vBox.setAlignment(Pos.CENTER);
 
-            Label labelTitle = new Label("Game Configurations");
+            // Label labelTitle = new Label("Game Configurations");
 
-            Label labelMovement = new Label("- Select a Movement TYPE");
+            // Label labelMovement = new Label("- Select a Movement TYPE");
 
-            final ToggleGroup group = new ToggleGroup();
-            radioButtonAWSD = new RadioButton("KEYBOARD - AWSD");
-            radioButtonARROW = new RadioButton("KEYBOARD - ARROW");
-            radioButtonMOUSE = new RadioButton("MOUSE");
-            radioButtonAWSD.setSelected(true);
-            radioButtonAWSD.setToggleGroup(group);
-            radioButtonARROW.setToggleGroup(group);
-            radioButtonMOUSE.setToggleGroup(group);
+            // final ToggleGroup group = new ToggleGroup();
+            // radioButtonAWSD = new RadioButton("KEYBOARD - AWSD");
+            // radioButtonARROW = new RadioButton("KEYBOARD - ARROW");
+            // radioButtonMOUSE = new RadioButton("MOUSE");
+            // radioButtonAWSD.setSelected(true);
+            // radioButtonAWSD.setToggleGroup(group);
+            // radioButtonARROW.setToggleGroup(group);
+            // radioButtonMOUSE.setToggleGroup(group);
 
             this.labelRequests = new Label();
-            vBox.getChildren().addAll(labelTitle, labelMovement, radioButtonAWSD, radioButtonARROW, radioButtonMOUSE, buttonHost, labelRequests);
+            // vBox.getChildren().addAll(labelTitle, labelMovement, radioButtonAWSD, radioButtonARROW, radioButtonMOUSE, buttonHost, labelRequests);
+            vBox.getChildren().addAll(labelRequests);
 
             stageNetwork = new Stage();
-            stageNetwork.setTitle("Host a Game");
-            Scene scene = new Scene(vBox, 600, 400);
+            // stageNetwork.setTitle("Host a Game");
+            Scene scene = new Scene(vBox, 350, 30);
             stageNetwork.setScene(scene);
             stageNetwork.show();
 
         });
 
         AtomicBoolean finished = new AtomicBoolean(false);
-        buttonHost.setOnAction( (e) -> {
+        // buttonHost.setOnAction( (e) -> {
             finished.set(true);
 
-        });
+        // });
 
         // Thread am Leben halten, bis der Button gedrückt wurde
         while(!finished.get()) {
 
         }
-        setMovementType();
         startServer();
 
     }
-
-    public void setMovementType() {
-        if(radioButtonARROW.isSelected()) {
-            movementType = MovementManager.MovementType.KEYBOARD_ARROW;
-        } else if(radioButtonAWSD.isSelected()) {
-            movementType = MovementManager.MovementType.KEYBOARD_AWSD;
-        } else if(radioButtonMOUSE.isSelected()) {
-            movementType = MovementManager.MovementType.MOUSE;
-        }
-
-    }
-
 
     // Erstellt bereits ein Game-Objekt
     public void startServer() {

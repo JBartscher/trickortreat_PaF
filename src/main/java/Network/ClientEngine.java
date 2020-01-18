@@ -1,14 +1,15 @@
 package main.java.Network;
 
 import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+// import javafx.geometry.Pos;
+// import javafx.scene.Scene;
+// import javafx.scene.control.*;
+// import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
+import main.java.MovementManager.MovementType;
 
 import java.io.*;
 import java.net.Socket;
@@ -33,63 +34,64 @@ public class ClientEngine extends Thread implements Network {
 
     // Movement
     private MovementManager.MovementType movementType;
-    RadioButton radioButtonAWSD;
-    RadioButton radioButtonARROW;
-    RadioButton radioButtonMOUSE;
+    // RadioButton radioButtonAWSD;
+    // RadioButton radioButtonARROW;
+    // RadioButton radioButtonMOUSE;
 
-    public ClientEngine(GameLauncher gameLauncher, Stage stage) {
+    public ClientEngine(GameLauncher gameLauncher, Stage stage, MovementType movementType, String ip) {
         this.gameLauncher = gameLauncher;
         this.stage = stage;
+        this.movementType = movementType;
+        this.ip = ip;
         showClientGUI();
     }
 
     public void showClientGUI() {
 
-        Stage stageClient = new Stage();
-        stageClient.setTitle("Connect to a Server");
-        VBox vBox = new VBox(10);
-        vBox.setAlignment(Pos.CENTER);
-        TextField textFieldServer = new TextField("");
-        Label label = new Label("Geben Sie die IP-Adresse des Servers ein:");
-        textFieldServer.setPromptText("Geben Sie die IP-Adresse des Server ein: ");
+        // Stage stageClient = new Stage();
+        // stageClient.setTitle("Connect to a Server");
+        // VBox vBox = new VBox(10);
+        // vBox.setAlignment(Pos.CENTER);
+        // TextField textFieldServer = new TextField("");
+        // Label label = new Label("Geben Sie die IP-Adresse des Servers ein:");
+        // textFieldServer.setPromptText("Geben Sie die IP-Adresse des Server ein: ");
 
-        Label labelMovement = new Label("Select a Movement-Type:");
+        // Label labelMovement = new Label("Select a Movement-Type:");
 
-        final ToggleGroup group = new ToggleGroup();
-        radioButtonAWSD = new RadioButton("KEYBOARD - AWSD");
-        radioButtonARROW = new RadioButton("KEYBOARD - ARROW");
-        radioButtonMOUSE = new RadioButton("MOUSE");
-        radioButtonAWSD.setSelected(true);
-        radioButtonAWSD.setToggleGroup(group);
-        radioButtonARROW.setToggleGroup(group);
-        radioButtonMOUSE.setToggleGroup(group);
+        // final ToggleGroup group = new ToggleGroup();
+        // radioButtonAWSD = new RadioButton("KEYBOARD - AWSD");
+        // radioButtonARROW = new RadioButton("KEYBOARD - ARROW");
+        // radioButtonMOUSE = new RadioButton("MOUSE");
+        // radioButtonAWSD.setSelected(true);
+        // radioButtonAWSD.setToggleGroup(group);
+        // radioButtonARROW.setToggleGroup(group);
+        // radioButtonMOUSE.setToggleGroup(group);
 
-        Button buttonCommit = new Button("JOINEN");
+        // Button buttonCommit = new Button("JOINEN");
 
-        buttonCommit.setOnAction( (e) -> {
-            setMovementType();
-            ip = textFieldServer.getText();
-            stageClient.close();
+        // buttonCommit.setOnAction( (e) -> {
+        //     setMovementType();
+        //     ip = textFieldServer.getText();
+        //     stageClient.close();
             start();
 
-        });
+    //     });
 
-        vBox.getChildren().addAll(label, textFieldServer, labelMovement, radioButtonAWSD, radioButtonARROW, radioButtonMOUSE, buttonCommit);
-        Scene scene = new Scene(vBox, 400, 300);
-        stageClient.setScene(scene);
-        stageClient.show();
+    //     vBox.getChildren().addAll(label, textFieldServer, labelMovement, radioButtonAWSD, radioButtonARROW, radioButtonMOUSE, buttonCommit);
+    //     Scene scene = new Scene(vBox, 400, 300);
+    //     stageClient.setScene(scene);
+    //     stageClient.show();
     }
 
-    public void setMovementType() {
-        if(radioButtonARROW.isSelected()) {
-            movementType = MovementManager.MovementType.KEYBOARD_ARROW;
-        } else if(radioButtonAWSD.isSelected()) {
-            movementType = MovementManager.MovementType.KEYBOARD_AWSD;
-        } else if(radioButtonMOUSE.isSelected()) {
-            movementType = MovementManager.MovementType.MOUSE;
-        }
-    }
-
+    // public void setMovementType() {
+    //     if(radioButtonARROW.isSelected()) {
+    //         movementType = MovementManager.MovementType.KEYBOARD_ARROW;
+    //     } else if(radioButtonAWSD.isSelected()) {
+    //         movementType = MovementManager.MovementType.KEYBOARD_AWSD;
+    //     } else if(radioButtonMOUSE.isSelected()) {
+    //         movementType = MovementManager.MovementType.MOUSE;
+    //     }
+    // }
 
     public void run() {
 
