@@ -59,7 +59,7 @@ public class DistrictDecider {
 
         for(District district: districts) {
             Random random = new Random();
-            district.setBiomType(District.BiomType.values()[random.nextInt(District.BiomType.values().length)]);
+            district.setBiomeType(District.BiomeType.values()[random.nextInt(District.BiomeType.values().length)]);
 
         }
 

@@ -270,6 +270,7 @@ public class TileCollection {
 
         townHallInside[1][0] = new Tile(118);
         townHallInside[1][1] = new Tile(119);
+        // KEY
         townHallInside[1][2] = new Tile(120);
         townHallInside[1][3] = new Tile(121);
         townHallInside[1][4] = new Tile(122);

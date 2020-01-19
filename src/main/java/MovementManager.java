@@ -52,8 +52,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     }
 
     // Lokaler Multiplayer
-    public MovementManager(Game game, Player player1, Player player2)
-    {
+    public MovementManager(Game game, Player player1, Player player2) {
         this.game = game;
         this.map = game.getMap();
         this.player1 = player1;
@@ -69,15 +68,14 @@ public class MovementManager implements EventHandler<InputEvent> {
     }
 
 
-    public void registerPlayerInputs(Player player)
-    {
-        if(player.movementType == MovementType.KEYBOARD_AWSD){
+    public void registerPlayerInputs(Player player) {
+        if (player.movementType == MovementType.KEYBOARD_AWSD) {
             inputAWSD = player;
 
-        } else if(player.movementType == MovementType.KEYBOARD_ARROW) {
+        } else if (player.movementType == MovementType.KEYBOARD_ARROW) {
             inputARROW = player;
 
-        } else if(player.movementType == MovementType.MOUSE) {
+        } else if (player.movementType == MovementType.MOUSE) {
             inputMOUSE = player;
         }
     }
@@ -85,158 +83,156 @@ public class MovementManager implements EventHandler<InputEvent> {
     @Override
     public void handle(InputEvent event) {
 
-        if(event.getClass() == MouseEvent.class) {
-            handleMouse((MouseEvent)event);
+        if (event.getClass() == MouseEvent.class) {
+            handleMouse((MouseEvent) event);
         } else if (event.getClass() == KeyEvent.class) {
-            handleKeyboard((KeyEvent)event);
+            handleKeyboard((KeyEvent) event);
         }
     }
 
-    public void handleMouse(MouseEvent event)
-    {
-        if(inputMOUSE == null) return;
-        if(event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-            if(inputMOUSE != null) {
+    public void handleMouse(MouseEvent event) {
+        if (inputMOUSE == null) return;
+        if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+            if (inputMOUSE != null) {
 
                 double currentRenderX = inputMOUSE.xPos - inputMOUSE.getxOffSet() + Tile.TILE_SIZE / 2;
                 double currentRenderY = inputMOUSE.yPos - inputMOUSE.getyOffSet() + Window.HEIGHT * 0.1 + Tile.TILE_SIZE / 2;
-                if(inputMOUSE == game.getOtherPlayer()) currentRenderX += Game.WIDTH + 2 * Tile.TILE_SIZE;
+                if (inputMOUSE == game.getOtherPlayer()) currentRenderX += Game.WIDTH + 2 * Tile.TILE_SIZE;
 
                 inputMOUSE.setTarget(inputMOUSE.getxPos() + (event.getSceneX() - currentRenderX), inputMOUSE.getyPos() + (event.getSceneY() - currentRenderY));
             }
         }
     }
 
-    public void handleKeyboard(KeyEvent event)
-    {
-        if(event.getEventType() == KeyEvent.KEY_PRESSED) {
-            if(event.getCode() == KeyCode.M) {
+    public void handleKeyboard(KeyEvent event) {
+        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+            if (event.getCode() == KeyCode.M) {
                 Sound.muteSound();
             }
 
-            if(event.getCode() == KeyCode.P) {
-                if(game.getGameController() != null) {
-                if(game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                    ((NetworkController)game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
-                    game.paused = true;
-                }
+            if (event.getCode() == KeyCode.P) {
+                if (game.getGameController() != null) {
+                    if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                        ((NetworkController) game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
+                        game.paused = true;
+                    }
                 } else if (game.getGameMode() == Game.GameMode.LOCAL) {
                     game.paused = true;
                 }
 
             }
 
-            if(event.getCode() == KeyCode.A) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x - inputAWSD.speed * 100, inputAWSD.target.y );
+            if (event.getCode() == KeyCode.A) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x - inputAWSD.speed * 100, inputAWSD.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.W) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x, inputAWSD.target.y - inputAWSD.speed * 100 );
+            if (event.getCode() == KeyCode.W) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x, inputAWSD.target.y - inputAWSD.speed * 100);
                 }
             }
 
-            if(event.getCode() == KeyCode.S) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x, inputAWSD.target.y + inputAWSD.speed * 100 );
+            if (event.getCode() == KeyCode.S) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x, inputAWSD.target.y + inputAWSD.speed * 100);
                 }
             }
 
-            if(event.getCode() == KeyCode.D) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x + inputAWSD.speed * 100, inputAWSD.target.y);
+            if (event.getCode() == KeyCode.D) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x + inputAWSD.speed * 100, inputAWSD.target.y);
                 }
             }
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
 
-            if(event.getCode() == KeyCode.R) {
-                if(game.getGameController() != null) {
+            if (event.getCode() == KeyCode.R) {
+                if (game.getGameController() != null) {
                     if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                        ((NetworkController)game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
+                        ((NetworkController) game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
                         game.paused = false;
                     }
-                } else if(game.getGameMode() == Game.GameMode.LOCAL) {
+                } else if (game.getGameMode() == Game.GameMode.LOCAL) {
                     game.paused = false;
                 }
             }
 
-            if(event.getCode() == KeyCode.A) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.target.y );
+            if (event.getCode() == KeyCode.A) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.W) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.yPos );
+            if (event.getCode() == KeyCode.W) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.S) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.yPos );
+            if (event.getCode() == KeyCode.S) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.D) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.target.y );
+            if (event.getCode() == KeyCode.D) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.target.y);
                 }
             }
         }
 
 
-        if(event.getEventType() == KeyEvent.KEY_PRESSED) {
-            if(event.getCode() == KeyCode.LEFT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x - inputARROW.speed * 100, inputARROW.target.y );
+        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+            if (event.getCode() == KeyCode.LEFT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x - inputARROW.speed * 100, inputARROW.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.UP) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x, inputARROW.target.y - inputARROW.speed * 100 );
+            if (event.getCode() == KeyCode.UP) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x, inputARROW.target.y - inputARROW.speed * 100);
                 }
             }
 
-            if(event.getCode() == KeyCode.DOWN) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x, inputARROW.target.y + inputARROW.speed * 100 );
+            if (event.getCode() == KeyCode.DOWN) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x, inputARROW.target.y + inputARROW.speed * 100);
                 }
             }
 
-            if(event.getCode() == KeyCode.RIGHT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x + inputARROW.speed * 100, inputARROW.target.y);
+            if (event.getCode() == KeyCode.RIGHT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x + inputARROW.speed * 100, inputARROW.target.y);
                 }
             }
 
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
-            if(event.getCode() == KeyCode.LEFT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.target.y );
+            if (event.getCode() == KeyCode.LEFT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.UP) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.yPos );
+            if (event.getCode() == KeyCode.UP) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.DOWN) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.yPos );
+            if (event.getCode() == KeyCode.DOWN) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.RIGHT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.target.y );
+            if (event.getCode() == KeyCode.RIGHT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.target.y);
                 }
             }
         }
@@ -252,18 +248,19 @@ public class MovementManager implements EventHandler<InputEvent> {
         targets.clear();
         ArrayList<Node> nodes = aStar.executeAStar();
 
-        if(nodes == null) {
+        if (nodes == null) {
             System.out.println("KEIN PFAD GEFUNDEN");
-            return; } else {
+            return;
+        } else {
         }
 
-        for(Node node : nodes) {
+        for (Node node : nodes) {
             targets.add(node.getPosition());
         }
 
 
         // Terminieren, wenn kein Ziel existiert
-        if(targets.size() < 1) return;
+        if (targets.size() < 1) return;
 
         // Setze erstes und letztes Ziel
         // Das letzte Ziel wird genutzt, um zu entscheiden, ob pathfinding erneut berechnet werden muss oder nicht
@@ -273,32 +270,32 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         int transformedLastX = targets.get(targets.size() - 1).x * Tile.TILE_SIZE;
         int transformedLastY = targets.get(targets.size() - 1).y * Tile.TILE_SIZE;
-        if(entity instanceof Witch) {
-            Witch witch = (Witch)entity;
+        if (entity instanceof Witch) {
+            Witch witch = (Witch) entity;
             witch.setFinalTargetPos(new Point(transformedLastX, transformedLastY));
         }
     }
 
     public void checkTarget(Entity entity, double movementSize) {
-        if(entity instanceof Witch) {
-            Witch witch = (Witch)entity;
-            if(Math.abs(witch.getxPos() - witch.getHomeX()) <= Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) <= Tile.TILE_SIZE ) {
+        if (entity instanceof Witch) {
+            Witch witch = (Witch) entity;
+            if (Math.abs(witch.getxPos() - witch.getHomeX()) <= Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) <= Tile.TILE_SIZE) {
                 witch.setOnReturn(false);
             }
         }
 
         CopyOnWriteArrayList<Point> targets = entity.getTargets();
-        if(targets.size() > 0 ) {
-            Point transformedPoint =  new Point((int) round(entity.getTarget().x / Tile.TILE_SIZE), (int) round(entity.getTarget().y / Tile.TILE_SIZE));
-                //if( Math.abs(entity.getxPos() - entity.getTarget().x) < movementSize * 0.1 && Math.abs(entity.getyPos() - entity.getTarget().y) < movementSize * 0.1 ) {
-                    if(entity.getEntityPos().x == transformedPoint.x && entity.getEntityPos().y == transformedPoint.y) {
-                    if (targets.size() > 1) {
-                        targets.remove(0);
-                        if(targets.size() > 0) {
-                            int transformedX = targets.get(0).x * Tile.TILE_SIZE;
-                            int transformedY = targets.get(0).y * Tile.TILE_SIZE;
-                            entity.setTarget(new Point(transformedX, transformedY));
-                        }
+        if (targets.size() > 0) {
+            Point transformedPoint = new Point((int) round(entity.getTarget().x / Tile.TILE_SIZE), (int) round(entity.getTarget().y / Tile.TILE_SIZE));
+            //if( Math.abs(entity.getxPos() - entity.getTarget().x) < movementSize * 0.1 && Math.abs(entity.getyPos() - entity.getTarget().y) < movementSize * 0.1 ) {
+            if (entity.getEntityPos().x == transformedPoint.x && entity.getEntityPos().y == transformedPoint.y) {
+                if (targets.size() > 1) {
+                    targets.remove(0);
+                    if (targets.size() > 0) {
+                        int transformedX = targets.get(0).x * Tile.TILE_SIZE;
+                        int transformedY = targets.get(0).y * Tile.TILE_SIZE;
+                        entity.setTarget(new Point(transformedX, transformedY));
+                    }
                 }
             }
         }
@@ -308,17 +305,17 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void moveObject(Entity entity) {
         double movementSize = entity.getSpeed() / Game.FRAMES;
 
-        if(entity == game.getWitch()) checkTarget(entity, movementSize);
+        if (entity == game.getWitch()) checkTarget(entity, movementSize);
 
         // TODO: FUNKTIONIERT ÜBER NETZWERK WEGEN NULLPOINTER NICHT
-            //int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
-            // if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
+        //int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
+        // if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
 
         double moveX = 0.0;
         double moveY = 0.0;
 
-        if(entity.target.x > entity.getxPos()) {
-            if(entity.target.x - entity.getxPos() < movementSize) {
+        if (entity.target.x > entity.getxPos()) {
+            if (entity.target.x - entity.getxPos() < movementSize) {
                 moveX = entity.target.x - entity.getxPos();
             } else {
                 moveX = movementSize;
@@ -326,17 +323,17 @@ public class MovementManager implements EventHandler<InputEvent> {
             entity.setMoveDirection(MoveDirection.RIGHT);
 
         } else if (entity.target.x < entity.getxPos()) {
-            if(Math.abs(entity.target.x - entity.getxPos()) < movementSize) {
-                moveX = - Math.abs(entity.target.x - entity.getxPos());
+            if (Math.abs(entity.target.x - entity.getxPos()) < movementSize) {
+                moveX = -Math.abs(entity.target.x - entity.getxPos());
             } else {
-                moveX = - movementSize;
+                moveX = -movementSize;
                 entity.setMoveDirection(MoveDirection.LEFT);
             }
 
         }
 
-        if(entity.target.y > entity.getyPos()) {
-            if(entity.target.y - entity.getyPos() < movementSize) {
+        if (entity.target.y > entity.getyPos()) {
+            if (entity.target.y - entity.getyPos() < movementSize) {
                 moveY = entity.target.y - entity.getyPos();
             } else {
                 moveY = movementSize;
@@ -344,10 +341,10 @@ public class MovementManager implements EventHandler<InputEvent> {
             entity.setMoveDirection(MoveDirection.DOWN);
 
         } else if (entity.target.y < entity.getyPos()) {
-            if(Math.abs(entity.target.y - entity.getyPos()) < movementSize) {
-                moveY = - Math.abs(entity.target.y - entity.getyPos());
+            if (Math.abs(entity.target.y - entity.getyPos()) < movementSize) {
+                moveY = -Math.abs(entity.target.y - entity.getyPos());
             } else {
-                moveY = - movementSize;
+                moveY = -movementSize;
                 entity.setMoveDirection(MoveDirection.UP);
             }
         }
@@ -355,12 +352,12 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         // check out of bounds and change entity position
         entity.setxPos(entity.getxPos() + moveX);
-        if(outOfBounds(entity)) {
+        if (outOfBounds(entity)) {
             entity.setxPos(entity.getxPos() - moveX);
         }
 
         entity.setyPos(entity.getyPos() + moveY);
-        if(outOfBounds(entity)) {
+        if (outOfBounds(entity)) {
             entity.setyPos(entity.getyPos() - moveY);
         }
 
@@ -372,14 +369,13 @@ public class MovementManager implements EventHandler<InputEvent> {
     }
 
     public void moveAllEntites(GameController gameController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
-        for(Player player : listOPlayers)
-        {
-            if(player.getChildrenCount() > 0)
+        for (Player player : listOPlayers) {
+            if (player.getChildrenCount() > 0)
                 moveObject(player);
         }
 
         //move NPC
-        if( (game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.getGameTime() <= 30000) {
+        if ((game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.getGameTime() <= 30000) {
             if (game.ticks % 10 == 0 /*|| game.ticks == 1 */) {
 
                 Point target = findTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
@@ -405,7 +401,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                  */
 
 
-                if ( doPathfinding ) {
+                if (doPathfinding) {
 
                     if (!witch.isOnReturn()) {
                         if (witch.getFinalTargetPos() != target) {
@@ -420,7 +416,7 @@ public class MovementManager implements EventHandler<InputEvent> {
             }
         }
 
-        if(game.getGameTime() < 30000) {
+        if (game.getGameTime() < 30000) {
             game.DRAMATIC = true;
             moveObject(witch);
 
@@ -429,29 +425,28 @@ public class MovementManager implements EventHandler<InputEvent> {
     }
 
 
-
     // find a target for the witch
     public Point findTarget(Witch witch, Player player, Player otherPlayer) {
 
-        if(player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
+        if (player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
             return new Point(0, 0);
         }
 
-        if(player.isInside() || player.getChildrenCount() <= 0) {
+        if (player.isInside() || player.getChildrenCount() <= 0) {
 
-            if(otherPlayer.getChildrenCount() > 0) {
+            if (otherPlayer.getChildrenCount() > 0) {
                 return otherPlayer.getEntityPos();
             } else return new Point(0, 0);
-        }  else if(otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
-            if(player.getChildrenCount() > 0) {
+        } else if (otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
+            if (player.getChildrenCount() > 0) {
                 return player.getEntityPos();
             } else return new Point(0, 0);
         }
 
-        double distancePlayer = Math.sqrt( (player.getxPos() - witch.getxPos()) * (player.getxPos() - witch.getxPos()) + (player.getyPos() - witch.getyPos()) * (player.getyPos() - witch.getyPos()) );
-        double distanceOtherPlayer = Math.sqrt( (otherPlayer.getxPos() - witch.getxPos()) * (otherPlayer.getxPos() - witch.getxPos()) + (otherPlayer.getyPos() - witch.getyPos()) * (otherPlayer.getyPos() - witch.getyPos()) );
+        double distancePlayer = Math.sqrt((player.getxPos() - witch.getxPos()) * (player.getxPos() - witch.getxPos()) + (player.getyPos() - witch.getyPos()) * (player.getyPos() - witch.getyPos()));
+        double distanceOtherPlayer = Math.sqrt((otherPlayer.getxPos() - witch.getxPos()) * (otherPlayer.getxPos() - witch.getxPos()) + (otherPlayer.getyPos() - witch.getyPos()) * (otherPlayer.getyPos() - witch.getyPos()));
 
-        if(distancePlayer < distanceOtherPlayer) {
+        if (distancePlayer < distanceOtherPlayer) {
             return player.getEntityPos();
         } else {
             return otherPlayer.getEntityPos();
@@ -462,20 +457,31 @@ public class MovementManager implements EventHandler<InputEvent> {
 
 
     /**
-     *
      * move entity objects in vertical direction
      * checks for collisions with houses and doors
      */
     public void moveVertical(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
 
-        if ( (map.getMapSector().intersectsWithContainingItems(p) ||
-                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0) ) {
+        if ((map.getMapSector().intersectsWithContainingItems(p) ||
+                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0 ||
+                collideWithKey(entity)
+        )) {
+
+            if (collideWithKey(entity)) collectKey(entity);
+
+            int yOffset = 0;
+            if (entity instanceof Player) {
+                Player player = (Player) entity;
+                if (player.isInside()) {
+                    yOffset = -1;
+                }
+            }
 
             checkCollisionWithDoor(p, entity);
 
             // revert movement when entity is not a player and has a collision detection
-            if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
+            if (entity instanceof Player && ((Player) entity).isNoCollision() && !collideWithKey(entity)) {
 
             } else {
                 //System.out.println("COLLIDE!");
@@ -487,20 +493,35 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    public boolean collideWithKey(Entity entity) {
+        return (entity.getEntityPos().x == 31 && entity.getEntityPos().y == 29);
+    }
+
+    public void collectKey(Entity entity) {
+
+        for (MapObject o : game.getMap().getMapSector().getAllContainingMapObjects()) {
+            if (o instanceof TownHall) {
+                TownHall t = (TownHall) o;
+                t.takeKey((Player) entity);
+                game.getMap().getMap()[29][31][1].setTileNr(133);
+                break;
+            }
+        }
+    }
+
     /**
-     *
      * move entity objects in horizontal direction
      * checks for collisions with houses and doors
      */
     public void moveHorizontal(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
-        if ( (map.getMapSector().intersectsWithContainingItems(p) && !entity.isNoCollision()
-                ||
+        if ((map.getMapSector().intersectsWithContainingItems(p) && !entity.isNoCollision() ||
                 game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0)
+                || collideWithKey(entity)
         ) {
 
             // revert movement when entity is not a player and has a collision detection
-            if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
+            if (entity instanceof Player && ((Player) entity).isNoCollision() && !collideWithKey(entity)) {
 
             } else {
                 //System.out.println("COLLIDE!");
@@ -519,13 +540,14 @@ public class MovementManager implements EventHandler<InputEvent> {
 
     public void checkCollisionWithDoor(Placeable p, Entity entity) {
 
+
         // collision with door
         if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
             for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                 try {
                     House h = (House) obj;
                     if (h.intersects(p)) {
-                        if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
+                        if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
                             h.visit((Player) entity);
                         }
                     }
@@ -540,40 +562,41 @@ public class MovementManager implements EventHandler<InputEvent> {
     }
 
     public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
-        for(Entity e : game.getListOfAllEntities()) {
-            if(e == entity) continue;
+        for (Entity e : game.getListOfAllEntities()) {
+            if (e == entity) continue;
 
             double offset = 0.5;
-            if(e instanceof Witch) {
+            if (e instanceof Witch) {
                 offset = 1.2;
             } else {
                 offset = 0.5;
             }
 
-            if (Math.abs(entity.getxPos() - e.getxPos()) < offset * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * offset ) {
-                if(e instanceof AliceCooper && entity instanceof Player) {
-                    ((AliceCooper)e).playSong((Player)entity);
-                } else if(e instanceof Witch && entity instanceof Player) {
-                    Witch witch = (Witch)e;
-                    Player player = (Player)entity;
-                    if(player.getChildrenCount() <= 0) return;
+            if (Math.abs(entity.getxPos() - e.getxPos()) < offset * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * offset) {
+                if (e instanceof AliceCooper && entity instanceof Player) {
+                    ((AliceCooper) e).playSong((Player) entity);
+                } else if (e instanceof Witch && entity instanceof Player) {
+                    Witch witch = (Witch) e;
+                    Player player = (Player) entity;
+                    if (player.getChildrenCount() <= 0) return;
 
-                    if(player.getProtectedTicks() > 0 ) {
-                        System.out.println("NO COLLISION WEGEN PROTECTION!!"); return;
+                    if (player.getProtectedTicks() > 0) {
+                        System.out.println("NO COLLISION WEGEN PROTECTION!!");
+                        return;
                     }
 
                     Sound.playChild();
-                    
+
                     witch.setOnReturn(true);
                     player.setChildrenCount(player.getChildrenCount() - 1);
                     player.setProtectedTicks(100);
 
-                    if(game.getGameMode() == Game.GameMode.REMOTE) {
-                        ((NetworkController)game.getGameController()).changeGameStateObject(witch, Event.EventType.COLLISION);
+                    if (game.getGameMode() == Game.GameMode.REMOTE) {
+                        ((NetworkController) game.getGameController()).changeGameStateObject(witch, Event.EventType.COLLISION);
                     }
                 }
 
-                if(directionX) {
+                if (directionX) {
                     entity.setxPos(entity.getxPos() - size);
                 } else {
                     entity.setyPos(entity.getyPos() - size);
@@ -591,9 +614,9 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     private boolean outOfBounds(Entity entity) {
 
-        if(entity instanceof Player && ((Player)entity).isInside()) {
-            Player player = (Player)entity;
-            return outOfBoundsInside((Player)entity, player.getInsideObject());
+        if (entity instanceof Player && ((Player) entity).isInside()) {
+            Player player = (Player) entity;
+            return outOfBoundsInside((Player) entity, player.getInsideObject());
 
         } else {
 
@@ -606,13 +629,13 @@ public class MovementManager implements EventHandler<InputEvent> {
     }
 
     private boolean outOfBoundsInside(Player player, MapObject o) {
+
         int e_x = player.getEntityPos().x;
         int e_y = player.getEntityPos().y;
         int o_x = o.getY();
         int o_y = o.getX();
         int o_width = o.getHeight();
         int o_height = o.getWidth();
-
 
 
         return (
@@ -624,6 +647,7 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         );
     }
+
 
 
 }

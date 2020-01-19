@@ -64,6 +64,7 @@ public class MapGenerator {
         disableHouseOffsets();
         createStreetNetwork();
 
+
     }
 
     /**
@@ -81,7 +82,7 @@ public class MapGenerator {
 
                 // Zentrum überspringen
                 if(y * 3 + x == 4) continue;
-                District.BiomType biomType = mapDistricts.get(y * 3 + x).getBiomType();
+                District.BiomeType biomType = mapDistricts.get(y * 3 + x).getBiomeType();
                 for(int j = 0; j < mapThirdSize; j++) {
                     for(int i = 0; i < mapThirdSize; i++) {
 
@@ -175,7 +176,6 @@ public class MapGenerator {
         } catch (PlaceableBelongsToNoSectorException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -385,7 +385,7 @@ public class MapGenerator {
                 if(nr.length() == 1) nr = "0" + nr;
                 if(nr.length() == 3 || tileNr >= 90) nr = "XX";
 
-                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85 || tileNr == 221 || tileNr == 222 || tileNr == 300) {
+                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85 || tileNr == 224 || tileNr == 300) {
 
                     //nr = "DD";
                     doorPoints.add(new Point(x, y + 1));
@@ -403,7 +403,7 @@ public class MapGenerator {
         int x = doorPoints.get(0).x;
         int y = doorPoints.get(0).y;
 
-        tileMap[y][x][1].setTileNr(getBiomStreetType(x, y));
+        tileMap[y][x][1].setTileNr(getBiomeStreetType(x, y));
 
         for(int i = 0; i < size; i++) {
 
@@ -480,22 +480,21 @@ public class MapGenerator {
             int streetType = 20;
             if (tileNr < 20) {
 
-                streetType = getBiomStreetType(point.x, point.y);
+                streetType = getBiomeStreetType(point.x, point.y);
 
                 gameMap.getMap()[point.y][point.x][1].setTileNr(streetType);
             }
         }
     }
 
-
-    public int getBiomStreetType(int x, int y) {
+    public int getBiomeStreetType(int x, int y) {
         int sectorNumbY = y / 20;
         int sectorNumbX = x / 20;
 
 
         District dis = districtManager.getMapDistricts().get(sectorNumbY * 3 + sectorNumbX);
 
-        switch(dis.getBiomType()) {
+        switch(dis.getBiomeType()) {
 
             case Gras:
                 return 21;

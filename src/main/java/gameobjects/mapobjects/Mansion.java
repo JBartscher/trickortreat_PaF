@@ -24,6 +24,10 @@ public class Mansion extends House implements Visitible {
         this.tileset = TileCollection.getMansionOutsideTiles();
     }
 
+    /**
+     * play music and join player to mansion
+     * @param player the player entity that visits the current house instance
+     */
     @Override
     public void visit(Player player) {
         if(player.getProtectedTicks() > 0) return;
@@ -42,19 +46,20 @@ public class Mansion extends House implements Visitible {
         }
 
         notifyObservers(this);
-
-        // super.visit(player);
-
-        // play music
-        // target[witch] => new
-        // animate Alice Cooper?
     }
 
 
+    /**
+     * repaint House after visit
+     */
     @Override
     public void repaintAfterVisit() {
     }
 
+    /**
+     * set player attributes on inside mode ( no collision with houses )
+     * @param player
+     */
     @Override
     public void setInsideMode(Player player) {
         if (!player.isInside()) {

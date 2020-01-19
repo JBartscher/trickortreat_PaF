@@ -20,18 +20,22 @@ public class Player extends Entity {
     private boolean inside;
     private boolean noCollision;
 
-    private boolean hasKey = true;
+    private boolean hasKey = false;
     private MapObject insideObject;
 
     // Nach einer Kollision mit einer Hexe ist ein Spieler eine Zeit lang geschützt, um Mehrfachkollisionen zu vermeiden
     private double protectedTicks;
 
-    private SpriteSheet spriteSheet2;
-    private Image sprite2;
-    private SpriteSheet spriteSheet3;
-    private Image sprite3;
-    private SpriteSheet spriteSheet4;
-    private Image sprite4;
+    transient private SpriteSheet spriteSheet2;
+    transient private Image sprite2;
+    transient private SpriteSheet spriteSheet3;
+    transient private Image sprite3;
+    transient private SpriteSheet spriteSheet4;
+    transient private Image sprite4;
+    transient private SpriteSheet spriteSheet5;
+    transient private Image sprite5;
+    transient private SpriteSheet spriteSheet6;
+    transient private Image sprite6;
 
 
     /**
@@ -45,6 +49,8 @@ public class Player extends Entity {
         spriteSheet2 = new SpriteSheet("jacko.png", 4, 3);
         spriteSheet3 = new SpriteSheet("player.png", 4, 3);
         spriteSheet4 = new SpriteSheet("jacko.png", 4, 3);
+        spriteSheet5 = new SpriteSheet("player.png", 4, 3);
+        spriteSheet6 = new SpriteSheet("jacko.png", 4, 3);
     }
 
     public int getxOffSet() {
@@ -176,29 +182,14 @@ public class Player extends Entity {
         return sprite4;
     }
 
-    public SpriteSheet getSpriteSheet2() {
-        return spriteSheet2;
+    public Image getEntityImage5() {
+        return sprite5;
     }
 
-    public void setSpriteSheet2(SpriteSheet spriteSheet2) {
-        this.spriteSheet2 = spriteSheet2;
+    public Image getEntityImage6() {
+        return sprite6;
     }
 
-    public SpriteSheet getSpriteSheet3() {
-        return spriteSheet3;
-    }
-
-    public void setSpriteSheet3(SpriteSheet spriteSheet3) {
-        this.spriteSheet3 = spriteSheet3;
-    }
-
-    public SpriteSheet getSpriteSheet4() {
-        return spriteSheet4;
-    }
-
-    public void setSpriteSheet4(SpriteSheet spriteSheet4) {
-        this.spriteSheet4 = spriteSheet4;
-    }
 
     public void setEntityImage(boolean calledByNetworkContext) {
         super.setEntityImage(calledByNetworkContext);
@@ -206,6 +197,8 @@ public class Player extends Entity {
         this.sprite2 = spriteSheet2.getSpriteImage(moveCounter, moveDirection.ordinal());
         this.sprite3 = spriteSheet3.getSpriteImage(moveCounter, moveDirection.ordinal());
         this.sprite4 = spriteSheet4.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite5 = spriteSheet5.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite6 = spriteSheet6.getSpriteImage(moveCounter, moveDirection.ordinal());
 
 
     }

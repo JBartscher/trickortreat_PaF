@@ -8,8 +8,9 @@ import main.java.map.TileCollection;
 public class GingerbreadHouse extends House {
 
 
-    public GingerbreadHouse(int x, int y, int tileWidth, int tileHeight) {
+    private boolean hasChild;
 
+    public GingerbreadHouse(int x, int y, int tileWidth, int tileHeight) {
 
         super(x, y, tileWidth, tileHeight);
         this.tileset = TileCollection.getGingerbreadHouseUnvisitedTiles();
@@ -26,27 +27,35 @@ public class GingerbreadHouse extends House {
     public void visit(Player player) {
         if(player.getProtectedTicks() > 0) return;
 
-        if(player.hasKey() && !isUnvisited) {
+        if(player.hasKey() && isHasChild()) {
             Sound.playRing();
             player.setChildrenCount(player.getChildrenCount() + 1);
             player.setHasKey(false);
-            isUnvisited = true;
-        } else if(!player.hasKey() || isUnvisited) {
+            hasChild = false;
+        } else if(!player.hasKey()) {
             Sound.playRing();
             Sound.playChild();
             player.setChildrenCount(player.getChildrenCount() - 1);
             Sound.playChild();
-            isUnvisited = false;
+            hasChild = true;
         }
 
         player.setProtectedTicks(50);
         notifyObservers(observers);
     }
 
+    public boolean isHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
+    }
+
     @Override
     public void repaintAfterVisit() {
 
-            if(!isUnvisited) {
+            if(hasChild) {
                 this.tileset = district.getGingerbreadHouseVisitedTileset();
             } else {
                 this.tileset = district.getGingerbreadHouseUnvisitedTileset();

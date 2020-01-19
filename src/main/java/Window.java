@@ -3,6 +3,7 @@ package main.java;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import main.java.Network.NetworkController;
 
 public class Window {
 
@@ -35,6 +36,13 @@ public class Window {
      */
     public void showGameGUI() {
         stage.show();
+        if(game.gameMode == Game.GameMode.REMOTE) {
+            if(game.getGameController().getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
+                stage.setTitle("Trick or Treat - CLIENT");
+            } else {
+                stage.setTitle("Trick or Treat - SERVER");
+            }
+        }
         stage.setScene(scene);
     }
 

@@ -126,8 +126,6 @@ public class GameOver {
         GraphicsUtility.setTextProperties(textCandyPlayer2, "-fx-font: 40 arial;", Color.WHITE, Window.WIDTH / 4 * 3 + 10, Window.HEIGHT - 100);
 
 
-
-
         buttonRestart = new Button(text);
         Button buttonMainMenu = new Button("Back to main menu");
 

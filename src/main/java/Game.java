@@ -130,6 +130,7 @@ public class Game {
 
         if(paused) return;
 
+
         checkGameOver();
         updateProtection();
         movementManager.moveAllEntites(gameController, listOfPlayers, witch);

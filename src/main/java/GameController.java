@@ -5,7 +5,9 @@ import javafx.stage.Stage;
 import main.java.Menu.GameMenu;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.Player;
+import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
+import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.MapObject;
 import main.java.map.Tile;
 
@@ -93,7 +95,23 @@ public class GameController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof House) {
+        if(o instanceof GingerbreadHouse) {
+            for(MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
+                if(obj instanceof TownHall) {
+                    TownHall t = (TownHall)obj;
+                    t.setHasKey(true);
+                    t.repaintAfterVisit();
+                    t.updateMap();
+                    if(t.getNumberOfPlayerInside() > 0 ) {
+                        game.getMap().getMap()[29][31][1].setTileNr(120);
+                    }
+                }
+            }
+            ((House)o).repaintAfterVisit();
+            ((House)o).updateMap();
+        }
+
+        else if (o instanceof House) {
             House h = (House) o;
             h.repaintAfterVisit();
             h.updateMap();

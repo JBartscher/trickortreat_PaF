@@ -88,7 +88,6 @@ public class MapRenderer {
 
                             Image image = GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr());
                             gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
-
                         }
                     }
                 }
@@ -108,8 +107,16 @@ public class MapRenderer {
                 }
                 if (i == 2) {
                     yPos += 0.33 * Tile.TILE_SIZE; imagePlayer = obj.getEntityImage3();
-                }if (i == 3) {
+                }
+                if (i == 3) {
                     yPos += 0.33 * Tile.TILE_SIZE; xPos += 0.33 * Tile.TILE_SIZE; imagePlayer = obj.getEntityImage4();
+                }
+                if( i == 4) {
+                    yPos += 0.66 * Tile.TILE_SIZE; imagePlayer = obj.getEntityImage5();
+                }
+
+                if( i == 5) {
+                    yPos += 0.66 * Tile.TILE_SIZE; xPos += 0.33 * Tile.TILE_SIZE; imagePlayer = obj.getEntityImage5();
                 }
 
                 gc.drawImage(imagePlayer, xPos, yPos, 32, 32);
@@ -141,6 +148,14 @@ public class MapRenderer {
                 if (i == 3) {
                     xPosOffset = 0.33 * Tile.TILE_SIZE;
                     yPosOffset = 0.33 * Tile.TILE_SIZE; otherPlayerImage = otherPlayer.getEntityImage4();
+                }
+
+                if( i == 4) {
+                    yPosOffset += 0.66 * Tile.TILE_SIZE; otherPlayerImage = obj.getEntityImage5();
+                }
+
+                if( i == 5) {
+                    yPosOffset += 0.66 * Tile.TILE_SIZE; xPosOffset += 0.33 * Tile.TILE_SIZE; otherPlayerImage = obj.getEntityImage6();
                 }
 
                 drawEntity(gc, otherPlayer, gameCamera, widthOffset, xPosOffset, yPosOffset, 0.5, otherPlayerImage);
