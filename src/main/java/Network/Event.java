@@ -4,7 +4,6 @@ import java.io.*;
 
 public class Event implements Serializable, Cloneable {
 
-
     private static final long serialVersionUID = 744265289056445070L;
     private Object object;
     private EventType type;

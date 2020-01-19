@@ -111,7 +111,7 @@ public class MovementManager implements EventHandler<InputEvent> {
             }
 
             if (event.getCode() == KeyCode.P) {
-                if (game.getGameController() != null) {
+                if (game.gameMode == Game.GameMode.REMOTE) {
                     if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
                         ((NetworkController) game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
                         game.paused = true;
@@ -149,7 +149,7 @@ public class MovementManager implements EventHandler<InputEvent> {
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
 
             if (event.getCode() == KeyCode.R) {
-                if (game.getGameController() != null) {
+                if (game.gameMode == Game.GameMode.REMOTE) {
                     if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
                         ((NetworkController) game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
                         game.paused = false;

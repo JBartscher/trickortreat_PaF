@@ -4,13 +4,13 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TextField;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -23,13 +23,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
-import main.java.Configuration;
-import main.java.Game;
-import main.java.GameLauncher;
-import main.java.MovementManager;
+import main.java.*;
 import main.java.Network.ClientEngine;
 import main.java.Network.ServerEngine;
-import main.java.Window;
 
 import java.util.Arrays;
 import java.util.List;
@@ -72,6 +68,12 @@ public class MainMenu {
     private List<Pair<String, Runnable>> hostMenuData;
     private List<Pair<String, Runnable>> clientMenuData;
 
+    public MainMenu(Stage stage, GameLauncher gameLauncher) {
+
+        this.stage = stage;
+        this.gameLauncher = gameLauncher;
+    }
+
     private void loadData() {
 
         menuData = Arrays
@@ -102,18 +104,7 @@ public class MainMenu {
                 gameLauncher.startGame(gameMode, null, movementTypePlayer1, movementTypePlayer2);
 
             }), new Pair<String, Runnable>("Set Controls Player 1", () -> {
-
-                initStage();
-
-                radioButtonWASD.setToggleGroup(group);
-                radioButtonARROW.setToggleGroup(group);
-                radioButtonMOUSE.setToggleGroup(group);
-                radioButtonWASD.setSelected(true);
-
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(radioButtonWASD, radioButtonARROW, radioButtonMOUSE, buttonOk);
-
-                initScene(controlsBox, 200, 150);
+                setControlElements();
 
                 buttonOk.setOnAction((e) -> {
                     movementTypePlayer1 = setMovementType();
@@ -121,18 +112,7 @@ public class MainMenu {
                 });
 
             }), new Pair<String, Runnable>("Set Controls Player 2", () -> {
-
-                initStage();
-
-                radioButtonWASD.setToggleGroup(group);
-                radioButtonARROW.setToggleGroup(group);
-                radioButtonMOUSE.setToggleGroup(group);
-                radioButtonARROW.setSelected(true);
-
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(radioButtonWASD, radioButtonARROW, radioButtonMOUSE, buttonOk);
-
-                initScene(controlsBox, 200, 150);
+                setControlElements();
 
                 buttonOk.setOnAction((e) -> {
                     movementTypePlayer2 = setMovementType();
@@ -141,23 +121,21 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
-                initStage();
+                setAudioSettings();
 
-                enabled.setToggleGroup(group);
-                disabled.setToggleGroup(group);
-                enabled.setSelected(true);
 
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
+            }), new Pair<String, Runnable>("Back to Main Menu", () -> {
 
-                initScene(controlsBox, 200, 100);
+                removeMenu(menuBox);
+                removeLine(line);
+                menuBox = new VBox(-5);
 
-                buttonOk.setOnAction((e) -> {
-                    setAudio();
-                    controlsStage.close();
-                });
-                
-            }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
+                addMenu(lineX + 5, lineY + 5, menuData, menuBox);
+                addLine(lineX, lineY, lineHeight);
+
+                startAnimation(menuBox);
+
+            }));
 
         hostMenuData = Arrays
             .asList(new Pair<String, Runnable>("Start the Game", () -> {
@@ -167,17 +145,7 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
-                initStage();
-
-                radioButtonWASD.setToggleGroup(group);
-                radioButtonARROW.setToggleGroup(group);
-                radioButtonMOUSE.setToggleGroup(group);
-                radioButtonWASD.setSelected(true);
-
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(radioButtonWASD, radioButtonARROW, radioButtonMOUSE, buttonOk);
-
-                initScene(controlsBox, 200, 150);
+                setControlElements();
 
                 buttonOk.setOnAction((e) -> {
                     movementTypePlayer1 = setMovementType();
@@ -185,22 +153,7 @@ public class MainMenu {
                 });
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
-
-                initStage();
-
-                enabled.setToggleGroup(group);
-                disabled.setToggleGroup(group);
-                enabled.setSelected(true);
-
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
-
-                initScene(controlsBox, 200, 100);
-
-                buttonOk.setOnAction((e) -> {
-                    setAudio();
-                    controlsStage.close();
-                });
+                setAudioSettings();
 
             }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
 
@@ -226,17 +179,7 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
-                initStage();
-
-                radioButtonWASD.setToggleGroup(group);
-                radioButtonARROW.setToggleGroup(group);
-                radioButtonMOUSE.setToggleGroup(group);
-                radioButtonWASD.setSelected(true);
-
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(radioButtonWASD, radioButtonARROW, radioButtonMOUSE, buttonOk);
-
-                initScene(controlsBox, 200, 150);
+                setControlElements();
 
                 buttonOk.setOnAction((e) -> {
                     movementTypePlayer1 = setMovementType();
@@ -245,31 +188,51 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
-                initStage();
-
-                enabled.setToggleGroup(group);
-                disabled.setToggleGroup(group);
-                enabled.setSelected(true);
-
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
-
-                initScene(controlsBox, 200, 100);
-
-                buttonOk.setOnAction((e) -> {
-                    setAudio();
-                    controlsStage.close();
-                });
+                setAudioSettings();
 
             }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
     }
+
+    private void setControlElements() {
+
+        initStage();
+
+        radioButtonWASD.setToggleGroup(group);
+        radioButtonARROW.setToggleGroup(group);
+        radioButtonMOUSE.setToggleGroup(group);
+        radioButtonWASD.setSelected(true);
+
+        controlsBox.setAlignment(Pos.CENTER);
+        controlsBox.getChildren().addAll(radioButtonWASD, radioButtonARROW, radioButtonMOUSE, buttonOk);
+
+        initScene(controlsBox, 200, 150);
+    }
+
+    private void setAudioSettings() {
+        initStage();
+
+        enabled.setToggleGroup(group);
+        disabled.setToggleGroup(group);
+        enabled.setSelected(true);
+
+        controlsBox.setAlignment(Pos.CENTER);
+        controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
+
+        initScene(controlsBox, 200, 100);
+
+        buttonOk.setOnAction((e) -> {
+            setAudio();
+            controlsStage.close();
+        });
+    }
+
 
     private void initMenu(List<Pair<String, Runnable>> data, int height) {
 
         removeMenu(menuBox);
         removeLine(line);
 
-        VBox menuBox = new VBox(-5);
+        menuBox = new VBox(-5);
 
         addMenu(lineX + 5, lineY + 5, data, menuBox);
         addLine(lineX, lineY, lineHeight - height);
@@ -311,12 +274,6 @@ public class MainMenu {
         }
 
         return movementType;
-    }
-
-    public MainMenu(Stage stage, GameLauncher gameLauncher) {
-
-        this.stage = stage;
-        this.gameLauncher = gameLauncher;
     }
 
     private Parent createContent() {
