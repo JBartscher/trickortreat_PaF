@@ -128,11 +128,32 @@ public class HighScoreGUI {
                 vBox.setAlignment(Pos.CENTER);
 
             } else {
-                // Falls noch ein zweiter Score vorliegt, diesen auf HighScore �berpr�fen
-                if(scores.length > 1) {
-                    checkScore(scores, finalIndex + 1, false);
-                }
 
+                // Falls noch ein zweiter Score vorliegt, diesen auf HighScore überprüfen, sonst HighScore anzeigen
+                if(scores.length > 1) {
+
+                    checkScore(scores, finalIndex + 1, false);
+
+                } else {
+
+                    stage.show();
+                    ListView<HighScoreItem> highScoreItemListView = new ListView<>();
+                    highScoreItemListView.setStyle("-fx-font-size: 1.8em;");
+
+                    for(HighScoreItem item: highScores){
+                        highScoreItemListView.getItems().add(item);
+                    }
+
+                    Button buttonClose = new Button("OK");
+
+                    buttonClose.setOnAction( (e) -> {
+                        stage.close();
+                    });
+
+                    vBox.setAlignment(Pos.CENTER);
+                    vBox.getChildren().addAll(highScoreItemListView, buttonClose);
+
+                }
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println(e);

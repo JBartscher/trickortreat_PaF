@@ -45,7 +45,7 @@ public class MainMenu {
     private static final int HEIGHT = Window.HEIGHT;
     private static final double lineX = WIDTH / 2 - 100;
     private static final double lineY = HEIGHT / 3 + 50;
-    private static final int lineHeight = 260;
+    private static final int lineHeight = 215;
     private static Configuration<Object> config = new Configuration<Object>();
 
     private Pane root = new Pane();
@@ -90,21 +90,21 @@ public class MainMenu {
         menuData = Arrays.asList(new Pair<String, Runnable>("Play local", () -> {
 
                 gameMode = Game.GameMode.LOCAL;
-                initMenu(localMenuData, 90);
+                initMenu(localMenuData, 45);
 
             }), new Pair<String, Runnable>("Host a Game", () -> {
 
                 gameMode = Game.GameMode.REMOTE;
-                initMenu(hostMenuData, 90);
+                initMenu(hostMenuData, 45);
 
             }), new Pair<String, Runnable>("Join a Game", () -> {
 
                 gameMode = Game.GameMode.REMOTE;
-                initMenu(clientMenuData, 40);
+                initMenu(clientMenuData, 0);
 
             }), new Pair<String, Runnable>("Highscore", () -> {
 
-            }), new Pair<String, Runnable>("Credits", () -> {
+                new HighScoreGUI().checkScore(new int[]{0}, 0, false);
 
             }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
 
