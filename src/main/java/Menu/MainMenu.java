@@ -3,14 +3,17 @@ package main.java.Menu;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.value.*;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Toggle;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -53,16 +56,20 @@ public class MainMenu {
     private Stage controlsStage;
     private Scene controlsScene;
     private VBox controlsBox;
+    private Label labelPlayerOne = new Label("CONTROLS PLAYER ONE");
+    private Label labelPlayerTwo = new Label("CONTROLS PLAYER TWO");
     private RadioButton radioButtonWASD = new RadioButton("KEYBOARD - WASD");;
     private RadioButton radioButtonARROW = new RadioButton("KEYBOARD - ARROWS");
     private RadioButton radioButtonMOUSE = new RadioButton("MOUSE");
+    private RadioButton radioButtonWASDtwo = new RadioButton("KEYBOARD - WASD");;
+    private RadioButton radioButtonARROWtwo = new RadioButton("KEYBOARD - ARROWS");
+    private RadioButton radioButtonMOUSEtwo = new RadioButton("MOUSE");
     private RadioButton enabled = new RadioButton("ENABLED");
     private RadioButton disabled = new RadioButton("DISABLED");
     private Button buttonOk = new Button("OK");
-    private ToggleGroup group;
-    private ToggleGroup groupTwo;
+    private ToggleGroup group = new ToggleGroup();
+    private ToggleGroup groupTwo = new ToggleGroup();
     private TextField textFieldServer = new TextField("");
-    private MovementManager.MovementType movementType;
     private MovementManager.MovementType movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_AWSD;
     private MovementManager.MovementType movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_ARROW;
     private List<Pair<String, Runnable>> menuData;
@@ -105,11 +112,11 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
-                setControlElements(gameMode);
+                setControls(gameMode);
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
-                setAudioSettings();
+                setAudio();
 
             }), new Pair<String, Runnable>("Back to Main Menu", () -> {
 
@@ -123,11 +130,11 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
-                setControlElements(gameMode);
+                setControls(gameMode);
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
-                setAudioSettings();
+                setAudio();
 
             }), new Pair<String, Runnable>("Back to Main Menu", () -> {
 
@@ -137,29 +144,19 @@ public class MainMenu {
 
         clientMenuData = Arrays.asList(new Pair<String, Runnable>("Start the Game", () -> {
 
-            if (ip != null) new ClientEngine(gameLauncher, stage, movementTypePlayer1, ip);
+                if (ip != null) new ClientEngine(gameLauncher, stage, movementTypePlayer1, ip);
 
             }), new Pair<String, Runnable>("Set Hostname*", () -> {
 
-                initStage();
-
-                controlsBox.setAlignment(Pos.CENTER);
-                controlsBox.getChildren().addAll(textFieldServer, buttonOk);
-
-                initScene(controlsBox, 200, 150);
-
-                buttonOk.setOnAction((e) -> {
-                    ip = textFieldServer.getText();
-                    controlsStage.close();
-                });
+                setHostname();
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
-                setControlElements(gameMode);
+                setControls(gameMode);
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
-                setAudioSettings();
+                setAudio();
 
             }), new Pair<String, Runnable>("Back to Main Menu", () -> {
 
@@ -168,40 +165,165 @@ public class MainMenu {
             }));
     }
 
-    private void setControlElements(GameMode gameMode) {
+    private void setControls(GameMode gameMode) {
+
+        initStage();
+
+        radioButtonWASD.setToggleGroup(group);
+        radioButtonARROW.setToggleGroup(group);
+        radioButtonMOUSE.setToggleGroup(group);
+
+        radioButtonARROW.setDisable(false);
+        radioButtonWASD.setDisable(false);
+        radioButtonMOUSE.setDisable(false);
+
+        switch ((String) config.getParam("movementTypePlayer1")) {
+            case "KEYBOARD_ARROW": 
+                radioButtonARROW.setSelected(true);
+                radioButtonARROWtwo.setDisable(true);
+                break;
+            case "KEYBOARD_AWSD": 
+                radioButtonWASD.setSelected(true);
+                radioButtonWASDtwo.setDisable(true);
+                break;
+            case "MOUSE": 
+                radioButtonMOUSE.setSelected(true);
+                radioButtonMOUSEtwo.setDisable(true);
+                break;
+            default: 
+                break;
+        }
+  
+        controlsBox.setAlignment(Pos.CENTER);
 
         if (gameMode == Game.GameMode.REMOTE) {
 
-            initStage();
-
-            radioButtonWASD.setToggleGroup(group);
-            radioButtonARROW.setToggleGroup(group);
-            radioButtonMOUSE.setToggleGroup(group);
-            radioButtonWASD.setSelected(true);
-
-            controlsBox.setAlignment(Pos.CENTER);
             controlsBox.getChildren().addAll(radioButtonWASD, radioButtonARROW, radioButtonMOUSE, buttonOk);
 
             initScene(controlsBox, 200, 150);
 
-            if (radioButtonARROW.isSelected()) {
-                movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_ARROW;
-            } else if(radioButtonWASD.isSelected()) {
-                movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_AWSD;
-            } else if(radioButtonMOUSE.isSelected()) {
-                movementTypePlayer1 = MovementManager.MovementType.MOUSE;
+        } else if (gameMode == Game.GameMode.LOCAL) {
+        
+            group.selectedToggleProperty().addListener(new ChangeListener<Toggle>()  
+            { 
+                public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) 
+                { 
+                    if ((RadioButton)group.getSelectedToggle() != null) {
+                        switch (((RadioButton)group.getSelectedToggle()).getText()) {
+                            case "KEYBOARD - ARROWS": 
+                                radioButtonARROWtwo.setDisable(true);
+                                radioButtonWASDtwo.setDisable(false);
+                                radioButtonMOUSEtwo.setDisable(false);
+                                break;
+                            case "KEYBOARD - WASD": 
+                                radioButtonARROWtwo.setDisable(false);
+                                radioButtonWASDtwo.setDisable(true);
+                                radioButtonMOUSEtwo.setDisable(false);
+                                break;
+                            case "MOUSE": 
+                                radioButtonARROWtwo.setDisable(false);
+                                radioButtonWASDtwo.setDisable(false);
+                                radioButtonMOUSEtwo.setDisable(true);
+                                break;
+                            default: 
+                                break;
+                        }
+                    }
+                } 
+            }); 
+
+            radioButtonWASDtwo.setToggleGroup(groupTwo);
+            radioButtonARROWtwo.setToggleGroup(groupTwo);
+            radioButtonMOUSEtwo.setToggleGroup(groupTwo);
+            
+            switch ((String) config.getParam("movementTypePlayer2")) {
+                case "KEYBOARD_ARROW": 
+                    radioButtonARROWtwo.setSelected(true);
+                    radioButtonARROW.setDisable(true);
+                    break;
+                case "KEYBOARD_AWSD": 
+                    radioButtonWASDtwo.setSelected(true);
+                    radioButtonWASD.setDisable(true);
+                    break;
+                case "MOUSE": 
+                    radioButtonMOUSEtwo.setSelected(true);
+                    radioButtonMOUSE.setDisable(true);
+                    break;
+                default: 
+                    break;
             }
 
-            buttonOk.setOnAction((e) -> {
-                controlsStage.close();
-            });
+            groupTwo.selectedToggleProperty().addListener(new ChangeListener<Toggle>()  
+            { 
+                public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) 
+                { 
+                    if ((RadioButton)groupTwo.getSelectedToggle() != null) {
+                        switch (((RadioButton)groupTwo.getSelectedToggle()).getText()) {
+                            case "KEYBOARD - ARROWS": 
+                                radioButtonARROW.setDisable(true);
+                                radioButtonWASD.setDisable(false);
+                                radioButtonMOUSE.setDisable(false);
+                                break;
+                            case "KEYBOARD - WASD": 
+                                radioButtonARROW.setDisable(false);
+                                radioButtonWASD.setDisable(true);
+                                radioButtonMOUSE.setDisable(false);
+                                break;
+                            case "MOUSE": 
+                                radioButtonARROW.setDisable(false);
+                                radioButtonWASD.setDisable(false);
+                                radioButtonMOUSE.setDisable(true);
+                                break;
+                            default: 
+                                break;
+                        }
+                    }
+                } 
+            }); 
+    
+            controlsBox.getChildren().addAll(labelPlayerOne, radioButtonWASD, radioButtonARROW, radioButtonMOUSE, labelPlayerTwo, radioButtonWASDtwo, radioButtonARROWtwo, radioButtonMOUSEtwo, buttonOk);
 
-        } else {
-            
+            initScene(controlsBox, 200, 300);
+
         }
+
+        buttonOk.setOnAction((e) -> {
+
+            if (radioButtonARROW.isSelected()) {
+                movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_ARROW;
+                config.setParam("movementTypePlayer1", "KEYBOARD_ARROW");
+            } else if(radioButtonWASD.isSelected()) {
+                movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_AWSD;
+                config.setParam("movementTypePlayer1", "KEYBOARD_AWSD");
+            } else if(radioButtonMOUSE.isSelected()) {
+                movementTypePlayer1 = MovementManager.MovementType.MOUSE;
+                config.setParam("movementTypePlayer1", "MOUSE");
+            }
+
+            System.out.println((String) config.getParam("movementTypePlayer1"));
+            System.out.println(movementTypePlayer1);
+
+            if (gameMode == Game.GameMode.LOCAL) {
+                if (radioButtonARROWtwo.isSelected()) {
+                    movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_ARROW;
+                    config.setParam("movementTypePlayer2", "KEYBOARD_ARROW");
+                } else if(radioButtonWASDtwo.isSelected()) {
+                    movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_AWSD;
+                    config.setParam("movementTypePlayer2", "KEYBOARD_AWSD");
+                } else if(radioButtonMOUSEtwo.isSelected()) {
+                    movementTypePlayer2 = MovementManager.MovementType.MOUSE;
+                    config.setParam("movementTypePlayer2", "MOUSE");
+                }
+
+                System.out.println((String) config.getParam("movementTypePlayer2"));
+                System.out.println(movementTypePlayer2);
+            }
+
+            controlsStage.close();
+        });
     }
 
-    private void setAudioSettings() {
+    private void setAudio() {
 
         initStage();
 
@@ -215,11 +337,31 @@ public class MainMenu {
         initScene(controlsBox, 200, 100);
 
         buttonOk.setOnAction((e) -> {
-            setAudio();
+
+            if(disabled.isSelected()) {
+                config.setParam("muted", true);
+            } else {
+                config.setParam("muted", false);
+            }
+
             controlsStage.close();
         });
     }
 
+    private void setHostname() {
+
+        initStage();
+
+        controlsBox.setAlignment(Pos.CENTER);
+        controlsBox.getChildren().addAll(textFieldServer, buttonOk);
+
+        initScene(controlsBox, 200, 80);
+
+        buttonOk.setOnAction((e) -> {
+            ip = textFieldServer.getText();
+            controlsStage.close();
+        });
+    }
 
     private void initMenu(List<Pair<String, Runnable>> data, int height) {
 
@@ -246,15 +388,6 @@ public class MainMenu {
         controlsScene = new Scene(box, width, height);
         controlsStage.setScene(controlsScene);
         controlsStage.show();
-    }
-
-    private void setAudio() {
-
-        if(disabled.isSelected()) {
-            config.setParam("muted", true);
-        } else {
-            config.setParam("muted", false);
-        }
     }
 
     private Parent createContent() {
@@ -309,6 +442,7 @@ public class MainMenu {
     private void startAnimation(VBox box) {
 
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), line);
+
         st.setToY(1);
         st.setOnFinished(e -> {
 
@@ -320,6 +454,7 @@ public class MainMenu {
                 tt.setOnFinished(e2 -> n.setClip(null));
                 tt.play();
             }
+
         });
 
         st.play();
