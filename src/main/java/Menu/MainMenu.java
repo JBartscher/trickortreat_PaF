@@ -89,21 +89,25 @@ public class MainMenu {
 
         menuData = Arrays.asList(new Pair<String, Runnable>("Play local", () -> {
 
+                Sound.playMenu();
                 gameMode = Game.GameMode.LOCAL;
                 initMenu(localMenuData, 45);
 
             }), new Pair<String, Runnable>("Host a Game", () -> {
 
+                Sound.playMenu();
                 gameMode = Game.GameMode.REMOTE;
                 initMenu(hostMenuData, 45);
 
             }), new Pair<String, Runnable>("Join a Game", () -> {
 
+                Sound.playMenu();
                 gameMode = Game.GameMode.REMOTE;
                 initMenu(clientMenuData, 0);
 
             }), new Pair<String, Runnable>("Highscore", () -> {
 
+                Sound.playMenu();
                 new HighScoreGUI().checkScore(new int[]{0}, 0, false);
 
             }), new Pair<String, Runnable>("Exit to Desktop", Platform::exit));
@@ -113,15 +117,18 @@ public class MainMenu {
                 gameLauncher.startGame(gameMode, null, movementTypePlayer1, movementTypePlayer2);
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
-
+                
+                Sound.playMenu();
                 setControls(gameMode);
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
+                Sound.playMenu();
                 setAudio();
 
             }), new Pair<String, Runnable>("Back to Main Menu", () -> {
 
+                Sound.playMenu();
                 initMenu(menuData, 0);
 
             }));
@@ -132,14 +139,17 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
+                Sound.playMenu();
                 setControls(gameMode);
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
+                Sound.playMenu();
                 setAudio();
 
             }), new Pair<String, Runnable>("Back to Main Menu", () -> {
 
+                Sound.playMenu();
                 initMenu(menuData, 0);
 
             }));
@@ -150,18 +160,22 @@ public class MainMenu {
 
             }), new Pair<String, Runnable>("Set Hostname*", () -> {
 
+                Sound.playMenu();
                 setHostname();
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
+                Sound.playMenu();
                 setControls(gameMode);
 
             }), new Pair<String, Runnable>("Set Audio", () -> {
 
+                Sound.playMenu();
                 setAudio();
 
             }), new Pair<String, Runnable>("Back to Main Menu", () -> {
 
+                Sound.playMenu();
                 initMenu(menuData, 0);
 
             }));
@@ -356,7 +370,12 @@ public class MainMenu {
 
         enabled.setToggleGroup(group);
         disabled.setToggleGroup(group);
-        enabled.setSelected(true);
+        
+        if ((Boolean) config.getParam("muted")) {
+            disabled.setSelected(true);
+        } else {
+            enabled.setSelected(true);
+        }
 
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
