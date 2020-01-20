@@ -122,33 +122,52 @@ public class MapGenerator {
                                     }
 
                                 if(zahl < 60) nr = 5;
-                                if(zahl >= 60 && zahl < 70) nr = 11;
-                                if(zahl >= 66 && zahl < 80) nr = 12;
-                                if(zahl >= 80) nr = 13;
+                                if(zahl >= 60 && zahl < 70) nr = 6;
+                                if(zahl >= 66 && zahl < 80) nr = 7;
+                                if(zahl >= 80) nr = 8;
 
                                 currentTile.setTileNr(nr);
-
 
                                 break;
 
                             case Desert:
-                                currentTile.setTileNr(6);
+                                currentTile.setTileNr(9);
                                 zahl = random.nextInt(100);
-                                if(zahl < 10)
+                                if(zahl < 10) {
                                     if(buildableWithDeko(yTotal, xTotal)) {
-                                        if(zahl < 5) currentTileDeko.setTileNr(-3);
+                                        if(zahl < 5)
+                                            currentTileDeko.setTileNr(-12);
                                         else
-                                            currentTileDeko.setTileNr(-6);
+                                            currentTileDeko.setTileNr(-13);
                                     }
+
+                                } else if (zahl >= 12 && zahl < 20) {
+                                    currentTile.setTileNr(10);
+                                } else if (zahl >= 20 && zahl < 26 && currentTile.getTileNr() < 20 && currentTile.getTileNr() > 25)
+                                    currentTileDeko.setTileNr(11);
+
                                 break;
 
                             case Snow:
                                 zahl = random.nextInt(100);
-                                if(zahl < 60) nr = 7;
-                                if(zahl >= 60 && zahl < 70) nr = 8;
-                                if(zahl >= 66 && zahl < 80) nr = 9;
-                                if(zahl >= 80) nr = 10;
-                                currentTile.setTileNr(nr);
+                                if(zahl < 15) nr = 15;
+                                if(zahl >= 15 && zahl < 28) nr = 16;
+                                if(zahl >= 28 && zahl < 35) nr = 17;
+                                if(zahl >= 35 && zahl < 40) nr = 18;
+                                if(zahl >= 40 && zahl < 45) nr = -19;
+
+                                /**
+                                 * sets snow as ground if underlying ground is NOT a street tile
+                                 */
+                                if(currentTile.getTileNr() < 20 && currentTile.getTileNr() > 25) {
+                                currentTile.setTileNr(14);
+
+                                }
+
+                                if( (currentTile.getTileNr() < 20 || currentTile.getTileNr() > 25) && zahl < 60) {
+                                    currentTileDeko.setTileNr(nr);
+                                }
+
                                 break;
 
                             default:
@@ -334,6 +353,9 @@ public class MapGenerator {
             int houseHeight = currentMapObject.getHeight();
             for (int x = 0; x < houseWidth; x++) {
                 for (int y = 0; y < houseHeight; y++) {
+                    if(x == 0 && currentMapObject instanceof House)
+                        gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][2] = currentMapObject.getTileByTileIndex(x, y);
+                    else
                     gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][1] = currentMapObject.getTileByTileIndex(x, y);
                 }
             }
@@ -385,7 +407,7 @@ public class MapGenerator {
                 if(nr.length() == 1) nr = "0" + nr;
                 if(nr.length() == 3 || tileNr >= 90) nr = "XX";
 
-                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 74 || tileNr == 85 || tileNr == 224 || tileNr == 300) {
+                if(tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 70 || tileNr == 74 || tileNr == 85 || tileNr == 224) {
 
                     //nr = "DD";
                     doorPoints.add(new Point(x, y + 1));

@@ -76,6 +76,7 @@ public class AStar {
     }
 
     public Set<Node> getNeighbours(Node n){
+
         /*
         Set<Node> neighbours = new HashSet<Node>();
         for(int i=-1; i<=1; i++){
@@ -89,7 +90,9 @@ public class AStar {
             }
         }
         return neighbours;
-        */
+
+         */
+
         Set<Node> neighbours = new HashSet<>();
         for(int i=-1; i<=1; i++){
             if(i != 0)
@@ -110,6 +113,7 @@ public class AStar {
         }
 
         return neighbours;
+
 
     }
 

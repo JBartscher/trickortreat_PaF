@@ -36,6 +36,8 @@ public class MovementManager implements EventHandler<InputEvent> {
     Player inputARROW;
     Player inputMOUSE;
 
+    Player witchTarget;
+
     private Map map;
     private Game game;
     private AStar aStar;
@@ -238,8 +240,14 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    /**
+     * find the path for the nearest player for npc
+     */
     public void findPath(Entity entity, Point start, Point target) {
 
+        /**
+         * set start and target position and find path
+         */
         aStar.setStartPosition(start);
         aStar.setTargetPosition(target);
         aStar.fillMap(game.getMap().getMap(), false);
@@ -251,19 +259,32 @@ public class MovementManager implements EventHandler<InputEvent> {
         if (nodes == null) {
             System.out.println("KEIN PFAD GEFUNDEN");
             return;
-        } else {
         }
 
+
+        /**
+         * add all nodes to the list of targets
+         */
         for (Node node : nodes) {
             targets.add(node.getPosition());
         }
+
+        /**
+         * result of Astar algorithm does not contain the current position of the player
+         * have to add manually to list of targets
+         */
+        if(witchTarget != null) {
+            targets.add(witchTarget.getEntityPos());
+        }
+
 
 
         // Terminieren, wenn kein Ziel existiert
         if (targets.size() < 1) return;
 
-        // Setze erstes und letztes Ziel
-        // Das letzte Ziel wird genutzt, um zu entscheiden, ob pathfinding erneut berechnet werden muss oder nicht
+        /**
+         * transform X/Y to pixel based cooridnates and set first and last target of npc
+         */
         int transformedX = targets.get(0).x * Tile.TILE_SIZE;
         int transformedY = targets.get(0).y * Tile.TILE_SIZE;
         entity.setTarget(new Point(transformedX, transformedY));
@@ -276,7 +297,61 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    /**
+     * find a target for npc
+     */
+    public Point chooseTarget(Witch witch, Player player, Player otherPlayer) {
+
+        if (player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
+            witchTarget = null;
+            return new Point(0, 0);
+
+        }
+
+        /**
+         * if one player is inside a building or have no children then select the other player as a target
+         */
+        if (player.isInside() || player.getChildrenCount() <= 0) {
+
+            if (otherPlayer.getChildrenCount() > 0) {
+                witchTarget = otherPlayer;
+                return otherPlayer.getEntityPos();
+            } else {
+                witchTarget = null;
+                return new Point(0, 0); }
+
+        } else if (otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
+            if (player.getChildrenCount() > 0) {
+                witchTarget = player;
+                return player.getEntityPos();
+            } else {
+                witchTarget = null;
+                return new Point(0, 0);
+            }
+        }
+
+        /**
+         * find the nearest player and set entity position as target
+         */
+        double distancePlayer = Math.sqrt((player.getxPos() - witch.getxPos()) * (player.getxPos() - witch.getxPos()) + (player.getyPos() - witch.getyPos()) * (player.getyPos() - witch.getyPos()));
+        double distanceOtherPlayer = Math.sqrt((otherPlayer.getxPos() - witch.getxPos()) * (otherPlayer.getxPos() - witch.getxPos()) + (otherPlayer.getyPos() - witch.getyPos()) * (otherPlayer.getyPos() - witch.getyPos()));
+        if (distancePlayer < distanceOtherPlayer) {
+            witchTarget = player;
+            return player.getEntityPos();
+        } else {
+            witchTarget = otherPlayer;
+            return otherPlayer.getEntityPos();
+        }
+    }
+
+
+    /**
+     * checks if witch reached the interim goal and : if so, then set next interim goal
+     * @param entity
+     * @param movementSize
+     */
     public void checkTarget(Entity entity, double movementSize) {
+
         if (entity instanceof Witch) {
             Witch witch = (Witch) entity;
             if (Math.abs(witch.getxPos() - witch.getHomeX()) <= Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) <= Tile.TILE_SIZE) {
@@ -289,6 +364,10 @@ public class MovementManager implements EventHandler<InputEvent> {
             Point transformedPoint = new Point((int) round(entity.getTarget().x / Tile.TILE_SIZE), (int) round(entity.getTarget().y / Tile.TILE_SIZE));
             //if( Math.abs(entity.getxPos() - entity.getTarget().x) < movementSize * 0.1 && Math.abs(entity.getyPos() - entity.getTarget().y) < movementSize * 0.1 ) {
             if (entity.getEntityPos().x == transformedPoint.x && entity.getEntityPos().y == transformedPoint.y) {
+
+                /** remove interim goal from target list and set new interim goal
+                 *
+                 */
                 if (targets.size() > 1) {
                     targets.remove(0);
                     if (targets.size() > 0) {
@@ -301,19 +380,25 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
-    // move-method - uses speed from entity class and Game FRAMES
+    /**
+     * move an entity depending on move direction, entity speed and their current target(s)
+     * @param entity
+     */
     public void moveObject(Entity entity) {
         double movementSize = entity.getSpeed() / Game.FRAMES;
 
+        /**
+         * if entity is the npc -> check for targets
+         */
         if (entity == game.getWitch()) checkTarget(entity, movementSize);
 
-        // TODO: FUNKTIONIERT ÜBER NETZWERK WEGEN NULLPOINTER NICHT
-        //int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
-        // if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
 
         double moveX = 0.0;
         double moveY = 0.0;
 
+        /**
+         * move into X-direction
+         */
         if (entity.target.x > entity.getxPos()) {
             if (entity.target.x - entity.getxPos() < movementSize) {
                 moveX = entity.target.x - entity.getxPos();
@@ -332,6 +417,9 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         }
 
+        /**
+         * move into Y-direction
+         */
         if (entity.target.y > entity.getyPos()) {
             if (entity.target.y - entity.getyPos() < movementSize) {
                 moveY = entity.target.y - entity.getyPos();
@@ -350,7 +438,9 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
 
 
-        // check out of bounds and change entity position
+        /**
+         * check for out of bounds or collisions
+         */
         entity.setxPos(entity.getxPos() + moveX);
         if (outOfBounds(entity)) {
             entity.setxPos(entity.getxPos() - moveX);
@@ -365,20 +455,40 @@ public class MovementManager implements EventHandler<InputEvent> {
         moveHorizontal(moveX, entity);
         moveVertical(moveY, entity);
 
+        /**
+         * update the entity animation image
+         */
         entity.setEntityImage(false);
     }
 
+    /**
+     * moves all entities and calculate costs for pathfinding
+     * @param gameController
+     * @param listOPlayers
+     * @param witch
+     */
     public void moveAllEntites(GameController gameController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
         for (Player player : listOPlayers) {
             if (player.getChildrenCount() > 0)
                 moveObject(player);
         }
 
+        moveWitch(gameController, witch);
+
+    }
+
+    /**
+     * move the npc
+     * @param gameController
+     * @param witch
+     */
+    private void moveWitch(GameController gameController, Witch witch) {
+
         //move NPC
-        if ((game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.getGameTime() <= 30000) {
+        if ((game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.DRAMATIC) {
             if (game.ticks % 10 == 0 /*|| game.ticks == 1 */) {
 
-                Point target = findTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
+                Point target = chooseTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
                 Point start = witch.getEntityPos();
 
                 boolean doPathfinding = true;
@@ -400,6 +510,8 @@ public class MovementManager implements EventHandler<InputEvent> {
 
                  */
 
+                moveObject(witch);
+
 
                 if (doPathfinding) {
 
@@ -415,44 +527,6 @@ public class MovementManager implements EventHandler<InputEvent> {
                 }
             }
         }
-
-        if (game.getGameTime() < 30000) {
-            game.DRAMATIC = true;
-            moveObject(witch);
-
-            Sound.playCountdown();
-        }
-    }
-
-
-    // find a target for the witch
-    public Point findTarget(Witch witch, Player player, Player otherPlayer) {
-
-        if (player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
-            return new Point(0, 0);
-        }
-
-        if (player.isInside() || player.getChildrenCount() <= 0) {
-
-            if (otherPlayer.getChildrenCount() > 0) {
-                return otherPlayer.getEntityPos();
-            } else return new Point(0, 0);
-        } else if (otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
-            if (player.getChildrenCount() > 0) {
-                return player.getEntityPos();
-            } else return new Point(0, 0);
-        }
-
-        double distancePlayer = Math.sqrt((player.getxPos() - witch.getxPos()) * (player.getxPos() - witch.getxPos()) + (player.getyPos() - witch.getyPos()) * (player.getyPos() - witch.getyPos()));
-        double distanceOtherPlayer = Math.sqrt((otherPlayer.getxPos() - witch.getxPos()) * (otherPlayer.getxPos() - witch.getxPos()) + (otherPlayer.getyPos() - witch.getyPos()) * (otherPlayer.getyPos() - witch.getyPos()));
-
-        if (distancePlayer < distanceOtherPlayer) {
-            return player.getEntityPos();
-        } else {
-            return otherPlayer.getEntityPos();
-        }
-
-
     }
 
 
@@ -534,7 +608,6 @@ public class MovementManager implements EventHandler<InputEvent> {
 
             // überprüft die Kollision zwischen Entitäten
             checkCollisionsBetweenEntities(entity, size, true);
-
         }
     }
 
@@ -637,9 +710,8 @@ public class MovementManager implements EventHandler<InputEvent> {
         int o_width = o.getHeight();
         int o_height = o.getWidth();
 
-
         return (
-                (e_x >= o_x && e_x <= o_x + o_width && e_y == o_y - 1) ||
+                (e_x >= o_x && e_x <= o_x + o_width && e_y == o_y) ||
                         (e_x >= o_x && e_x <= o_x + o_width && player.getEntityPosWithCurrency(+0.5).y == o_y + o_height) ||
 
                         (player.getEntityPosWithCurrency( -.1).x == o_x - 1 && e_y >= o_y && e_y <= o_y + o_height) ||

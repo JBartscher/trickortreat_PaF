@@ -108,6 +108,10 @@ public class NetworkController extends GameController {
         gameState.setEventTransmitted(true);
     }
 
+    /**
+     * handle incoming events from other player
+     * @param gameStateReceived
+     */
     public void handleEvents(GameState gameStateReceived){
         Event event = gameStateReceived.getEvent();
         if(event == null) return;
@@ -115,7 +119,9 @@ public class NetworkController extends GameController {
         switch (event.getType()) {
 
             case VISITED:
-                // Über alle Objekte iterieren und Objekt updatensdd
+                /** find event object and update data and/or repaint house
+                 *
+                 */
                 for (MapObject obj : mapObjects) {
                     MapObject eventMapObject = (MapObject) event.getObject();
                     if ((obj.getX() == eventMapObject.getX() && obj.getY() == eventMapObject.getY()) || (obj == eventMapObject)) {
@@ -127,7 +133,6 @@ public class NetworkController extends GameController {
                         h.repaintAfterVisit();
                         h.updateMap();
                         game.getOtherPlayer().notifyObservers(game.getOtherPlayer());
-
                     }
                 }
                 break;
@@ -136,7 +141,6 @@ public class NetworkController extends GameController {
                 //Witch witch = (Witch)(gameStateReceived.getEvent().getObject());
                 //game.setWitch(witch);
                 game.getWitch().setGameStateData(gameStateReceived.getWitchData());
-
                 break;
 
 
@@ -189,7 +193,7 @@ public class NetworkController extends GameController {
                 break;
 
             /**
-             * called when a player collides with door of gingerbreahouse
+             * called when a player collides with door of gingerbread house
              * -> update gingerbread house, children count, spawn key
              */
             case KIDNAPPING:
