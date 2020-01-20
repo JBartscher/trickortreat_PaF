@@ -70,6 +70,7 @@ public class MainMenu {
     private ToggleGroup group = new ToggleGroup();
     private ToggleGroup groupTwo = new ToggleGroup();
     private TextField textFieldServer = new TextField("");
+    //TODO aus config!
     private MovementManager.MovementType movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_AWSD;
     private MovementManager.MovementType movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_ARROW;
     private List<Pair<String, Runnable>> menuData;
@@ -300,9 +301,6 @@ public class MainMenu {
                 config.setParam("movementTypePlayer1", "MOUSE");
             }
 
-            System.out.println((String) config.getParam("movementTypePlayer1"));
-            System.out.println(movementTypePlayer1);
-
             if (gameMode == Game.GameMode.LOCAL) {
                 if (radioButtonARROWtwo.isSelected()) {
                     movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_ARROW;
@@ -314,9 +312,6 @@ public class MainMenu {
                     movementTypePlayer2 = MovementManager.MovementType.MOUSE;
                     config.setParam("movementTypePlayer2", "MOUSE");
                 }
-
-                System.out.println((String) config.getParam("movementTypePlayer2"));
-                System.out.println(movementTypePlayer2);
             }
 
             controlsStage.close();
