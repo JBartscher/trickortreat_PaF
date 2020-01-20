@@ -18,6 +18,9 @@ public class GraphicsUtility {
     public static Image[][] tileMansionImages = new Image[5][6];
     public static Image[][] tileTownHallImages = new Image[5][9];
 
+    public static Image[] tileWitchHouse = new Image[3];
+
+
 
     public static Image candyImage;
 
@@ -32,26 +35,31 @@ public class GraphicsUtility {
     public static Image grasDeko2Tile;
     public static Image grasDeko3Tile;
 
-    public static Image sandGroundTile;
-    public static Image sandDeko1Tile;
-    public static Image sandDeko2Tile;
-    public static Image sandDeko3Tile;
+    public static Image earthGroundTile;
+    public static Image earthDeko1Tile;
+    public static Image earthDeko2Tile;
+    public static Image earthDeko3Tile;
 
 
     public static Image desertGroundTile;
+    public static Image desertDeko1Tile;
+    public static Image desertDeko2Tile;
+    public static Image desertDeko3Tile;
+    public static Image desertDeko4Tile;
 
 
     public static Image snowGroundTile;
     public static Image snowDeko1Tile;
     public static Image snowDeko2Tile;
     public static Image snowDeko3Tile;
+    public static Image snowDeko4Tile;
+    public static Image snowDeko5Tile;
 
     public static Image keyImage;
 
 
     public static Image centreTile;
     public static Image borderTile;
-
     public static Image witchDoor;
 
 
@@ -92,6 +100,11 @@ public class GraphicsUtility {
             }
         }
 
+        Image imageWitchHouse = new Image(GraphicsUtility.class.getResourceAsStream("witch_house.png"));
+            for (int x = 0; x < 3; x++) {
+                tileWitchHouse[x] = new WritableImage(imageWitchHouse.getPixelReader(), x * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
+            }
+
 
         System.out.println("fertig");
 
@@ -101,6 +114,7 @@ public class GraphicsUtility {
 
         Image imageTileSetGras = new Image(GraphicsUtility.class.getResourceAsStream("tileset_gras.png"));
         Image imageTileSet = new Image(GraphicsUtility.class.getResourceAsStream("tileset_ground.png"));
+        Image imageTileSnowAndDesert = new Image(GraphicsUtility.class.getResourceAsStream("tileset_snow_desert.png"));
 
 
         centreTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -115,14 +129,21 @@ public class GraphicsUtility {
 
 
         //sandGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
-        sandGroundTile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
-        sandDeko1Tile = new WritableImage(imageTileSetGras.getPixelReader(), 4 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
-        sandDeko2Tile = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
-        sandDeko3Tile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        earthGroundTile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        earthDeko1Tile = new WritableImage(imageTileSetGras.getPixelReader(), 4 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        earthDeko2Tile = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        earthDeko3Tile = new WritableImage(imageTileSetGras.getPixelReader(), 3 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 
-        desertGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE);
-        snowGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE);
+        desertGroundTile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 0 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE);
+        desertDeko1Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 3 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        desertDeko2Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 4 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        desertDeko3Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        desertDeko4Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 5 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
+
+        //snowGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE);
+        snowGroundTile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 0 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
         streetTileGras = new WritableImage(imageTileSetGras.getPixelReader(), 2 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         streetTileSand = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -132,6 +153,8 @@ public class GraphicsUtility {
         snowDeko1Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         snowDeko2Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         snowDeko3Tile = new WritableImage(imageTileSet.getPixelReader(), 4 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        snowDeko4Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 4 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        snowDeko5Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 5 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 
         borderTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -163,23 +186,35 @@ public class GraphicsUtility {
         } else if (nr == 4) {
             return grasDeko3Tile;
         } else if (nr == 5) {
-            return sandGroundTile;
-        } else if (nr == 6) {
-            return desertGroundTile;
+            return earthGroundTile;
+        }  else if (nr == 6) {
+            return earthDeko1Tile;
         } else if (nr == 7) {
-            return snowGroundTile;
+            return earthDeko2Tile;
         } else if (nr == 8) {
-            return snowDeko1Tile;
+            return earthDeko3Tile;
         } else if (nr == 9) {
-            return snowDeko2Tile;
+            return desertGroundTile;
         } else if (nr == 10) {
-            return snowDeko3Tile;
+            return desertDeko1Tile;
         } else if (nr == 11) {
-            return sandDeko1Tile;
-        } else if (nr == 12) {
-            return sandDeko2Tile;
-        } else if (nr == 13) {
-            return sandDeko3Tile;
+            return desertDeko2Tile;
+        } else if (nr == -12) {
+            return desertDeko3Tile;
+        } else if (nr == -13) {
+            return desertDeko4Tile;
+        } else if (nr == 14) {
+            return snowGroundTile;
+        } else if (nr == 15) {
+            return snowDeko1Tile;
+        } else if (nr == 16) {
+            return snowDeko2Tile;
+        } else if (nr == 17) {
+            return snowDeko3Tile;
+        } else if (nr == 18) {
+            return snowDeko4Tile;
+        } else if (nr == -19) {
+            return snowDeko5Tile;
         }
 
 
@@ -270,6 +305,16 @@ public class GraphicsUtility {
             return tileImages[46];
         } //down-right lights-out
 
+        if (nr == 69) {
+            return tileWitchHouse[1];
+        }
+
+        /**
+         * Door
+         */
+        if (nr == 70) {
+            return tileWitchHouse[0];
+        }
 
         // SmallHouse - rich
         if (nr == 71) {
@@ -560,11 +605,6 @@ public class GraphicsUtility {
             return tileMansionImages[4][5];
         }
 
-
-        if (nr == 300) {
-
-            return witchDoor;
-        }
 
 
         if (nr == -1) {

@@ -77,8 +77,18 @@ public class GameLauncher extends Application {
                     Thread.sleep(sleepTime);
 
                     int gameTime = (int) (game.getGameTime() - (System.currentTimeMillis() - startTime));
-                    if (gameTime > 0)
+                    if (gameTime > 0) {
                         game.setGameTime((int) (game.getGameTime() - (System.currentTimeMillis() - startTime)));
+                        if (game.getGameTime() < 30000 && !game.DRAMATIC) {
+                            game.DRAMATIC = true;
+                            Sound.playCountdown();
+                        }
+                    }
+
+                    /** set game as DRAMATIC (enables dramatic music and witch movement)
+                     *
+                     */
+
                     else {
 
                         this.stop();

@@ -41,7 +41,7 @@ public abstract class Entity extends Observable implements Serializable {
     // represents the state of movement
     protected int moveCounter = 1;
 
-    protected double speed = 300 * Game.FRAMES / 50;
+    protected double speed = 300 * Game.FRAMES / 50 * 5;
 
 
     // Default-Werte
