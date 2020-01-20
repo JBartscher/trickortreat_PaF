@@ -21,7 +21,7 @@ public class Game {
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
-    public static boolean DRAMATIC = true;
+    public static boolean DRAMATIC = false;
 
     private Map map;
     private MapGenerator generator;

@@ -183,7 +183,7 @@ public class AStar {
 
                 Node.Type type;
 
-                if(tileMap[y][x][1].getTileNr() > 25 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
+                if(tileMap[y][x][1].getTileNr() > 25 || tileMap[y][x][2].getTileNr() > 25 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
                     type = Node.Type.OBSTACLE;
                 } else {
                     type = Node.Type.NORMAL;

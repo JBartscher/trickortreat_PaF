@@ -510,7 +510,7 @@ public class MovementManager implements EventHandler<InputEvent> {
 
                  */
 
-                moveObject(witch);
+
 
 
                 if (doPathfinding) {
@@ -527,6 +527,8 @@ public class MovementManager implements EventHandler<InputEvent> {
                 }
             }
         }
+
+        moveObject(witch);
     }
 
 

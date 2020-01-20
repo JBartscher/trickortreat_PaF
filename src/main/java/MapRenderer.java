@@ -118,6 +118,8 @@ public class MapRenderer {
                 }
             }
 
+            gc.setGlobalAlpha(1.0);
+
 
             Rectangle middleTile = null;
             if (widthOffset == 0) {
