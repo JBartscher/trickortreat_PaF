@@ -70,9 +70,8 @@ public class MainMenu {
     private ToggleGroup group = new ToggleGroup();
     private ToggleGroup groupTwo = new ToggleGroup();
     private TextField textFieldServer = new TextField("");
-    //TODO aus config!
-    private MovementManager.MovementType movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_AWSD;
-    private MovementManager.MovementType movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_ARROW;
+    private MovementManager.MovementType movementTypePlayer1;
+    private MovementManager.MovementType movementTypePlayer2;
     private List<Pair<String, Runnable>> menuData;
     private List<Pair<String, Runnable>> localMenuData;
     private List<Pair<String, Runnable>> hostMenuData;
@@ -82,6 +81,8 @@ public class MainMenu {
 
         this.stage = stage;
         this.gameLauncher = gameLauncher;
+
+        setDefaultControls();
     }
 
     private void loadData() {
@@ -164,6 +165,37 @@ public class MainMenu {
                 initMenu(menuData, 0);
 
             }));
+    }
+
+    private void setDefaultControls() {
+
+        switch ((String) config.getParam("movementTypePlayer1")) {
+            case "KEYBOARD_ARROW": 
+                movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_ARROW;
+                break;
+            case "KEYBOARD_AWSD": 
+                movementTypePlayer1 = MovementManager.MovementType.KEYBOARD_AWSD;
+                break;
+            case "MOUSE": 
+                movementTypePlayer1 = MovementManager.MovementType.MOUSE;
+                break;
+            default: 
+                break;
+        }
+
+        switch ((String) config.getParam("movementTypePlayer2")) {
+            case "KEYBOARD_ARROW": 
+                movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_ARROW;
+                break;
+            case "KEYBOARD_AWSD": 
+                movementTypePlayer2 = MovementManager.MovementType.KEYBOARD_AWSD;
+                break;
+            case "MOUSE": 
+                movementTypePlayer2 = MovementManager.MovementType.MOUSE;
+                break;
+            default: 
+                break;
+        }
     }
 
     private void setControls(GameMode gameMode) {
