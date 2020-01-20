@@ -166,7 +166,7 @@ public class MapRenderer {
     /**
      * draws the player (and his children) on the canvas
      */
-    private void drawPlayer(GameCamera gameCamera, Player playerObj, double widthOffset, GraphicsContext gc) {
+    private void drawPlayer(GameCamera gameCamera, Player playerObj, int widthOffset, GraphicsContext gc) {
         // Eigenen Spieler und Anhang zeichnen
         for (int i = 0; i < playerObj.getChildrenCount(); i++) {
             Image imagePlayer = playerObj.getEntityImage();
@@ -175,27 +175,32 @@ public class MapRenderer {
             double xPos = playerObj.getxPos() - gameCamera.getXOffset() + widthOffset;
             double yPos = playerObj.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1;
 
+            double xPosOffset = 0;
+            double yPosOffset = 0;
+
             /**
              * change x/y coordinates depending on current child
              */
             if (i == 1) {
-                xPos += 0.33 * Tile.TILE_SIZE; imagePlayer = playerObj.getEntityImage2();
+                imagePlayer = playerObj.getEntityImage2(); xPosOffset = 0.33 * Tile.TILE_SIZE;
             }
             if (i == 2) {
-                yPos += 0.33 * Tile.TILE_SIZE; imagePlayer = playerObj.getEntityImage3();
+                imagePlayer = playerObj.getEntityImage3(); yPosOffset = 0.33 * Tile.TILE_SIZE;
             }
             if (i == 3) {
-                yPos += 0.33 * Tile.TILE_SIZE; xPos += 0.33 * Tile.TILE_SIZE; imagePlayer = playerObj.getEntityImage4();
+                imagePlayer = playerObj.getEntityImage4(); xPosOffset = 0.33 * Tile.TILE_SIZE; yPosOffset = 0.33 * Tile.TILE_SIZE;
             }
             if( i == 4) {
-                yPos += 0.66 * Tile.TILE_SIZE; imagePlayer = playerObj.getEntityImage5();
+                imagePlayer = playerObj.getEntityImage5(); yPosOffset = 0.66 * Tile.TILE_SIZE;
             }
 
             if( i == 5) {
-                yPos += 0.66 * Tile.TILE_SIZE; xPos += 0.33 * Tile.TILE_SIZE; imagePlayer = playerObj.getEntityImage5();
+                imagePlayer = playerObj.getEntityImage5(); xPosOffset = 0.33 * Tile.TILE_SIZE; yPosOffset = 0.66 * Tile.TILE_SIZE;
             }
 
-            gc.drawImage(imagePlayer, xPos, yPos, 32, 32);
+            drawEntity(gc, playerObj, gameCamera, widthOffset, xPosOffset, yPosOffset, 0.5, imagePlayer);
+
+            //gc.drawImage(imagePlayer, xPos, yPos, 32, 32);
         }
     }
 
