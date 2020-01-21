@@ -4,6 +4,7 @@ import main.java.*;
 import main.java.Menu.GameOver;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
+import main.java.gameobjects.mapobjects.Mansion;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.Map;
 import main.java.map.MapObject;
@@ -130,6 +131,10 @@ public class NetworkController extends GameController {
                         System.out.println("EVENT-Obj " + h);
 
                         h.setUnvisited(((House) eventMapObject).isUnvisited());
+                        if(h instanceof Mansion && eventMapObject instanceof Mansion) {
+                            Mansion m = (Mansion)h;
+                            m.setInsidePlayer(((Mansion)eventMapObject).getInsidePlayer());
+                        }
                         h.repaintAfterVisit();
                         h.updateMap();
                         game.getOtherPlayer().notifyObservers(game.getOtherPlayer());

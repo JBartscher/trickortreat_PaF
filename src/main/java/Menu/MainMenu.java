@@ -69,7 +69,7 @@ public class MainMenu {
     private Button buttonOk = new Button("OK");
     private ToggleGroup group = new ToggleGroup();
     private ToggleGroup groupTwo = new ToggleGroup();
-    private TextField textFieldServer = new TextField("");
+    private TextField textFieldServer = new TextField((String)config.getParam("ip"));
     private MovementManager.MovementType movementTypePlayer1;
     private MovementManager.MovementType movementTypePlayer2;
     private List<Pair<String, Runnable>> menuData;
@@ -360,6 +360,7 @@ public class MainMenu {
                 }
             }
 
+            Sound.playMenu();
             controlsStage.close();
         });
     }
@@ -390,6 +391,7 @@ public class MainMenu {
                 config.setParam("muted", false);
             }
 
+            Sound.playMenu();
             controlsStage.close();
         });
     }
@@ -400,11 +402,12 @@ public class MainMenu {
 
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(textFieldServer, buttonOk);
-
+        
         initScene(controlsBox, 200, 80);
 
         buttonOk.setOnAction((e) -> {
             ip = textFieldServer.getText();
+            Sound.playMenu();
             controlsStage.close();
         });
     }

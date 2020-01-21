@@ -1,7 +1,6 @@
 package main.java.gameobjects;
 
 import javafx.scene.image.Image;
-import main.java.Entity;
 import main.java.MovementManager;
 import main.java.Network.PlayerData;
 import main.java.gameobjects.mapobjects.House;

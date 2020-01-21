@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 import main.java.Menu.GameOver;
 import main.java.Menu.MainMenu;
 import main.java.Network.Network;
+import main.java.Network.NetworkController;
+import main.java.map.Tile;
 
 public class GameLauncher extends Application {
 
@@ -30,6 +32,13 @@ public class GameLauncher extends Application {
     }
 
 
+    /**
+     * used in locale mode or when server is launching a new game
+     * @param gameMode
+     * @param networkEngine
+     * @param movementTypePlayer1
+     * @param movementTypePlayer2
+     */
     public void startGame(Game.GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
         this.movementTypePlayer1 = movementTypePlayer1;
         this.movementTypePlayer2 = movementTypePlayer2;
@@ -39,7 +48,10 @@ public class GameLauncher extends Application {
         gameLoop.start();
     }
 
-    // Remote - it is not necessary to create a new game object - server sends game object to client who uses this object
+    /** only used by client -> it is not necessary to create a new game object - server sends game object to client who uses this object
+     *
+      */
+
     public void startGame(Game game) {
         this.game = game;
         gameLoop = new GameLoop();
@@ -47,6 +59,9 @@ public class GameLauncher extends Application {
         gameLoop.start();
     }
 
+    /**
+     * Super Controller -> renders and updates the game
+     */
     private class GameLoop extends AnimationTimer{
         @Override
         public void handle(long now) {
@@ -65,6 +80,10 @@ public class GameLauncher extends Application {
             //System.out.println("Gesamtzeit: " + gesamtTime + " ms - UpdateZeit: " + updateTime + " ms - Renderzeit: " + renderTime + " ms");
         }
 
+        /**
+         * calculate and update current game time
+         * @param startTime
+         */
         public void calculateGameTime(long startTime) {
 
             if(!game.paused) {
@@ -82,6 +101,15 @@ public class GameLauncher extends Application {
                         if (game.getGameTime() < 30000 && !game.DRAMATIC) {
                             game.DRAMATIC = true;
                             Sound.playCountdown();
+
+                            /**
+                             * spawn the witch at her home coordinates (door of gingerbread house)
+                             */
+                            if(game.gameMode == Game.GameMode.LOCAL) {
+                                game.getWitch().setyPos(game.getWitch().getyPos() + 2 * Tile.TILE_SIZE);
+                            } else if(game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                                game.getWitch().setyPos(game.getWitch().getyPos() + 2 * Tile.TILE_SIZE);
+                            }
                         }
                     }
 
@@ -107,6 +135,10 @@ public class GameLauncher extends Application {
         return game;
     }
 
+    /**
+     * start the JavaFX application
+     * @param args
+     */
     public static void main(String[] args){
         launch();
     }

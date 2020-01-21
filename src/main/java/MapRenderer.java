@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import main.java.Menu.GameMenu;
+import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.Tile;
@@ -56,7 +57,6 @@ public class MapRenderer {
         root.getChildren().add(canvas);
 
 
-
         /**
          * render the map for every player (one iteration on a network game, two iterations on a locale game)
          */
@@ -70,14 +70,20 @@ public class MapRenderer {
             // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
             for (int z = 0; z < 3; z++) {
 
+                if(!game.DRAMATIC && z == 0) {
+                    drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+                }
+
                 /**
                  * checks if current Layer is Layer 2 (overlapping objects
                  * draw player between Layer 1 and 2
                  */
-                if(z == 2 && !game.getPlayer().isInside() && !game.getOtherPlayer().isInside()) {
+                if (z == 2 && !game.getPlayer().isInside() && !game.getOtherPlayer().isInside()) {
                     drawPlayer(gameCamera, player, widthOffset, gc);
                     drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                    drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+                    if(game.DRAMATIC) {
+                        drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+                    }
                 }
 
                 /**
@@ -99,7 +105,7 @@ public class MapRenderer {
                             /**
                              * set effect when player has no children
                              */
-                            if(playerObj.getChildrenCount() == 0) {
+                            if (playerObj.getChildrenCount() == 0) {
                                 gc.setGlobalAlpha(0.7);
                             } else {
                                 gc.setGlobalAlpha(1.0);
@@ -111,10 +117,11 @@ public class MapRenderer {
                     }
                 }
 
-                if(game.getPlayer().isInside() || game.getOtherPlayer().isInside()) {
+                if (game.getPlayer().isInside() || game.getOtherPlayer().isInside()) {
                     drawPlayer(gameCamera, player, widthOffset, gc);
                     drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                    drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+                    if(game.DRAMATIC)
+                        drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
                 }
             }
 
@@ -136,10 +143,10 @@ public class MapRenderer {
              */
             if (middleTile != null)
                 gc.fillRect(Game.WIDTH, Window.HEIGHT * 0.1, 2 * Tile.TILE_SIZE, Window.HEIGHT);
-                //root.getChildren().add(middleTile);
+            //root.getChildren().add(middleTile);
 
 
-            if(playerObj.hasKey()) {
+            if (playerObj.hasKey()) {
                 gc.drawImage(GraphicsUtility.getKeyImage(), widthOffset, Window.HEIGHT * 0.1, Tile.TILE_SIZE, Tile.TILE_SIZE);
             }
             widthOffset += Game.WIDTH + 2 * Tile.TILE_SIZE;
@@ -168,6 +175,12 @@ public class MapRenderer {
     /**
      * draws the player (and his children) on the canvas
      */
+    /**
+     * @param gameCamera  the current game camera
+     * @param playerObj
+     * @param widthOffset offset - width
+     * @param gc          grapicsContext
+     */
     private void drawPlayer(GameCamera gameCamera, Player playerObj, int widthOffset, GraphicsContext gc) {
         // Eigenen Spieler und Anhang zeichnen
         for (int i = 0; i < playerObj.getChildrenCount(); i++) {
@@ -184,33 +197,48 @@ public class MapRenderer {
              * change x/y coordinates depending on current child
              */
             if (i == 1) {
-                imagePlayer = playerObj.getEntityImage2(); xPosOffset = 0.33 * Tile.TILE_SIZE;
+                imagePlayer = playerObj.getEntityImage2();
+                xPosOffset = 0.33 * Tile.TILE_SIZE;
             }
             if (i == 2) {
-                imagePlayer = playerObj.getEntityImage3(); yPosOffset = 0.33 * Tile.TILE_SIZE;
+                imagePlayer = playerObj.getEntityImage3();
+                yPosOffset = 0.33 * Tile.TILE_SIZE;
             }
             if (i == 3) {
-                imagePlayer = playerObj.getEntityImage4(); xPosOffset = 0.33 * Tile.TILE_SIZE; yPosOffset = 0.33 * Tile.TILE_SIZE;
+                imagePlayer = playerObj.getEntityImage4();
+                xPosOffset = 0.33 * Tile.TILE_SIZE;
+                yPosOffset = 0.33 * Tile.TILE_SIZE;
             }
-            if( i == 4) {
-                imagePlayer = playerObj.getEntityImage5(); yPosOffset = 0.66 * Tile.TILE_SIZE;
+            if (i == 4) {
+                imagePlayer = playerObj.getEntityImage5();
+                yPosOffset = 0.66 * Tile.TILE_SIZE;
             }
-
-            if( i == 5) {
-                imagePlayer = playerObj.getEntityImage5(); xPosOffset = 0.33 * Tile.TILE_SIZE; yPosOffset = 0.66 * Tile.TILE_SIZE;
+            if (i == 5) {
+                imagePlayer = playerObj.getEntityImage5();
+                xPosOffset = 0.33 * Tile.TILE_SIZE;
+                yPosOffset = 0.66 * Tile.TILE_SIZE;
+            } else {
+                // throw new IndexOutOfBoundsException("there are to many child objects! You cant have more than 5 children.");
             }
 
             drawEntity(gc, playerObj, gameCamera, widthOffset, xPosOffset, yPosOffset, 0.5, imagePlayer);
 
-            //gc.drawImage(imagePlayer, xPos, yPos, 32, 32);
         }
     }
 
     /**
-     * draws an entity on canvas (npc)
+     * draws an entity on canvas (npc like the with).
+     *
+     * @param gc          grapicsContext
+     * @param entity      the entity that will be drawn
+     * @param gameCamera  the current game camera
+     * @param widthOffset offset - width
+     * @param xPosOffset  offset - xPos
+     * @param yPosOffset  offset - yPos
+     * @param scaleFactor factor by which the image will be scaled
+     * @param image       the image that will be drawn
      */
     public void drawEntity(GraphicsContext gc, Entity entity, GameCamera gameCamera, int widthOffset, double xPosOffset, double yPosOffset, double scaleFactor, Image image) {
-
 
         double xPos = entity.getxPos() - gameCamera.getXOffset() + widthOffset + xPosOffset;
         double yPos = entity.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1 + yPosOffset;
@@ -221,7 +249,5 @@ public class MapRenderer {
             gc.drawImage(image, xPos, yPos, size, size);
 
         }
-
     }
-
 }

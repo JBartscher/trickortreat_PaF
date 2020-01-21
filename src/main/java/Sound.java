@@ -200,6 +200,7 @@ public class Sound {
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
+
     }
 
     public static void stopMusic() {

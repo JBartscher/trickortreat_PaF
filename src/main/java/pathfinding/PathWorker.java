@@ -1,7 +1,7 @@
 package main.java.pathfinding;
 
-import main.java.Entity;
 import main.java.MovementManager;
+import main.java.gameobjects.Entity;
 
 import java.awt.*;
 
