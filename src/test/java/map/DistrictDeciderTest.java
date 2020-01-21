@@ -1,4 +1,4 @@
-package map;
+package test.java.map;
 
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.DistrictDecider;
@@ -20,6 +20,6 @@ class DistrictDeciderTest {
         // test that all districts are created
         districts.forEach(district -> Assertions.assertNotNull(district));
 
-        TestMapPrinter.printDistrictSectors(districts);
+        map.TestMapPrinter.printDistrictSectors(districts);
     }
 }

@@ -28,6 +28,7 @@ public class GameMenu implements Singleton {
     private Text candyTextOtherPlayer = new Text("Spieler 2 - Candy: " + 0);
     private Text timerText = new Text("");
     private Text textSound = new Text("MUTE SOUND with KEY M");
+
     /**
      * Observers
      */
@@ -40,6 +41,8 @@ public class GameMenu implements Singleton {
      * Initializes all menu components (size, color, font, placing, etc.).
      */
     private GameMenu() {
+
+
         // Timer Text
         timerText.setStyle(TEXT_STYLE_SMALL);
         GraphicsUtility.setTextProperties(timerText, TEXT_STYLE_SMALL, Color.WHITE, Window.WIDTH / 2 - 10, 50.0); //

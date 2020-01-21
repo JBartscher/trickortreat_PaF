@@ -17,8 +17,15 @@ public class GraphicsUtility {
     public static Image[] tileTreesImages = new Image[40];
     public static Image[][] tileMansionImages = new Image[5][8];
     public static Image[][] tileTownHallImages = new Image[5][9];
+    public static Image[] tileSetCentre = new Image[24];
 
     public static Image[] tileWitchHouse = new Image[3];
+
+    public static Image pausedImage;
+    public static Image playImage;
+    public static Image muteImage;
+    public static Image unmutedImage;
+
 
 
     public static Image candyImage;
@@ -28,6 +35,7 @@ public class GraphicsUtility {
     public static Image streetTileSand;
     public static Image streetTileDesert;
     public static Image streetTileSnow;
+    public static Image streetTileCentre;
 
     public static Image grasGroundTile;
     public static Image grasDeko1Tile;
@@ -58,6 +66,9 @@ public class GraphicsUtility {
 
 
     public static Image centreTile;
+    public static Image centreLightGroundTile;
+    public static Image centreDarkGroundTile;
+    public static Image centreGrasGroundTile;
     public static Image borderTile;
     public static Image witchDoor;
 
@@ -104,6 +115,14 @@ public class GraphicsUtility {
             tileWitchHouse[x] = new WritableImage(imageWitchHouse.getPixelReader(), x * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
         }
 
+        Image imageCentre = new Image(GraphicsUtility.class.getResourceAsStream("tileset_centre.png"));
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 6; x++) {
+                tileSetCentre[y * 6 + x] = new WritableImage(imageCentre.getPixelReader(), x * (Tile.TILE_SIZE), y * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
+            }
+        }
+
+
 
         System.out.println("fertig");
 
@@ -116,7 +135,12 @@ public class GraphicsUtility {
         Image imageTileSnowAndDesert = new Image(GraphicsUtility.class.getResourceAsStream("tileset_snow_desert.png"));
 
 
-        centreTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        //centreTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        centreTile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        //centreGroundTile = new WritableImage(imageTileSet.getPixelReader(), 5 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        centreLightGroundTile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 1 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        centreDarkGroundTile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 2 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        centreGrasGroundTile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 4 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 
         //grasGroundTile = new WritableImage(imageTileSet.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32), Tile.TILE_SIZE, Tile.TILE_SIZE );
@@ -148,6 +172,9 @@ public class GraphicsUtility {
         streetTileSand = new WritableImage(imageTileSetGras.getPixelReader(), 5 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         streetTileDesert = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         streetTileSnow = new WritableImage(imageTileSet.getPixelReader(), 2 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        streetTileCentre = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 3 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
+
 
         snowDeko1Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         snowDeko2Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -638,6 +665,64 @@ public class GraphicsUtility {
             return tileMansionImages[4][7];
         }
 
+        if(nr == -300) {
+            return tileSetCentre[0];
+        }
+
+        if(nr == -301) {
+            return tileSetCentre[1];
+        }
+
+        if(nr == -306) {
+            return tileSetCentre[6];
+        }
+
+        if(nr == -307) {
+            return tileSetCentre[7];
+        }
+
+        if(nr == -308) {
+            return tileSetCentre[8];
+        }
+
+        if(nr == -309) {
+            return tileSetCentre[9];
+        }
+
+        if(nr == -310) {
+            return tileSetCentre[10];
+        }
+
+        if(nr == -311) {
+            return tileSetCentre[11];
+        }
+
+        if(nr == -312) {
+            return tileSetCentre[12];
+        }
+
+        if(nr == -320) {
+            return tileSetCentre[20];
+        }
+
+        if(nr == -322) {
+            return tileSetCentre[22];
+        }
+
+        if(nr == 325){
+            return centreTile;
+        }
+
+        if(nr == 326){
+            return centreLightGroundTile;
+        }
+
+        if(nr == 327){
+            return centreDarkGroundTile;
+        }
+
+
+
 
         if (nr == -1) {
             return tileTreesImages[0];
@@ -685,8 +770,11 @@ public class GraphicsUtility {
         } else if (nr == 24) {
             return streetTileSnow;
         } else if (nr == 25) {
-            return centreTile;
-        } else {
+            return streetTileCentre;
+        } else if(nr == 26){
+            return centreGrasGroundTile;
+            }
+        else {
             return tileImages[54];
         }
     }
@@ -695,6 +783,14 @@ public class GraphicsUtility {
         candyImage = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
         keyImage = new Image(GraphicsUtility.class.getResourceAsStream("key.png"));
         witchDoor = new Image(GraphicsUtility.class.getResourceAsStream("witch_door.png"));
+
+        // TODO : FUNKTIONIERT NICHT....
+        //pausedImage = new Image(GraphicsUtility.class.getResourceAsStream("paused.png"));
+
+    }
+
+    public static Image getPausedImage() {
+        return pausedImage;
     }
 
     public static Image getCandyImage() {

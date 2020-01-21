@@ -32,8 +32,7 @@ public class Game {
     public Player player;
     public Player otherPlayer;
 
-
-
+    
     /**
      * repräsentiert alle Objekte, die von EINER Spielinstanz verwaltet werde
      * LOKAL = Ein Spiel verwaltet 2 Spieler => Liste enthält Spieler 1 und Spieler 2
@@ -79,6 +78,7 @@ public class Game {
     // constructor with test map size
     // networkEngine is only used in gameMode Remote otherwise the reference is null and not used
     public Game(GameLauncher launcher, Stage stage, GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
+        Game.DRAMATIC = false;
         this.launcher = launcher;
         map = new Map(60);
         generator = new MapGenerator(map);
@@ -100,7 +100,7 @@ public class Game {
 
     // get GameState from Server - get only called by CLIENT
     public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType) {
-
+        Game.DRAMATIC = false;
         this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT);
         ((NetworkController)gameController).updateGameState(gameState);
         this.gameMode = GameMode.REMOTE;

@@ -17,7 +17,7 @@ public class TestMapPrinter {
         }
     }
 
-    static void printDistrictSectors(List<District> districts){
+    public static void printDistrictSectors(List<District> districts){
         for (District district: districts) {
             Sector s = district.getSector();
             System.out.print(district + "\t");

@@ -73,6 +73,12 @@ public class Mansion extends House implements Visitible {
      */
     @Override
     public void repaintAfterVisit() {
+
+        if(insidePlayer == null) {
+            this.tileset = TileCollection.getMansionOutsideTiles();
+        } else {
+            this.tileset = TileCollection.getMansionInsideTiles();
+        }
     }
 
     /**
@@ -103,6 +109,14 @@ public class Mansion extends House implements Visitible {
             this.tileset = TileCollection.getMansionOutsideTiles();
         }
 
+    }
+
+    public Player getInsidePlayer() {
+        return insidePlayer;
+    }
+
+    public void setInsidePlayer(Player insidePlayer) {
+        this.insidePlayer = insidePlayer;
     }
 
 }
