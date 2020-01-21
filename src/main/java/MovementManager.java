@@ -5,6 +5,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import main.java.Configuration;
 import main.java.Network.Event;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.AliceCooper;
@@ -45,6 +46,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     private Game game;
     private AStar aStar;
 
+    private final static Configuration<Object> config = new Configuration<Object>();
 
     /**
      * checks if witch reached the interim goal and : if so, then set next interim goal
@@ -155,7 +157,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 } else if (game.getGameMode() == Game.GameMode.LOCAL) {
                     game.paused = true;
                 }
-
+                if (!(Boolean)config.getParam("muted")) Sound.muteSound();
             }
 
             if (event.getCode() == KeyCode.A) {
@@ -193,6 +195,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 } else if (game.getGameMode() == Game.GameMode.LOCAL) {
                     game.paused = false;
                 }
+                if ((Boolean)config.getParam("muted")) Sound.muteSound();
             }
 
             if (event.getCode() == KeyCode.A) {

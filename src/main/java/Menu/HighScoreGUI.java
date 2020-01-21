@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import main.java.Sound;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -121,6 +122,7 @@ public class HighScoreGUI {
                 });
 
                 buttonClose.setOnAction( (e) -> {
+                    Sound.playMenu();
                     stage.close();
                     checkScore(scores, finalIndex + 1, false);
                 });
@@ -147,6 +149,7 @@ public class HighScoreGUI {
                     Button buttonClose = new Button("OK");
 
                     buttonClose.setOnAction( (e) -> {
+                        Sound.playMenu();
                         stage.close();
                     });
 
