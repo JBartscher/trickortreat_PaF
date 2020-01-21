@@ -19,7 +19,7 @@ public class GingerbreadHouse extends House implements Singleton {
     private boolean hasChild;
 
     /**
-     * private constructor to ewnsure the Singleton is not instantiated in any other places.
+     * private constructor to ensure the Singleton is not instantiated in any other places.
      *
      * @param tileWidth  width - see BigHouse.BIG_HOUSE_WIDTH
      * @param tileHeight height - see BigHouse.BIG_HOUSE_HEIGHT

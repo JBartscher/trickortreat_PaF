@@ -20,6 +20,12 @@ public class GraphicsUtility {
 
     public static Image[] tileWitchHouse = new Image[3];
 
+    public static Image pausedImage;
+    public static Image playImage;
+    public static Image muteImage;
+    public static Image unmutedImage;
+
+
 
     public static Image candyImage;
 
@@ -695,6 +701,14 @@ public class GraphicsUtility {
         candyImage = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
         keyImage = new Image(GraphicsUtility.class.getResourceAsStream("key.png"));
         witchDoor = new Image(GraphicsUtility.class.getResourceAsStream("witch_door.png"));
+
+        // TODO : FUNKTIONIERT NICHT....
+        //pausedImage = new Image(GraphicsUtility.class.getResourceAsStream("paused.png"));
+
+    }
+
+    public static Image getPausedImage() {
+        return pausedImage;
     }
 
     public static Image getCandyImage() {

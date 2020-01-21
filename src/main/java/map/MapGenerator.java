@@ -63,8 +63,6 @@ public class MapGenerator {
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
         createStreetNetwork();
-
-
     }
 
     /**
@@ -266,9 +264,11 @@ public class MapGenerator {
                     transferQueue.add(gingerbreadHouse);
                     witchHouseSet = true;
                     gingerbreadHouse.setDistrict(districtOfHouse);
-                    return;
+                } else {
+                    gameMap.getMapSector().addMapObject(house);
+                    transferQueue.add(house);
+                    house.setDistrict(districtOfHouse);
                 }
-                house.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();
             }
@@ -429,13 +429,14 @@ public class MapGenerator {
 
         CopyOnWriteArrayList<Point> targets = new CopyOnWriteArrayList<>();
         targets.clear();
-        aStar.fillMap(gameMap.getMap(), true);
+        aStar.fillMapForStreetNetwork(gameMap.getMap(), true);
         ArrayList<Node> nodes = aStar.executeAStar();
 
         if (nodes != null) {
             for (Node node : nodes) {
                 targets.add(node.getPosition());
             }
+            targets.add(new Point(targetX, targetY));
 
             drawStreet(targets);
         } else {

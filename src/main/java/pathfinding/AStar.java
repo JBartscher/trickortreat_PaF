@@ -175,6 +175,24 @@ public class AStar {
     }
 
 
+    public void fillMapForStreetNetwork(Tile[][][] tileMap, boolean ignoreObstacles) {
+
+        for(int y = 0; y < map.length; y++){
+            for(int x = 0; x < map[y].length; x++){
+
+                Node.Type type;
+
+                if( tileMap[y][x][1].getTileNr() > 25 || tileMap[y][x][2].getTileNr() > 25 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
+                    type = Node.Type.OBSTACLE;
+                } else {
+                    type = Node.Type.NORMAL;
+                }
+
+                map[y][x] = new Node(x, y, type);
+            }
+        }
+    }
+
     public void fillMap(Tile[][][] tileMap, boolean ignoreObstacles) {
 
         //System.out.println("Fill NodeMap");
@@ -183,14 +201,17 @@ public class AStar {
 
                 Node.Type type;
 
-                if(tileMap[y][x][1].getTileNr() > 25 || tileMap[y][x][2].getTileNr() > 25 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
+                if( tileMap[y][x][1].getTileNr() > 25 || tileMap[y][x][2].getTileNr() > 25 || tileMap[y][x][1].getTileNr() < 0 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
                     type = Node.Type.OBSTACLE;
+                    //System.out.print("X ");
                 } else {
                     type = Node.Type.NORMAL;
+                    //System.out.print("O ");
                 }
 
                 map[y][x] = new Node(x, y, type);
             }
+            //System.out.println("");
         }
     }
 }
