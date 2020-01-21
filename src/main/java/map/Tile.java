@@ -1,10 +1,11 @@
 package main.java.map;
 
-import javafx.scene.paint.Color;
-
 import java.io.Serializable;
 import java.util.Properties;
 
+/**
+ * class that stores a tile
+ */
 public class Tile implements Serializable {
     private static final long serialVersionUID = 4862360600686727902L;
     boolean isDoorTile;
@@ -33,14 +34,5 @@ public class Tile implements Serializable {
 
     public int getTileNr() {
         return this.tileNr;
-    }
-
-    /**
-     * return Color of Tile
-     *
-     * @return Color of Tile
-     */
-    public Color getTileColor() {
-        return (Color) tileColors.getOrDefault(this.tileNr, Color.WHITE);
     }
 }
