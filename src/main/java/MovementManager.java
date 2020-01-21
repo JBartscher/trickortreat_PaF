@@ -548,7 +548,7 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public void moveVertical(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
-
+        
         if ((map.getMapSector().intersectsWithContainingItems(p) ||
                 game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0 ||
                 collideWithKey(entity)
