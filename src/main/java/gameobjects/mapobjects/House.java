@@ -1,5 +1,6 @@
 package main.java.gameobjects.mapobjects;
 
+import main.java.Observable;
 import main.java.Sound;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
@@ -56,6 +57,11 @@ public abstract class House extends MapObject {
         }
     }
 
+    /**
+     * district setter
+     *
+     * @param district district
+     */
     public void setDistrict(District district) {
         this.district = district;
     }
@@ -72,7 +78,7 @@ public abstract class House extends MapObject {
 
             Sound.playRing();
 
-            // Berechne die Menge der Süßigkeiten
+            // calculate the amount of candy the player gets
             int candies = 0;
             Random random = new Random();
             for (int i = 0; i < player.getChildrenCount(); i++) {
@@ -88,6 +94,14 @@ public abstract class House extends MapObject {
 
     }
 
+    /**
+     * after the visit of a house (which is observed by a Controller (Network- or GameController)) and the mandatory
+     * switch of tiles or an whole tileset (inside of houses), this method is called to ensure that the game map is
+     * on the cutting edge.
+     *
+     * @see main.java.GameController#update(Observable, Object)
+     * @see House#visit(Player)
+     */
     public void updateMap() {
 
         Tile[][][] map = Map.getInstance().getMap();
@@ -100,15 +114,28 @@ public abstract class House extends MapObject {
         Map.getInstance().setMap(map);
     }
 
-
+    /**
+     * returns if this house has not been visited yet or not.
+     *
+     * @return true/false
+     */
     public boolean isUnvisited() {
         return isUnvisited;
     }
 
+    /**
+     * setter unvisited
+     *
+     * @param unvisited unvisited
+     */
     public void setUnvisited(boolean unvisited) {
         isUnvisited = unvisited;
     }
 
+    /**
+     * method that is implemented in inheriting  classes.
+     * This makes it possible for the different types of houses to change tiles and tile positions when they are visited-
+     */
     public abstract void repaintAfterVisit();
 
 }

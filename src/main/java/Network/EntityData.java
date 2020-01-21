@@ -1,8 +1,8 @@
 package main.java.Network;
 
-import main.java.Entity;
 import main.java.Game;
 import main.java.MovementManager;
+import main.java.gameobjects.Entity;
 
 import java.awt.*;
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package main.java.Network;
 
-import main.java.AliceCooper;
+import main.java.gameobjects.AliceCooper;
 
 public class CooperData extends EntityData {
 

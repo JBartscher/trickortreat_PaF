@@ -1,9 +1,11 @@
 package main.java.map;
 
-import java.io.*;
+import main.java.Singleton;
+
+import java.io.Serializable;
 import java.util.Random;
 
-public class Map implements Serializable {
+public class Map implements Serializable, Singleton {
 
     private static final long serialVersionUID = 1L;
     private static Map instance;

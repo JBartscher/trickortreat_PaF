@@ -15,11 +15,10 @@ public class GraphicsUtility {
     // tileset 12x12 => 144 tiles
     public static Image[] tileImages = new Image[72];
     public static Image[] tileTreesImages = new Image[40];
-    public static Image[][] tileMansionImages = new Image[5][6];
+    public static Image[][] tileMansionImages = new Image[5][8];
     public static Image[][] tileTownHallImages = new Image[5][9];
 
     public static Image[] tileWitchHouse = new Image[3];
-
 
 
     public static Image candyImage;
@@ -94,16 +93,16 @@ public class GraphicsUtility {
         }
 
         Image imageMansion = new Image(GraphicsUtility.class.getResourceAsStream("mansion.png"));
-        for (int y = 0; y < 6; y++) {
+        for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 5; x++) {
                 tileMansionImages[x][y] = new WritableImage(imageMansion.getPixelReader(), x * (Tile.TILE_SIZE), y * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
             }
         }
 
         Image imageWitchHouse = new Image(GraphicsUtility.class.getResourceAsStream("witch_house.png"));
-            for (int x = 0; x < 3; x++) {
-                tileWitchHouse[x] = new WritableImage(imageWitchHouse.getPixelReader(), x * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
-            }
+        for (int x = 0; x < 3; x++) {
+            tileWitchHouse[x] = new WritableImage(imageWitchHouse.getPixelReader(), x * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
+        }
 
 
         System.out.println("fertig");
@@ -187,7 +186,7 @@ public class GraphicsUtility {
             return grasDeko3Tile;
         } else if (nr == 5) {
             return earthGroundTile;
-        }  else if (nr == 6) {
+        } else if (nr == 6) {
             return earthDeko1Tile;
         } else if (nr == 7) {
             return earthDeko2Tile;
@@ -554,9 +553,7 @@ public class GraphicsUtility {
         if (nr == 226) {
             return tileMansionImages[4][2];
         }
-
-        // Villa - inside
-        // first row
+        // fourth row
         if (nr == 227) {
             return tileMansionImages[0][3];
         }
@@ -572,7 +569,11 @@ public class GraphicsUtility {
         if (nr == 231) {
             return tileMansionImages[4][3];
         }
-        // second row
+
+        // Villa - inside
+        // first row
+
+        // first row
         if (nr == 232) {
             return tileMansionImages[0][4];
         }
@@ -588,7 +589,7 @@ public class GraphicsUtility {
         if (nr == 236) {
             return tileMansionImages[4][4];
         }
-        // third row
+        // second row
         if (nr == 237) {
             return tileMansionImages[0][5];
         }
@@ -604,7 +605,38 @@ public class GraphicsUtility {
         if (nr == 241) {
             return tileMansionImages[4][5];
         }
-
+        // third row
+        if (nr == 242) {
+            return tileMansionImages[0][6];
+        }
+        if (nr == 243) {
+            return tileMansionImages[1][6];
+        }
+        if (nr == 244) {
+            return tileMansionImages[2][6];
+        }
+        if (nr == 245) {
+            return tileMansionImages[3][6];
+        }
+        if (nr == 246) {
+            return tileMansionImages[4][6];
+        }
+        // fourth row
+        if (nr == 247) {
+            return tileMansionImages[0][7];
+        }
+        if (nr == 248) {
+            return tileMansionImages[1][7];
+        }
+        if (nr == 249) {
+            return tileMansionImages[2][7];
+        }
+        if (nr == 250) {
+            return tileMansionImages[3][7];
+        }
+        if (nr == 251) {
+            return tileMansionImages[4][7];
+        }
 
 
         if (nr == -1) {

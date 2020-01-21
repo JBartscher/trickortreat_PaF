@@ -9,7 +9,7 @@ import main.java.*;
 import main.java.gameobjects.Player;
 import main.java.sprites.GraphicsUtility;
 
-public class GameMenu {
+public class GameMenu implements Singleton {
 
     /**
      * Menu components

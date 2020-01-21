@@ -1,7 +1,6 @@
 package main.java.Network;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class GameState implements Serializable, Cloneable {
 
@@ -49,16 +48,8 @@ public class GameState implements Serializable, Cloneable {
         return witchData;
     }
 
-    public void setWitchData(WitchData witchData) {
-        this.witchData = witchData;
-    }
-
     public int getGameTime() {
         return gameTime;
-    }
-
-    public void setGameTime(int gameTime) {
-        this.gameTime = gameTime;
     }
 
     public boolean isEventTransmitted() {
@@ -73,16 +64,6 @@ public class GameState implements Serializable, Cloneable {
         return cooperData;
     }
 
-    public void setCooperData(CooperData cooperData) {
-        this.cooperData = cooperData;
-    }
-
-    public void addEvent(Object o, Event.EventType type) {
-        //this.eventQueue.add(new Event(o, type));
-        eventTransmitted = false;
-        this.event = new Event(o, type);
-    }
-
     public void setEvent(Event event) {
         this.event = event;
     }
@@ -90,23 +71,4 @@ public class GameState implements Serializable, Cloneable {
     public Event getEvent() {
         return this.event;
     }
-
-    //public ArrayList<Event> getEventQueue() {
-     //   return eventQueue;
-    //}
-
-    public void setEventQueue(ArrayList<Event> eventQueue) {
-
-        //this.eventQueue.clear();
-        //this.eventQueue.addAll(eventQueue);
-
-        //this.eventQueue = eventQueue;
-    }
-
-    public void clearEventQueue() {
-        //eventQueue.clear();
-        eventTransmitted = true;
-    }
-
-
 }

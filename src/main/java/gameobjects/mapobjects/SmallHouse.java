@@ -5,6 +5,9 @@ import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
 public class SmallHouse extends House {
+    public static final int SMALL_HOUSE_WIDTH = 2;
+    public static final int SMALL_HOUSE_HEIGHT = 2;
+
     public SmallHouse(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
         this.tileset = TileCollection.getNormalSmallHouseUnvisitedTiles();

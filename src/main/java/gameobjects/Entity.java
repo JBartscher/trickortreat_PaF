@@ -1,8 +1,11 @@
-package main.java;
+package main.java.gameobjects;
 
 import javafx.scene.image.Image;
+import main.java.Game;
 import main.java.Menu.GameMenu;
+import main.java.MovementManager;
 import main.java.Network.EntityData;
+import main.java.Observable;
 import main.java.map.Tile;
 import main.java.sprites.SpriteSheet;
 
@@ -21,10 +24,10 @@ public abstract class Entity extends Observable implements Serializable {
      * @see GameMenu#getSecondPlayerObserver()
      */
 
-    protected double xPos;
-    protected double yPos;
+    public double xPos;
+    public double yPos;
     protected double size;
-    protected Point target;
+    public Point target;
 
     protected CopyOnWriteArrayList<Point> targets = new CopyOnWriteArrayList<>();
 
@@ -41,7 +44,7 @@ public abstract class Entity extends Observable implements Serializable {
     // represents the state of movement
     protected int moveCounter = 1;
 
-    protected double speed = 300 * Game.FRAMES / 50;
+    public double speed = 300 * Game.FRAMES / 50;
 
 
     // Default-Werte
@@ -230,7 +233,7 @@ public abstract class Entity extends Observable implements Serializable {
 
     }
 
-    protected Image getEntityImage() {
+    public Image getEntityImage() {
         return sprite;
     }
 

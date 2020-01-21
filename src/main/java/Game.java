@@ -5,7 +5,10 @@ import main.java.Menu.GameMenu;
 import main.java.Network.GameStateInit;
 import main.java.Network.Network;
 import main.java.Network.NetworkController;
+import main.java.gameobjects.AliceCooper;
+import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
+import main.java.gameobjects.Witch;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
 
@@ -206,7 +209,6 @@ public class Game {
 
     public void setMap(Map map) { this.map = map; }
 
-
     public Window getWindow() {
         return window;
     }
@@ -245,7 +247,6 @@ public class Game {
         this.otherPlayer = otherPlayer;
     }
 
-
     public void setAliceCooper(AliceCooper aliceCooper) {
         this.aliceCooper = aliceCooper;
     }
@@ -253,7 +254,6 @@ public class Game {
     public void setGameCameraEnemy(GameCamera gameCameraEnemy) {
         this.gameCameraEnemy = gameCameraEnemy;
     }
-
 
     public GameController getGameController() {
         return gameController;

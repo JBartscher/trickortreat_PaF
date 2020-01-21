@@ -4,7 +4,9 @@ import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
 import main.java.Menu.GameMenu;
 import main.java.Network.NetworkController;
+import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Player;
+import main.java.gameobjects.Witch;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.TownHall;
@@ -93,25 +95,36 @@ public class GameController implements Observer {
         return null;
     }
 
+    /**
+     * after a the visit method of a house is called this method is notified by notifyObservers call.
+     * this is usaly done (normal houses big or small) to  replace house tiles from unvisted to visited tiles.
+     * One edge case on the other hand is the visit to the witch's house, which triggers the spawn of the key to release
+     * children in the townhall and also replaces the tiles of that witch's house,.
+     *
+     * @param o   Observable Object which called notifyObservers method
+     * @param arg not used
+     */
     @Override
     public void update(Observable o, Object arg) {
-        if(o instanceof GingerbreadHouse) {
-            for(MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
-                if(obj instanceof TownHall) {
-                    TownHall t = (TownHall)obj;
+        if (o instanceof GingerbreadHouse) {
+            for (MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
+                if (obj instanceof TownHall) {
+                    TownHall t = (TownHall) obj;
                     t.setHasKey(true);
                     t.repaintAfterVisit();
                     t.updateMap();
-                    if(t.getNumberOfPlayerInside() > 0 ) {
+                    if (t.getNumberOfPlayerInside() > 0) {
                         game.getMap().getMap()[29][31][1].setTileNr(120);
                     }
+                    break; // found townhall no further looping necessary
                 }
             }
-            ((House)o).repaintAfterVisit();
-            ((House)o).updateMap();
-        }
-
-        else if (o instanceof House) {
+            /**
+             * the object is the GingerbreadHouse singleton so we use it instead of obj variable
+             */
+            GingerbreadHouse.getInstance().repaintAfterVisit();
+            GingerbreadHouse.getInstance().updateMap();
+        } else if (o instanceof House) {
             House h = (House) o;
             h.repaintAfterVisit();
             h.updateMap();

@@ -50,4 +50,15 @@ public class Sector extends Placeable {
     public List<MapObject> getAllContainingMapObjects() {
         return this.sectorObjects;
     }
+
+    /**
+     * removes a mapObject from the sector. This method is needed to ensure that the old BigHouse object, which is added
+     * in the findObjectSpot method is not present in the sectorObject list.
+     *
+     * @param mapObject
+     * @see MapGenerator->createHouses()->createWitchHouse
+     */
+    public void removeMapObject(MapObject mapObject) {
+        sectorObjects.remove(mapObject);
+    }
 }
