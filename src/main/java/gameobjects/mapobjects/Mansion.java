@@ -7,7 +7,7 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
-public class Mansion extends House implements Visitible {
+public class Mansion extends House implements Accessible {
 
     public static final int MANSION_WIDTH = 5;
     public static final int MANSION_HEIGHT = 4;
