@@ -5,8 +5,8 @@ package main.java.gameobjects.mapobjects;
 
 import main.java.gameobjects.Player;
 
-public interface Visitible {
+public interface Accessible {
 
-    public void setInsideMode(Player player);
+    void setInsideMode(Player player);
 
 }

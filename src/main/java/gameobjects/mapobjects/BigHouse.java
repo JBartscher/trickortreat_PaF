@@ -4,7 +4,12 @@ import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
+
 public class BigHouse extends House {
+
+    public static final int BIG_HOUSE_WIDTH = 2;
+    public static final int BIG_HOUSE_HEIGHT = 3;
+
     public BigHouse(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
         this.tileset = TileCollection.getNormalBigHouseUnvisitedTiles();

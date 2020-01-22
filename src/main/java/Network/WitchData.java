@@ -1,6 +1,6 @@
 package main.java.Network;
 
-import main.java.Witch;
+import main.java.gameobjects.Witch;
 
 import java.awt.*;
 

@@ -4,13 +4,16 @@ import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
 import main.java.Menu.GameMenu;
 import main.java.Network.NetworkController;
+import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Player;
+import main.java.gameobjects.Witch;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.MapObject;
 import main.java.map.Tile;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,6 +55,11 @@ public class GameController implements Observer {
     public void initEntities(MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
 
         game.setPlayer(new Player(movementTypePlayer1));
+        game.getPlayer().setxPos(game.getMap().getSize() * 0.5 * Tile.TILE_SIZE);
+        game.getPlayer().setyPos((game.getMap().getSize() * 0.5 + 3) * Tile.TILE_SIZE);
+        game.getPlayer().setTarget( new Point( (int)game.getPlayer().getxPos(), (int)game.getPlayer().getyPos()) );
+
+
         game.getListOfPlayers().add(game.getPlayer());
         // add Score-Observer which notifyes its Score text when this player visits a house
         game.getPlayer().addObserver(GameMenu.getInstance().getFirstPlayerObserver());
@@ -64,13 +72,19 @@ public class GameController implements Observer {
         game.setGameCameraEnemy(setGameCameraEnemy());
 
 
-        game.getOtherPlayer().setxPos(game.getPlayer().getxPos());
-        game.getOtherPlayer().setyPos(game.getPlayer().getyPos() + 1 * Tile.TILE_SIZE);
+        game.getOtherPlayer().setxPos(game.getPlayer().getxPos() + Tile.TILE_SIZE);
+        game.getOtherPlayer().setyPos(game.getPlayer().getyPos());
+        game.getOtherPlayer().setTarget( new Point( (int)game.getOtherPlayer().getxPos(), (int)game.getOtherPlayer().getyPos()) );
 
         game.setWitch(new Witch());
 
-        game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
-        game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
+        //game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
+        //game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
+
+        game.getWitch().setxPos(GingerbreadHouse.getInstance().getY() * Tile.TILE_SIZE + Tile.TILE_SIZE);
+        game.getWitch().setyPos(GingerbreadHouse.getInstance().getX() * Tile.TILE_SIZE);
+        game.getWitch().setHomeX(game.getWitch().getxPos() + Tile.TILE_SIZE);
+        game.getWitch().setHomeY(game.getWitch().getyPos() + 2 * Tile.TILE_SIZE);
 
         game.setAliceCooper(new AliceCooper());
 
@@ -93,25 +107,36 @@ public class GameController implements Observer {
         return null;
     }
 
+    /**
+     * after a the visit method of a house is called this method is notified by notifyObservers call.
+     * this is usaly done (normal houses big or small) to  replace house tiles from unvisted to visited tiles.
+     * One edge case on the other hand is the visit to the witch's house, which triggers the spawn of the key to release
+     * children in the townhall and also replaces the tiles of that witch's house,.
+     *
+     * @param o   Observable Object which called notifyObservers method
+     * @param arg not used
+     */
     @Override
     public void update(Observable o, Object arg) {
-        if(o instanceof GingerbreadHouse) {
-            for(MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
-                if(obj instanceof TownHall) {
-                    TownHall t = (TownHall)obj;
+        if (o instanceof GingerbreadHouse) {
+            for (MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
+                if (obj instanceof TownHall) {
+                    TownHall t = (TownHall) obj;
                     t.setHasKey(true);
                     t.repaintAfterVisit();
                     t.updateMap();
-                    if(t.getNumberOfPlayerInside() > 0 ) {
+                    if (t.getNumberOfPlayerInside() > 0) {
                         game.getMap().getMap()[29][31][1].setTileNr(120);
                     }
+                    break; // found townhall no further looping necessary
                 }
             }
-            ((House)o).repaintAfterVisit();
-            ((House)o).updateMap();
-        }
-
-        else if (o instanceof House) {
+            /**
+             * the object is the GingerbreadHouse singleton so we use it instead of obj variable
+             */
+            GingerbreadHouse.getInstance().repaintAfterVisit();
+            GingerbreadHouse.getInstance().updateMap();
+        } else if (o instanceof House) {
             House h = (House) o;
             h.repaintAfterVisit();
             h.updateMap();

@@ -1,4 +1,4 @@
-package main.java;
+package main.java.gameobjects;
 
 import main.java.Network.WitchData;
 import main.java.map.Tile;

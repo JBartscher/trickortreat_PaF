@@ -319,9 +319,15 @@ public class TileCollection {
 
         mansion[2][0] = new Tile(222);
         mansion[2][1] = new Tile(223);
-        mansion[2][2] = new Tile(224, true);
+        mansion[2][2] = new Tile(224);
         mansion[2][3] = new Tile(225);
         mansion[2][4] = new Tile(226);
+
+        mansion[3][0] = new Tile(227);
+        mansion[3][1] = new Tile(228);
+        mansion[3][2] = new Tile(229, true);
+        mansion[3][3] = new Tile(230);
+        mansion[3][4] = new Tile(231);
 
         //mansion[4][3] = new Tile(34, true);
 
@@ -331,25 +337,31 @@ public class TileCollection {
     public final static Tile[][] getMansionInsideTiles() {
         Tile[][] mansion = new Tile[Mansion.MANSION_HEIGHT][Mansion.MANSION_WIDTH];
 
-        mansion[0][0] = new Tile(227);
-        mansion[0][1] = new Tile(228);
-        mansion[0][2] = new Tile(229);
-        mansion[0][3] = new Tile(230);
-        mansion[0][4] = new Tile(231);
+        mansion[0][0] = new Tile(232);
+        mansion[0][1] = new Tile(233);
+        mansion[0][2] = new Tile(234);
+        mansion[0][3] = new Tile(235);
+        mansion[0][4] = new Tile(236);
 
-        mansion[1][0] = new Tile(232);
-        mansion[1][1] = new Tile(233);
-        mansion[1][2] = new Tile(234);
-        mansion[1][3] = new Tile(235);
-        mansion[1][4] = new Tile(236);
+        mansion[1][0] = new Tile(237);
+        mansion[1][1] = new Tile(238);
+        mansion[1][2] = new Tile(239);
+        mansion[1][3] = new Tile(240);
+        mansion[1][4] = new Tile(241);
 
-        mansion[2][0] = new Tile(237);
-        mansion[2][1] = new Tile(238);
-        mansion[2][2] = new Tile(239, true);
-        mansion[2][3] = new Tile(240);
-        mansion[2][4] = new Tile(241);
+        mansion[2][0] = new Tile(242);
+        mansion[2][1] = new Tile(243);
+        mansion[2][2] = new Tile(244);
+        mansion[2][3] = new Tile(245);
+        mansion[2][4] = new Tile(246);
 
-        //mansion[4][3] = new Tile(34, true);
+        System.out.println(mansion[2][2]);
+
+        mansion[3][0] = new Tile(247);
+        mansion[3][1] = new Tile(248);
+        mansion[3][2] = new Tile(249, true);
+        mansion[3][3] = new Tile(250);
+        mansion[3][4] = new Tile(251);
 
         return mansion;
     }

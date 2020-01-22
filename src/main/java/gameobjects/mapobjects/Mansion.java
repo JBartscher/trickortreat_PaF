@@ -7,10 +7,10 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
-public class Mansion extends House implements Visitible {
+public class Mansion extends House implements Accessible {
 
     public static final int MANSION_WIDTH = 5;
-    public static final int MANSION_HEIGHT = 3;
+    public static final int MANSION_HEIGHT = 4;
 
     public Player insidePlayer = null;
 
@@ -27,19 +27,20 @@ public class Mansion extends House implements Visitible {
 
     /**
      * play music and join player to mansion
+     *
      * @param player the player entity that visits the current house instance
      */
     @Override
     public void visit(Player player) {
-        if(player.getProtectedTicks() > 0) return;
-        if(isUnvisited()) {
+        if (player.getProtectedTicks() > 0) return;
+        if (isUnvisited()) {
             setInsideMode(player);
             Sound.playCooper();
 
 
         } else if (!isUnvisited() && player == insidePlayer) {
             setInsideMode(insidePlayer);
-            if(Game.DRAMATIC) {
+            if (Game.DRAMATIC) {
                 Sound.playCountdown();
             } else {
                 Sound.playMusic();
@@ -56,7 +57,7 @@ public class Mansion extends House implements Visitible {
 
         for (int y = 0; y < tileset[0].length; y++) {
             for (int x = 0; x < tileset.length; x++) {
-                if(x == 0) {
+                if (x == 0) {
                     map[x + this.getX()][y + this.getY()][2] = tileset[x][y];
                 } else {
                     map[x + this.getX()][y + this.getY()][1] = tileset[x][y];
@@ -72,10 +73,17 @@ public class Mansion extends House implements Visitible {
      */
     @Override
     public void repaintAfterVisit() {
+
+        if(insidePlayer == null) {
+            this.tileset = TileCollection.getMansionOutsideTiles();
+        } else {
+            this.tileset = TileCollection.getMansionInsideTiles();
+        }
     }
 
     /**
      * set player attributes on inside mode ( no collision with houses )
+     *
      * @param player
      */
     @Override
@@ -102,4 +110,13 @@ public class Mansion extends House implements Visitible {
         }
 
     }
+
+    public Player getInsidePlayer() {
+        return insidePlayer;
+    }
+
+    public void setInsidePlayer(Player insidePlayer) {
+        this.insidePlayer = insidePlayer;
+    }
+
 }
