@@ -10,16 +10,9 @@ import main.java.map.Tile;
 
 import java.util.Random;
 
-public abstract class House extends MapObject {
-
-    /**
-     * Offset of Object to other Objects @see Placeble
-     */
-    final int OFFSET = 1;
+public abstract class House extends MapObject implements Visitable {
 
     protected Tile[][] tileset;
-
-    private Tile doorTile;
 
     protected boolean isUnvisited = true;
 
