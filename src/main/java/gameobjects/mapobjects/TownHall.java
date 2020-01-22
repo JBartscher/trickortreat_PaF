@@ -5,7 +5,7 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
-public class TownHall extends House implements Visitible {
+public class TownHall extends House implements Accessible {
 
     public static final int TOWN_HALL_WIDTH = 5;
     public static final int TOWN_HALL_HEIGHT = 4;
@@ -15,6 +15,7 @@ public class TownHall extends House implements Visitible {
     private int numberOfPlayerInside;
 
     private EventType eventType;
+
     public enum EventType {
         KEY, VISITED
     }

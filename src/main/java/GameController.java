@@ -13,6 +13,7 @@ import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.MapObject;
 import main.java.map.Tile;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,6 +55,11 @@ public class GameController implements Observer {
     public void initEntities(MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
 
         game.setPlayer(new Player(movementTypePlayer1));
+        game.getPlayer().setxPos(game.getMap().getSize() * 0.5 * Tile.TILE_SIZE);
+        game.getPlayer().setyPos((game.getMap().getSize() * 0.5 + 3) * Tile.TILE_SIZE);
+        game.getPlayer().setTarget( new Point( (int)game.getPlayer().getxPos(), (int)game.getPlayer().getyPos()) );
+
+
         game.getListOfPlayers().add(game.getPlayer());
         // add Score-Observer which notifyes its Score text when this player visits a house
         game.getPlayer().addObserver(GameMenu.getInstance().getFirstPlayerObserver());
@@ -66,13 +72,19 @@ public class GameController implements Observer {
         game.setGameCameraEnemy(setGameCameraEnemy());
 
 
-        game.getOtherPlayer().setxPos(game.getPlayer().getxPos());
-        game.getOtherPlayer().setyPos(game.getPlayer().getyPos() + 1 * Tile.TILE_SIZE);
+        game.getOtherPlayer().setxPos(game.getPlayer().getxPos() + Tile.TILE_SIZE);
+        game.getOtherPlayer().setyPos(game.getPlayer().getyPos());
+        game.getOtherPlayer().setTarget( new Point( (int)game.getOtherPlayer().getxPos(), (int)game.getOtherPlayer().getyPos()) );
 
         game.setWitch(new Witch());
 
-        game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
-        game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
+        //game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
+        //game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
+
+        game.getWitch().setxPos(GingerbreadHouse.getInstance().getY() * Tile.TILE_SIZE + Tile.TILE_SIZE);
+        game.getWitch().setyPos(GingerbreadHouse.getInstance().getX() * Tile.TILE_SIZE);
+        game.getWitch().setHomeX(game.getWitch().getxPos() + Tile.TILE_SIZE);
+        game.getWitch().setHomeY(game.getWitch().getyPos() + 2 * Tile.TILE_SIZE);
 
         game.setAliceCooper(new AliceCooper());
 

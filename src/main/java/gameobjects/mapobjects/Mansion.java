@@ -7,7 +7,7 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
-public class Mansion extends House implements Visitible {
+public class Mansion extends House implements Accessible {
 
     public static final int MANSION_WIDTH = 5;
     public static final int MANSION_HEIGHT = 4;
@@ -73,6 +73,12 @@ public class Mansion extends House implements Visitible {
      */
     @Override
     public void repaintAfterVisit() {
+
+        if(insidePlayer == null) {
+            this.tileset = TileCollection.getMansionOutsideTiles();
+        } else {
+            this.tileset = TileCollection.getMansionInsideTiles();
+        }
     }
 
     /**
@@ -103,6 +109,14 @@ public class Mansion extends House implements Visitible {
             this.tileset = TileCollection.getMansionOutsideTiles();
         }
 
+    }
+
+    public Player getInsidePlayer() {
+        return insidePlayer;
+    }
+
+    public void setInsidePlayer(Player insidePlayer) {
+        this.insidePlayer = insidePlayer;
     }
 
 }

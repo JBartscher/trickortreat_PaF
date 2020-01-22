@@ -57,14 +57,14 @@ public class MapGenerator {
         createTownHall(gameMap.getSize() / 2 - TownHall.TOWN_HALL_HEIGHT / 2, gameMap.getSize() / 2 - TownHall.TOWN_HALL_WIDTH / 2 + 1);
         createMansion(4, 3); //TODO: remove fixed value (@see collideWithAliceCooper() in MovementManager)
 
-        createCentreSmallHouses(5);
+        createCentreSmallHouses(4);
+        createCentreBigHouses(8);
+        createCentreHouses();
 
         createHouses();
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
         createStreetNetwork();
-
-
     }
 
     /**
@@ -266,9 +266,11 @@ public class MapGenerator {
                     transferQueue.add(gingerbreadHouse);
                     witchHouseSet = true;
                     gingerbreadHouse.setDistrict(districtOfHouse);
-                    return;
+                } else {
+                    gameMap.getMapSector().addMapObject(house);
+                    transferQueue.add(house);
+                    house.setDistrict(districtOfHouse);
                 }
-                house.setDistrict(districtOfHouse);
             } catch (PlaceableBelongsToNoSectorException e) {
                 e.printStackTrace();
             }
@@ -346,7 +348,7 @@ public class MapGenerator {
     }
 
     /**
-     * places a number of houses in the centere of the map.
+     * places a number of houses in the centre of the map.
      *
      * @param numberOfHouses the amount of houses that get placed at the center of the map
      */
@@ -356,24 +358,79 @@ public class MapGenerator {
             // stub Object, the placeable will be overridden in the findObjectSpot method
             House smallHouse = HouseFactory.createNewInstance("small");
 
-            int x = (int) (gameMap.getSize() * 0.4) + i * 3;
-            int y = (int) (gameMap.getSize() * 0.40);
-            gameMap.getMapSector().addMapObject(smallHouse);
-            // convey x and y pos to object
-            smallHouse.setX(y);
-            smallHouse.setY(x);
+            int x = (int) (gameMap.getSize() * 0.42) + i * 3;
+            int y = (int) (gameMap.getSize() * 0.38);
+            addAndSetHouse(smallHouse, x, y);
+        }
+    }
 
-            transferQueue.add(smallHouse);
+    /**
+     * places a number of houses in the centre of the map.
+     *
+     * @param numberOfHouses the amount of houses that get placed at the center of the map
+     */
+    private void createCentreBigHouses(int numberOfHouses) {
+        // 2x2
+        for(int j = 0; j < 2; j++) {
+            for (int i = 0; i < numberOfHouses / 2; i++) {
+                // stub Object, the placeable will be overridden in the findObjectSpot method
+                House bigHouse = HouseFactory.createNewInstance("big");
 
-            // put the right district to the house object
-            try {
-                District districtOfHouse = districtManager.getDistrict(smallHouse);
-                System.out.println(districtOfHouse);
-                smallHouse.setDistrict(districtOfHouse);
-            } catch (PlaceableBelongsToNoSectorException e) {
-                e.printStackTrace();
+                int x = (int) (gameMap.getSize() * 0.39) + i * 4;
+                int y = (int) (gameMap.getSize() * 0.42);
+
+                if(j == 1) {
+                    y += 11;
+                }
+                /**
+                 * set house and add it to sector
+                 */
+                addAndSetHouse(bigHouse, x, y);
             }
         }
+    }
+
+    /**
+     * create houses in the centre of the map
+     */
+    private void createCentreHouses() {
+
+        House house = HouseFactory.createNewInstance("big");
+        int x = 23;
+        int y = 30;
+        addAndSetHouse(house, x, y);
+
+        x = 36;
+        y = 30;
+        house = HouseFactory.createNewInstance("big");
+        addAndSetHouse(house, x, y);
+
+
+    }
+
+    /**
+     * set the house to given coordinates and add it to the sector
+     * @param house
+     * @param x
+     * @param y
+     */
+    private void addAndSetHouse(House house, int x, int y) {
+        gameMap.getMapSector().addMapObject(house);
+        // convey x and y pos to object
+        house.setX(y);
+        house.setY(x);
+
+        transferQueue.add(house);
+
+        // put the right district to the house object
+        try {
+            District districtOfHouse = districtManager.getDistrict(house);
+            System.out.println(districtOfHouse);
+            house.setDistrict(districtOfHouse);
+        } catch (PlaceableBelongsToNoSectorException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -388,7 +445,7 @@ public class MapGenerator {
                 if (nr.length() == 1) nr = "0" + nr;
                 if (nr.length() == 3 || tileNr >= 90) nr = "XX";
 
-                if (tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 70 || tileNr == 74 || tileNr == 85 || tileNr == 224) {
+                if (tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 70 || tileNr == 74 || tileNr == 85 || tileNr == 110 || tileNr == 224) {
 
                     //nr = "DD";
                     doorPoints.add(new Point(x, y + 1));
@@ -429,13 +486,14 @@ public class MapGenerator {
 
         CopyOnWriteArrayList<Point> targets = new CopyOnWriteArrayList<>();
         targets.clear();
-        aStar.fillMap(gameMap.getMap(), true);
+        aStar.fillMapForStreetNetwork(gameMap.getMap(), true);
         ArrayList<Node> nodes = aStar.executeAStar();
 
         if (nodes != null) {
             for (Node node : nodes) {
                 targets.add(node.getPosition());
             }
+            targets.add(new Point(targetX, targetY));
 
             drawStreet(targets);
         } else {
@@ -474,7 +532,7 @@ public class MapGenerator {
         for (Point point : targets) {
             int tileNr = gameMap.getMap()[point.y][point.x][1].getTileNr();
             int streetType = 20;
-            if (tileNr < 20) {
+            if (tileNr < 20 || tileNr == 26) {
 
                 streetType = getBiomeStreetType(point.x, point.y);
 
@@ -484,6 +542,11 @@ public class MapGenerator {
     }
 
     public int getBiomeStreetType(int x, int y) {
+
+        if(x > Map.xTopLeftCentre.x && x < Map.xTopRightCentre.x && y > Map.xTopLeftCentre.y && y < Map.xBottomLeftCentre.y) {
+            return 25;
+        }
+
         int sectorNumbY = y / 20;
         int sectorNumbX = x / 20;
 
