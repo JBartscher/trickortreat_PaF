@@ -51,6 +51,7 @@ public class ClientEngine extends Thread implements Network {
         }
 
         communicate();
+        System.out.println("AUFRUF CLIENT REPLAY");
         if(ServerEngine.restart && ClientEngine.restart) initReplay();
     }
 
@@ -72,6 +73,11 @@ public class ClientEngine extends Thread implements Network {
 
         try {
             Message msg = (Message)input.readObject();
+
+            while(msg.getGameState().getClass() == GameState.class) {
+                msg = (Message)input.readObject();
+            }
+
             GameStateInit gameStateReceived = (GameStateInit)(msg.getGameState());
             this.gameState = gameStateReceived;
             Platform.runLater( () -> {
@@ -98,6 +104,7 @@ public class ClientEngine extends Thread implements Network {
     }
 
     public void initReplay() {
+        System.out.println("AUFRUF CLIENT REPLAY");
         ready = false;
         ClientEngine.restart = false;
         ServerEngine.restart = false;
@@ -122,10 +129,11 @@ public class ClientEngine extends Thread implements Network {
 
             while(true) {
 
-                if(ClientEngine.restart && ServerEngine.restart) return;
 
                 // GameState über ObjectOutputStream an den Server verschicken
                 networkController.sendMessage(output, gameState);
+
+                if(ClientEngine.restart && ServerEngine.restart) { return; }
 
                 // GameState vom Server lesen
                 Message msg = (Message)input.readObject();
@@ -165,5 +173,7 @@ public class ClientEngine extends Thread implements Network {
     }
 
     public Game getGame() { return game; }
+
+
 
 }

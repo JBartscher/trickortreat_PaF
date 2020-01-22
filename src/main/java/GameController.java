@@ -82,9 +82,9 @@ public class GameController implements Observer {
         //game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
 
         game.getWitch().setxPos(GingerbreadHouse.getInstance().getY() * Tile.TILE_SIZE + Tile.TILE_SIZE);
-        game.getWitch().setyPos(GingerbreadHouse.getInstance().getX() * Tile.TILE_SIZE);
-        game.getWitch().setHomeX(game.getWitch().getxPos() + Tile.TILE_SIZE);
-        game.getWitch().setHomeY(game.getWitch().getyPos() + 2 * Tile.TILE_SIZE);
+        game.getWitch().setyPos(GingerbreadHouse.getInstance().getX() * Tile.TILE_SIZE + 2 * Tile.TILE_SIZE);
+        game.getWitch().setHomeX(game.getWitch().getxPos());
+        game.getWitch().setHomeY(game.getWitch().getyPos());
 
         game.setAliceCooper(new AliceCooper());
 

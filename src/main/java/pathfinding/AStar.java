@@ -77,6 +77,7 @@ public class AStar {
 
     public Set<Node> getNeighbours(Node n){
 
+
         /*
         Set<Node> neighbours = new HashSet<Node>();
         for(int i=-1; i<=1; i++){
@@ -90,8 +91,8 @@ public class AStar {
             }
         }
         return neighbours;
+        */
 
-         */
 
         Set<Node> neighbours = new HashSet<>();
         for(int i=-1; i<=1; i++){
@@ -115,6 +116,7 @@ public class AStar {
         return neighbours;
 
 
+
     }
 
     static double calculateDistance(Point from, Point to){
@@ -124,6 +126,7 @@ public class AStar {
     public ArrayList<Node> reconstructPath(Node target){
         ArrayList<Node> path = new ArrayList<Node>();
         Node current = target;
+        //path.add(current);
 
         while(current.getParent() != null){
             path.add(current.getParent());
@@ -181,7 +184,7 @@ public class AStar {
 
                 Node.Type type;
 
-                if( tileMap[y][x][1].getTileNr() > 26 || tileMap[y][x][2].getTileNr() > 26 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles) || tileMap[y][x][1].getTileNr() < -20   ) {
+                if( tileMap[y][x][1].getTileNr() > 25 || tileMap[y][x][2].getTileNr() > 25 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles) || tileMap[y][x][1].getTileNr() < -20   ) {
                     type = Node.Type.OBSTACLE;
                 } else {
                     type = Node.Type.NORMAL;
@@ -200,7 +203,7 @@ public class AStar {
 
                 Node.Type type;
 
-                if( tileMap[y][x][1].getTileNr() > 25 || tileMap[y][x][2].getTileNr() > 25 || tileMap[y][x][1].getTileNr() < 0 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
+                if( tileMap[y][x][1].getTileNr() > 26 || tileMap[y][x][2].getTileNr() > 26 || tileMap[y][x][1].getTileNr() < 0 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
                     type = Node.Type.OBSTACLE;
                     //System.out.print("X ");
                 } else {

@@ -10,7 +10,7 @@ import main.java.sprites.SpriteSheet;
 public class Player extends Entity {
 
     // represents amount of children
-    public int childrenCount = 3;
+    public int childrenCount = 6;
     private int candy = 0;
 
     // necessary to get  the right coordinates when playing with mouse

@@ -55,12 +55,15 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public void checkTarget(Entity entity, double movementSize) {
 
-        if(game.getWitch().getTargets().size() < 8)
-            System.out.println(game.getWitch().isOnReturn());
+       //if(game.getWitch().getTargets().size() < 5)
+         //   System.out.println(game.getWitch().isOnReturn() + " Hexe-Ziel: " + game.getWitch().getFinalTargetPos() + " - Pos: " + game.getWitch().getEntityPos() + " -  Ziele: " + game.getWitch().getTargets());
 
+        /**
+         * check if witch is near the door of her home
+         */
         if (entity instanceof Witch) {
             Witch witch = (Witch) entity;
-            if (Math.abs(witch.getxPos() - witch.getHomeX()) <= Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) <= Tile.TILE_SIZE && witch.isOnReturn()) {
+            if (Math.abs(witch.getxPos() - witch.getHomeX()) < 0.2 * Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) < 0.2 * Tile.TILE_SIZE && witch.isOnReturn()) {
                 //if ( witch.getFinalTargetPos().x == witch.getEntityPos().x && witch.getFinalTargetPos().y == witch.getEntityPos().y && witch.isOnReturn() ) {
                 witch.setOnReturn(false);
             }
@@ -78,8 +81,8 @@ public class MovementManager implements EventHandler<InputEvent> {
                 if (targets.size() > 1) {
                     targets.remove(0);
                     if (targets.size() > 0) {
-                        int transformedX = targets.get(0).x * Tile.TILE_SIZE;
-                        int transformedY = targets.get(0).y * Tile.TILE_SIZE;
+                        int transformedX = (int) (targets.get(0).x * Tile.TILE_SIZE);
+                        int transformedY = (int) (targets.get(0).y * Tile.TILE_SIZE);
                         entity.setTarget(new Point(transformedX, transformedY));
                     }
                 }
@@ -286,6 +289,16 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public void findPath(Entity entity, Point start, Point target) {
 
+        /*
+        if(game.getWitch().getTargets().size() > 0) {
+            Witch w = game.getWitch();
+            if(w.getFinalTargetPos().x / Tile.TILE_SIZE == target.x &&
+                    w.getFinalTargetPos().y / Tile.TILE_SIZE == target.y && w.isOnReturn())
+                return;
+        }
+         */
+
+
         /**
          * set start and target position and find path
          */
@@ -293,9 +306,9 @@ public class MovementManager implements EventHandler<InputEvent> {
         aStar.setTargetPosition(target);
         aStar.fillMap(game.getMap().getMap(), false);
 
+        ArrayList<Node> nodes = aStar.executeAStar();
         CopyOnWriteArrayList<Point> targets = entity.getTargets();
         targets.clear();
-        ArrayList<Node> nodes = aStar.executeAStar();
 
         if (nodes == null) {
             System.out.println("KEIN PFAD GEFUNDEN");
@@ -313,10 +326,13 @@ public class MovementManager implements EventHandler<InputEvent> {
         /**
          * result of Astar algorithm does not contain the current position of the player
          * have to add manually to list of targets
-         */
-        if(witchTarget != null) {
+        */
+         if(witchTarget != null && !game.getWitch().isOnReturn()) {
             targets.add(witchTarget.getEntityPos());
+        } else if (witchTarget != null && game.getWitch().isOnReturn()) {
+            targets.add(new Point((int)(game.getWitch().getHomeX() / Tile.TILE_SIZE), (int)game.getWitch().getHomeY() / Tile.TILE_SIZE));
         }
+
 
 
 
@@ -343,9 +359,13 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public Point chooseTarget(Witch witch, Player player, Player otherPlayer) {
 
+        //if(witch.isOnReturn()) {
+        //    return new Point((int)(witch.getHomeX() / Tile.TILE_SIZE), (int)(witch.getHomeY() / Tile.TILE_SIZE));
+        //}
+
         if (player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
             witchTarget = null;
-            return new Point(0, 0);
+            return new Point((int)witch.getHomeX(), (int)witch.getHomeY());
 
         }
 
@@ -359,7 +379,8 @@ public class MovementManager implements EventHandler<InputEvent> {
                 return otherPlayer.getEntityPos();
             } else {
                 witchTarget = null;
-                return new Point(0, 0); }
+                return new Point((int)witch.getHomeX(), (int)witch.getHomeY());
+            }
 
         } else if (otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
             if (player.getChildrenCount() > 0) {
@@ -367,7 +388,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 return player.getEntityPos();
             } else {
                 witchTarget = null;
-                return new Point(0, 0);
+                return new Point((int)witch.getHomeX(), (int)witch.getHomeY());
             }
         }
 
@@ -396,32 +417,28 @@ public class MovementManager implements EventHandler<InputEvent> {
         Point start = witch.getEntityPos();
 
         //move NPC
-        if ((game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && Game.DRAMATIC) {
-            if (game.ticks % 10 == 0 /*|| game.ticks == 1 */) {
+        if ( (game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && Game.DRAMATIC) {
+            if(game.DRAMATIC) {
+                moveObject(witch);
+            }
+
+            /**
+             * call pathfinding algorithm for npc
+             */
+            if (game.ticks % 7 == 0 /*|| game.ticks == 1 */) {
 
                 Point target = chooseTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
 
-
                 boolean doPathfinding = true;
-                double deltaTargetX = Math.abs(target.x - witch.getFinalTargetPos().x);
-                double deltaTargetY = Math.abs(target.y - witch.getFinalTargetPos().y);
+                double deltaTargetX = Math.abs(target.x - witch.getFinalTargetPos().x / Tile.TILE_SIZE);
+                double deltaTargetY = Math.abs(target.y - witch.getFinalTargetPos().y / Tile.TILE_SIZE);
 
                 double deltaPosTargetX = Math.abs(witch.getxPos() - witch.getFinalTargetPos().x);
                 double deltaPosTargetY = Math.abs(witch.getxPos() - witch.getFinalTargetPos().y);
 
-
-
-
-                /*
-                if(game.ticks == 2) {
-                    doPathfinding = true;
-                }
-                else if (deltaTargetX <= 0.5 * Tile.TILE_SIZE && deltaTargetY <= 0.5 * Tile.TILE_SIZE) {
-                    doPathfinding = false;
-                } else if(  (deltaPosTargetX > game.getMap().getSize() * 0.2 && game.ticks % 20 != 0) || (deltaPosTargetY > game.getMap().getSize() * 0.2 && game.ticks % 20 != 0)   ) {
-                    doPathfinding = false;
-                }
-                 */
+                //if(witch.getTargets().size() > 0 && deltaTargetX < 2 && deltaTargetY < 2 && game.ticks % 20 != 0) {
+                //    doPathfinding = false;
+                //}
 
 
                 if (doPathfinding) {
@@ -429,19 +446,18 @@ public class MovementManager implements EventHandler<InputEvent> {
                     if (!witch.isOnReturn()) {
                         if (witch.getFinalTargetPos() != target) {
                             new PathWorker(witch, start, target, this).start();
+                            //findPath(witch, start, target);
                         }
                     } else {
                         if (witch.getFinalTargetPos() != witch.getHomePos()) {
                             new PathWorker(witch, start, witch.getHomePos(), this).start();
+                            //findPath(witch, start, target);
                         }
                     }
                 }
             }
         }
 
-        if(game.DRAMATIC) {
-            moveObject(witch);
-        }
     }
 
     /**
@@ -478,7 +494,6 @@ public class MovementManager implements EventHandler<InputEvent> {
                 moveX = -movementSize;
                 entity.setMoveDirection(MoveDirection.LEFT);
             }
-
         }
 
         /**
@@ -548,7 +563,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void moveVertical(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
         
-        if ((map.getMapSector().intersectsWithContainingItems(p) ||
+        if ((map.getMapSector().entityIntersectsWithContainingItems(entity) ||
                 game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0 ||
                 collideWithKey(entity)
         )) {
@@ -580,7 +595,8 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public void moveHorizontal(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
-        if ((map.getMapSector().intersectsWithContainingItems(p) && !entity.isNoCollision() ||
+
+        if ((map.getMapSector().entityIntersectsWithContainingItems(entity) && !entity.isNoCollision() ||
                 game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0)
                 || collideWithKey(entity)
         ) {
@@ -672,8 +688,9 @@ public class MovementManager implements EventHandler<InputEvent> {
                     Sound.playChild();
 
                     witch.setOnReturn(true);
+                    new PathWorker(witch, witch.getEntityPos(), new Point((int)(witch.getHomeX() / Tile.TILE_SIZE), (int)(witch.getHomeY() / Tile.TILE_SIZE)), this).start();
                     player.setChildrenCount(player.getChildrenCount() - 1);
-                    player.setProtectedTicks(100);
+                    player.setProtectedTicks(50);
 
                     if (game.getGameMode() == Game.GameMode.REMOTE) {
                         ((NetworkController) game.getGameController()).changeGameStateObject(witch, Event.EventType.COLLISION);
@@ -723,9 +740,9 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         return (
                 (e_x >= o_x && e_x <= o_x + o_width && e_y == o_y) ||
-                        (e_x >= o_x && e_x <= o_x + o_width && player.getEntityPosWithCurrency(+0.5).y == o_y + o_height) ||
+                        (e_x >= o_x && e_x <= o_x + o_width && player.getEntityPosWithCurrency(+ 0.5).y == o_y + o_height) ||
 
-                        (player.getEntityPosWithCurrency( -.1).x == o_x - 1 && e_y >= o_y && e_y <= o_y + o_height) ||
+                        (player.getEntityPosWithCurrency( -.33).x == o_x - 1 && e_y >= o_y && e_y <= o_y + o_height) ||
                         (player.getEntityPosWithCurrency(+.33).x == o_x + o_width && e_y >= o_y && e_y <= o_y + o_height)
 
         );

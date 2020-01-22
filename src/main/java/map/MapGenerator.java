@@ -249,7 +249,7 @@ public class MapGenerator {
                  * No witchHouse set yet, house is a bigHouse in a NormalDistrict
                  */
                 if (!witchHouseSet && house instanceof BigHouse && districtOfHouse instanceof NormalDistrict) {
-                    System.out.println("Witchhousespot in: " + districtOfHouse + " x: " + house.getX() + " y: " + house.getY());
+                    System.out.println("Witchhousespot in: " + districtOfHouse + " y: " + house.getX() + " x: " + house.getY());
                     /**
                      * remove all traces of the old bigHouse-object in game relevant collections
                      */
@@ -434,6 +434,9 @@ public class MapGenerator {
     }
 
 
+    /**
+     * create the street network with AStar algorithm
+     */
     public void createStreetNetwork() {
         ArrayList<Point> doorPoints = new ArrayList<>();
         Tile[][][] tileMap = gameMap.getMap();
@@ -501,13 +504,26 @@ public class MapGenerator {
         }
     }
 
+    /**
+     * check if current tile is replaceable by a decoration tile
+     * @param yTotal
+     * @param xTotal
+     * @return
+     */
     public boolean buildableWithDeko(int yTotal, int xTotal) {
 
-        if ((xTotal <= 1 && yTotal <= 1) || (xTotal >= 58 && yTotal >= 58)) return false;
+        //if ((xTotal <= 1 && yTotal <= 1) || (xTotal >= 58 && yTotal >= 58)) return false;
 
         return gameMap.getMap()[yTotal][xTotal][1].getTileNr() == 0;
     }
 
+    /**
+     * find the next nearest door
+     * @param doorPoints
+     * @param x
+     * @param y
+     * @return
+     */
     public Point findLowestDistance(ArrayList<Point> doorPoints, int x, int y) {
 
         double min = 1000.0;
@@ -527,6 +543,10 @@ public class MapGenerator {
         return new Point(targetX, targetY);
     }
 
+    /**
+     * draw street tiles depending on given targets
+     * @param targets
+     */
     public void drawStreet(CopyOnWriteArrayList<Point> targets) {
 
         for (Point point : targets) {
@@ -541,6 +561,12 @@ public class MapGenerator {
         }
     }
 
+    /**
+     * return the biome depending on x- and y-variable
+     * @param x
+     * @param y
+     * @return
+     */
     public int getBiomeStreetType(int x, int y) {
 
         if(x > Map.xTopLeftCentre.x && x < Map.xTopRightCentre.x && y > Map.xTopLeftCentre.y && y < Map.xBottomLeftCentre.y) {

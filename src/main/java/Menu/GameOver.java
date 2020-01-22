@@ -137,23 +137,24 @@ public class GameOver {
             // TODO: Replay von Client / Server implementieren
             else {
 
-
                 NetworkController networkController = (NetworkController)game.getGameController();
                 NetworkController.NetworkRole networkRole = networkController.getNetworkRole();
 
                 if(networkRole == NetworkController.NetworkRole.SERVER) {
                     if(!ClientEngine.restart) {
-                        GameOver.setMessage("Wait for client respond");
+                            GameOver.setMessage("Wait for client respond");
+                        }
                         ServerEngine.restart = true;
                         networkController.changeGameStateObject("", Event.EventType.REPLAY);
-                    }
+
 
                 } else if(networkRole == NetworkController.NetworkRole.CLIENT) {
                     if(!ServerEngine.restart) {
                         GameOver.setMessage("Wait for server respond ");
+                    }
                         ClientEngine.restart = true;
                         networkController.changeGameStateObject("", Event.EventType.REPLAY);
-                    }
+
                 }
 
 

@@ -24,6 +24,7 @@ public class ServerEngine extends Thread implements Network {
     private GameLauncher gameLauncher;
     public static final int PORT = 30000;
 
+
     // Thread, der den Austausch der GameStates bearbeitet
     private RequestHandler requestHandler;
     private GameState gameState;
@@ -199,10 +200,10 @@ public class ServerEngine extends Thread implements Network {
 
             while(true) {
 
+                if(ClientEngine.restart && ServerEngine.restart) return;
+
                 long start = System.currentTimeMillis();
                 Thread.sleep(10);
-
-                if(ClientEngine.restart && ServerEngine.restart) return;
 
                 // Nachricht vom Client lesen, in GameState konvertieren u. eigenen GameState aktualisieren
                 Message msg = (Message)input.readObject();
@@ -216,6 +217,7 @@ public class ServerEngine extends Thread implements Network {
                     networkController.handleEvents(gameStateReceived);
                 }
 
+
                 // Neuen GameState ermitteln u. überprüfen (sind noch eigene Events nicht verschicken wurden?)
                 GameState newGameState = new GameState(new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
                 networkController.updateGameState(newGameState);
@@ -225,6 +227,7 @@ public class ServerEngine extends Thread implements Network {
                 networkController.sendMessage(output, newGameState);
 
                 //System.out.println("Dauer einer Verbindung:" + (System.currentTimeMillis() - start));
+
             }
 
         } catch(Exception e) {
@@ -264,5 +267,20 @@ public class ServerEngine extends Thread implements Network {
     }
 
     public Game getGame() { return game; }
+
+    public RequestHandler getRequestHandler() {
+        return requestHandler;
+    }
+
+    public void setRequestHandler(RequestHandler requestHandler) {
+        this.requestHandler = requestHandler;
+    }
+
+    public void stopHandler() {
+        if(requestHandler != null) {
+            requestHandler.interrupt();
+            requestHandler = null;
+        }
+    }
 
 }
