@@ -24,7 +24,7 @@ public class Game {
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
-    public static boolean DRAMATIC = true;
+    public static boolean DRAMATIC = false;
 
     private Map map;
     private MapGenerator generator;
@@ -78,7 +78,7 @@ public class Game {
     // constructor with test map size
     // networkEngine is only used in gameMode Remote otherwise the reference is null and not used
     public Game(GameLauncher launcher, Stage stage, GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
-        Game.DRAMATIC = true;
+        Game.DRAMATIC = false;
         this.launcher = launcher;
         map = new Map(60);
         generator = new MapGenerator(map);
