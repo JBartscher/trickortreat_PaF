@@ -5,6 +5,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import main.java.Menu.GameMenu;
 import main.java.map.Tile;
 
 

@@ -2,6 +2,9 @@ package main.java.Network;
 
 import java.io.*;
 
+/**
+ * encapsulates every type of event like visiting a house or pause the game
+ */
 public class Event implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 744265289056445070L;

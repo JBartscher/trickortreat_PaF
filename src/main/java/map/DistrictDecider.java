@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * this class decides in which district a map object is placed
+ */
 public class DistrictDecider {
     final int width;
     final int height;

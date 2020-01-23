@@ -51,6 +51,7 @@ public class MainMenu {
     private Pane root = new Pane();
     private VBox menuBox = new VBox(-5);
     private Line line;
+    private MenuTitle title;
 
     private String ip;
     private Stage controlsStage;
@@ -76,6 +77,10 @@ public class MainMenu {
     private List<Pair<String, Runnable>> localMenuData;
     private List<Pair<String, Runnable>> hostMenuData;
     private List<Pair<String, Runnable>> clientMenuData;
+
+    private List<Pair<String, Runnable>> pausedMenu;
+
+    private Scene gameScene;
 
     public MainMenu(Stage stage, GameLauncher gameLauncher) {
 
@@ -179,6 +184,11 @@ public class MainMenu {
                 initMenu(menuData, 0);
 
             }));
+
+
+        pausedMenu = Arrays.asList(new Pair<String, Runnable>("Resume", () -> {
+            resumeGame(gameLauncher.getGame());
+        }));
     }
 
     private void setDefaultControls() {
@@ -425,6 +435,25 @@ public class MainMenu {
         startAnimation(menuBox);
     }
 
+    public void showPausedMenu(Scene gameScene) {
+        this.gameScene = gameScene;
+        initMenu(pausedMenu, 45);
+        //scene = new Scene(createContent());
+        title.getText().setText("");
+
+        addTitle("PAUSED");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void resumeGame(Game game) {
+        game.paused = false;
+        stage.setScene(gameScene);
+
+    }
+
+
+
     private void initStage() {
 
         controlsStage = new Stage();
@@ -442,7 +471,7 @@ public class MainMenu {
     private Parent createContent() {
 
         addBackground();
-        addTitle();
+        addTitle("Trick or Treat V. 0.5");
         loadData();
         
         addLine(lineX, lineY, lineHeight);
@@ -468,9 +497,9 @@ public class MainMenu {
         root.getChildren().add(imageView);
     }
 
-    private void addTitle() {
+    private void addTitle(String titleText) {
 
-        MenuTitle title = new MenuTitle("TRICK OR TREAT V.0.4", 48);
+        title = new MenuTitle(titleText, 48);
         title.setTranslateX(WIDTH / 2 - title.getTitleWidth() / 2);
         title.setTranslateY(HEIGHT / 4);
 

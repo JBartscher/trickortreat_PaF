@@ -7,6 +7,10 @@ import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 import main.java.sprites.SpriteSheet;
 
+/**
+ * this class encapsulates the attributes and behavior of the group of children
+ * also implements the opportunity to draw more than on sprite each player object (up to 6 children)
+ */
 public class Player extends Entity {
 
     // represents amount of children
@@ -25,6 +29,9 @@ public class Player extends Entity {
     // Nach einer Kollision mit einer Hexe ist ein Spieler eine Zeit lang geschützt, um Mehrfachkollisionen zu vermeiden
     private double protectedTicks;
 
+    /**
+     * each child has their own sprite sheet and sprite
+     */
     transient private SpriteSheet spriteSheet2;
     transient private Image sprite2;
     transient private SpriteSheet spriteSheet3;
@@ -35,7 +42,6 @@ public class Player extends Entity {
     transient private Image sprite5;
     transient private SpriteSheet spriteSheet6;
     transient private Image sprite6;
-
 
     /**
      * constructor which creates a player Object with a specific MovementType

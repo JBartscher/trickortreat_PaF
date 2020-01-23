@@ -1,10 +1,16 @@
 package main.java.Network;
 
+/**
+ * every class that has the ability to communicate within a network implements this interface
+ */
 public interface Network {
 
     public void communicate();
 
-    // wird aufgerufen auf ein NetworkEngine-Objekt durch den NetworkController - aktualisiert GameState
+    /**
+     * update the gamestate of an network engine
+     * @param gameState
+     */
     public void setGameState(GameState gameState);
 
 }

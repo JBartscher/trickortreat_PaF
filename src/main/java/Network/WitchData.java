@@ -4,6 +4,9 @@ import main.java.gameobjects.Witch;
 
 import java.awt.*;
 
+/**
+ * this class contains all witch data and is used in network games
+ */
 public class WitchData extends EntityData {
 
     private double homeX;
@@ -26,33 +29,16 @@ public class WitchData extends EntityData {
         return homeX;
     }
 
-    public void setHomeX(double homeX) {
-        this.homeX = homeX;
-    }
-
     public double getHomeY() {
         return homeY;
-    }
-
-    public void setHomeY(double homeY) {
-        this.homeY = homeY;
     }
 
     public boolean isOnReturn() {
         return onReturn;
     }
 
-    public void setOnReturn(boolean onReturn) {
-        this.onReturn = onReturn;
-    }
-
     public Point getFinalTargetPos() {
         return finalTargetPos;
     }
-
-    public void setFinalTargetPos(Point finalTargetPos) {
-        this.finalTargetPos = finalTargetPos;
-    }
-
 
 }

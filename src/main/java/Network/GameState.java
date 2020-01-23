@@ -2,6 +2,10 @@ package main.java.Network;
 
 import java.io.Serializable;
 
+/**
+ * a Gamestate is a snapshot of the current game data and is used to synchronize between two network games
+ * also the class needs to implement the Interface Serializable and Cloneable to ensure deep copies of the current game data
+ */
 public class GameState implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1287629170864898744L;
@@ -18,6 +22,9 @@ public class GameState implements Serializable, Cloneable {
 
     protected int gameTime;
 
+    /**
+     * set the gamestate depending on current game data (positions, move directions ...
+     */
     public GameState(PlayerData playerData, PlayerData otherPlayerData,WitchData witchData, CooperData cooperData, Event event, int gameTime) {
         this.playerData  = playerData;
         this.otherPlayerData = otherPlayerData;

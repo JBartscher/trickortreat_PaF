@@ -170,13 +170,17 @@ public class AStar {
                             addToOpenNodes(neighbour);
                     }
                 }
-
             }
         }
 
         return null;
     }
 
+    /**
+     * create a node map to find a path between two doors
+     * @param tileMap
+     * @param ignoreObstacles
+     */
     public void fillMapForStreetNetwork(Tile[][][] tileMap, boolean ignoreObstacles) {
 
         for(int y = 0; y < map.length; y++){
@@ -195,12 +199,16 @@ public class AStar {
         }
     }
 
+    /**
+     * create a node Map to determine a path for the npc to hunt player objects
+     * @param tileMap
+     * @param ignoreObstacles
+     */
     public void fillMap(Tile[][][] tileMap, boolean ignoreObstacles) {
 
         //System.out.println("Fill NodeMap");
         for(int y = 0; y < map.length; y++){
             for(int x = 0; x < map[y].length; x++){
-
                 Node.Type type;
 
                 if( tileMap[y][x][1].getTileNr() > 26 || tileMap[y][x][2].getTileNr() > 26 || tileMap[y][x][1].getTileNr() < 0 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
@@ -215,5 +223,13 @@ public class AStar {
             }
             //System.out.println("");
         }
+    }
+
+    public Node[][] getMap() {
+        return map;
+    }
+
+    public void setMap(Node[][] map) {
+        this.map = map;
     }
 }

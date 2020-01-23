@@ -14,6 +14,9 @@ import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * this class is responsible to generate the game map and biomes
+ */
 public class MapGenerator {
 
     private static final Random r = new Random();
@@ -331,8 +334,10 @@ public class MapGenerator {
             int houseHeight = currentMapObject.getHeight();
             for (int x = 0; x < houseWidth; x++) {
                 for (int y = 0; y < houseHeight; y++) {
-                    if (x == 0 && currentMapObject instanceof House)
+                    if (x == 0 && currentMapObject instanceof House) {
                         gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][2] = currentMapObject.getTileByTileIndex(x, y);
+                        gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][1] = currentMapObject.getTileByTileIndex(x, y);
+                    }
                     else
                         gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][1] = currentMapObject.getTileByTileIndex(x, y);
                 }

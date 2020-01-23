@@ -6,6 +6,9 @@ import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
+/**
+ * represents the house of the npc
+ */
 public class GingerbreadHouse extends House implements Singleton {
 
     /**

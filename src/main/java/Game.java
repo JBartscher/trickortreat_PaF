@@ -2,6 +2,7 @@ package main.java;
 
 import javafx.stage.Stage;
 import main.java.Menu.GameMenu;
+import main.java.Menu.GameOver;
 import main.java.Network.GameStateInit;
 import main.java.Network.Network;
 import main.java.Network.NetworkController;
@@ -27,7 +28,7 @@ public class Game {
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
-    public static boolean DRAMATIC = true;
+    public static boolean DRAMATIC = false;
 
     private Map map;
     private MapGenerator generator;
@@ -35,12 +36,9 @@ public class Game {
     public Player player;
     public Player otherPlayer;
 
-    
     /**
-     * repräsentiert alle Objekte, die von EINER Spielinstanz verwaltet werde
-     * LOKAL = Ein Spiel verwaltet 2 Spieler => Liste enthält Spieler 1 und Spieler 2
-     * REMOTE = Jedes Spiel kümmert sich nur um seine EIGENEN Spieler - Liste enthält 1 Objekt
-     *
+     * contains a list of player which get rendered on this computer
+     * in remote games there is only 1 player in the list - in locale : 2
      */
 
     private CopyOnWriteArrayList<Player> listOfPlayers = new CopyOnWriteArrayList<>();
@@ -52,7 +50,7 @@ public class Game {
      * is used to determine if collisions between entities occurred
      */
     private CopyOnWriteArrayList<Entity> listOfAllEntities = new CopyOnWriteArrayList<>();
-
+    private Stage stage;
     private Window window;
 
     private GameCamera gameCamera;
@@ -84,7 +82,7 @@ public class Game {
      *  networkEngine is only used in gameMode Remote otherwise the reference is null and not used
       */
     public Game(GameLauncher launcher, Stage stage, GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
-        Game.DRAMATIC = true;
+        Game.DRAMATIC = false;
         this.launcher = launcher;
         map = new Map(60);
         generator = new MapGenerator(map);
@@ -92,9 +90,9 @@ public class Game {
         this.gameMode = gameMode;
 
         if(gameMode == GameMode.REMOTE) {
-            gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.SERVER);
+            gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.SERVER, launcher);
         } else {
-            gameController = new GameController(this);
+            gameController = new GameController(this, launcher);
         }
 
         /**
@@ -110,9 +108,10 @@ public class Game {
      * this constructor is used when playing in a network game as a client
      * the client gets a gamestate from the server and use this to create their own game
      */
-    public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType) {
+    public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType, GameLauncher gameLauncher) {
         Game.DRAMATIC = false;
-        this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT);
+        this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT, gameLauncher);
+        this.launcher = gameLauncher;
         ((NetworkController)gameController).updateGameState(gameState);
         this.gameMode = GameMode.REMOTE;
 
@@ -135,8 +134,7 @@ public class Game {
 
         this.listOfPlayers.add(player);
 
-        this.listOfAllEntities.addAll(Arrays.asList(player, otherPlayer, /*aliceCooper, */witch));
-
+        this.listOfAllEntities.addAll(Arrays.asList(player, otherPlayer, witch));
         this.map = gameState.getMap();
 
         gameController.initGUIandSound(stage);
@@ -147,14 +145,15 @@ public class Game {
      * update game data like game camera and animation images
      */
     public void update() {
-
         if(paused) return;
         checkGameOver();
         updateProtection();
-        movementManager.moveAllEntites(gameController, listOfPlayers, witch);
-        if(gameMode == GameMode.REMOTE) {
+        movementManager.moveAllEntities(gameController, listOfPlayers, witch);
 
-            // Das Animationsbild der anderen Entität wird gesetzt - true setzt für den Aufruf aus einem Netzwerk-Kontext
+        /**
+         * show animation image of other entity
+         */
+        if(gameMode == GameMode.REMOTE) {
             otherPlayer.setEntityImage(true);
         }
 
@@ -181,12 +180,10 @@ public class Game {
     public void updateProtection() {
 
         if(player.getChildrenCount() <= 0) {
-            //listOfPlayers.remove(player);
             listOfAllEntities.remove(player);
         }
 
         if(otherPlayer.getChildrenCount() <= 0) {
-            //listOfPlayers.remove(otherPlayer);
             listOfAllEntities.remove(otherPlayer);
         }
 
@@ -283,6 +280,18 @@ public class Game {
 
     public GameController getGameController() {
         return gameController;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public GameLauncher getLauncher() {
+        return launcher;
     }
 
 }
