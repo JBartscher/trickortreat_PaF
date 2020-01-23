@@ -697,6 +697,10 @@ public class MovementManager implements EventHandler<InputEvent> {
                     }
                 }
 
+                if(e instanceof Witch && !game.DRAMATIC) {
+                    size = 0;
+                }
+
                 if (directionX) {
                     entity.setxPos(entity.getxPos() - size);
                 } else {

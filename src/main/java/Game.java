@@ -15,16 +15,19 @@ import main.java.map.MapGenerator;
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * this class represents the game and get called by the super controller "gameLoop" within the GameLauncher-Class
+ * all model, view and controllers are encapsulated within the Game-Class
+ */
 public class Game {
 
     private final static Configuration<Object> config = new Configuration<Object>();
-
     public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
     public final static int TIME = ((Number) config.getParam("time")).intValue();
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
-    public static boolean DRAMATIC = false;
+    public static boolean DRAMATIC = true;
 
     private Map map;
     private MapGenerator generator;
@@ -41,12 +44,13 @@ public class Game {
      */
 
     private CopyOnWriteArrayList<Player> listOfPlayers = new CopyOnWriteArrayList<>();
-
     private Witch witch;
     private AliceCooper aliceCooper;
 
-    // enthält die Liste ALLER Entitäten : Spieler 1 + Spieler 2 + Hexe , zukünftig noch Alice Cooper
-    // wichtig zur Kollisionserkennung
+    /**
+     * contains a list of all entities: player1, player2 and the NPC
+     * is used to determine if collisions between entities occurred
+     */
     private CopyOnWriteArrayList<Entity> listOfAllEntities = new CopyOnWriteArrayList<>();
 
     private Window window;
@@ -59,26 +63,28 @@ public class Game {
 
     private GameLauncher launcher;
 
-    // Eine Iteration der GameLoop
+    /**
+     * each iteration of the gameLoop is one tick (currently 20 ms)
+     * a tick is used to give effects or events a certain amount of time
+     */
     public int ticks = 0;
     public boolean paused;
 
-    // Network and Multiplayer
-
-    // decide between LOCAL and REMOTE
+    /**
+     * network and multiplayer
+     */
     public enum GameMode {
         LOCAL, REMOTE
     }
 
     public GameMode gameMode;
-
-    //public NetworkController networkController;
     public GameController gameController;
 
-    // constructor with test map size
-    // networkEngine is only used in gameMode Remote otherwise the reference is null and not used
+    /** main constructor when playing locale or host a game
+     *  networkEngine is only used in gameMode Remote otherwise the reference is null and not used
+      */
     public Game(GameLauncher launcher, Stage stage, GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
-        Game.DRAMATIC = false;
+        Game.DRAMATIC = true;
         this.launcher = launcher;
         map = new Map(60);
         generator = new MapGenerator(map);
@@ -91,14 +97,19 @@ public class Game {
             gameController = new GameController(this);
         }
 
-        // instanziert die Entitäten, setzt die Steuerung und ggf. Netzwerk
-        //initPlayerAndNetwork(networkEngine, movementTypePlayer1, movementTypePlayer2);
+        /**
+         * initialize the data of entitites, graphics and sound
+         * also add observers to observables
+         */
         gameController.initEntities(movementTypePlayer1, movementTypePlayer2);
         gameController.initGUIandSound(stage);
         gameController.initObservers();
     }
 
-    // get GameState from Server - get only called by CLIENT
+    /**
+     * this constructor is used when playing in a network game as a client
+     * the client gets a gamestate from the server and use this to create their own game
+     */
     public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType) {
         Game.DRAMATIC = false;
         this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT);
@@ -111,6 +122,9 @@ public class Game {
         this.player.setGameStateData(gameState.getPlayerData());
         this.otherPlayer.setGameStateData(gameState.getOtherPlayerData());
 
+        /**
+         * add observers
+         */
         player.addObserver(GameMenu.getInstance().getSecondPlayerObserver());
         otherPlayer.addObserver(GameMenu.getInstance().getFirstPlayerObserver());
 
@@ -129,11 +143,12 @@ public class Game {
         gameController.initObservers();
     }
 
+    /**
+     * update game data like game camera and animation images
+     */
     public void update() {
 
         if(paused) return;
-
-
         checkGameOver();
         updateProtection();
         movementManager.moveAllEntites(gameController, listOfPlayers, witch);
@@ -149,6 +164,9 @@ public class Game {
         }
     }
 
+    /**
+     * check if both player have no children left -> show GameOver if that is the case
+     */
     public void checkGameOver() {
 
         if(player.getChildrenCount() == 0 && otherPlayer.getChildrenCount() == 0) {
@@ -156,6 +174,10 @@ public class Game {
         }
     }
 
+    /**
+     * after a collision with the witch or when entering buildings, the player is protected for a certain amount of time
+     * in this time period no collisions or enterings are possible
+     */
     public void updateProtection() {
 
         if(player.getChildrenCount() <= 0) {
@@ -175,6 +197,10 @@ public class Game {
         }
     }
 
+    /**
+     * Getter and Setter-methods
+     * @return
+     */
     public Player getPlayer() { return player; }
 
     public Player getOtherPlayer() { return otherPlayer; }
