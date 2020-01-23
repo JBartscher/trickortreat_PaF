@@ -113,10 +113,14 @@ public class GingerbreadHouse extends House implements Singleton {
     @Override
     public void repaintAfterVisit() {
         if (hasChild) {
-            GingerbreadHouse.getInstance().tileset = district.getGingerbreadHouseVisitedTileset();
+            GingerbreadHouse.getInstance().tileset = TileCollection.getGingerbreadHouseVisitedTiles();
         } else {
-            GingerbreadHouse.getInstance().tileset = district.getGingerbreadHouseUnvisitedTileset();
+            GingerbreadHouse.getInstance().tileset = TileCollection.getGingerbreadHouseUnvisitedTiles();
         }
+    }
+
+    public static void setInstance(GingerbreadHouse instance) {
+        GingerbreadHouse.instance = instance;
     }
 
 }

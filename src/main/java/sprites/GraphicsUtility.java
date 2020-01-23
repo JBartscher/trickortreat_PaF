@@ -782,7 +782,7 @@ public class GraphicsUtility {
     public static void initImages() {
         //candyImage = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
 
-        candyImage = new Image("candy.png");
+        candyImage = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
 
         keyImage = new Image(GraphicsUtility.class.getResourceAsStream("key.png"));
         witchDoor = new Image(GraphicsUtility.class.getResourceAsStream("witch_door.png"));

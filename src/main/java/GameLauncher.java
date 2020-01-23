@@ -49,6 +49,7 @@ public class GameLauncher extends Application {
      * assign the gameController created by game class - show the GUI and start game Loop of super controller (Game-Controller)
      */
     private void startGameLoop() {
+        Sound.playMusic();
         this.gameController = game.getGameController();
         game.getWindow().showGameGUI();
         gameController.startGameLoop();

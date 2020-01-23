@@ -10,18 +10,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import main.java.Game;
-import main.java.GameLauncher;
+import main.java.*;
 import main.java.Network.ClientEngine;
 import main.java.Network.Event;
 import main.java.Network.NetworkController;
 import main.java.Network.ServerEngine;
-import main.java.Sound;
-import main.java.Window;
 import main.java.gameobjects.Player;
 import main.java.sprites.GraphicsUtility;
 
-public class GameOver {
+public class GameOver extends Observable {
 
 
     private Game game;
@@ -40,6 +37,7 @@ public class GameOver {
         this.gameLauncher = gameLauncher;
         this.stage = stage;
         this.mainMenu = mainMenu;
+        addObserver(GameMenu.getInstance().getResetScoreObserver());
     }
 
     public void showGameOver() {
@@ -48,9 +46,9 @@ public class GameOver {
         //root.setAlignment(Pos.CENTER);
         Scene scene = new Scene(root, Window.WIDTH, Window.HEIGHT);
 
-
         Player player1;
         Player player2;
+        notifyObservers(null);
 
         // Obwohl der Client in Wirklichkeit Spieler 2 ist, arbeitet die GameLogik so, dass der eigene Spieler immer Spieler 1 ist
         // Daher werden, sofern GameOVER als Client aufgerufen wird, Player 1 und Player 2 vertauscht
@@ -59,23 +57,24 @@ public class GameOver {
         if(game.getGameMode() == Game.GameMode.LOCAL) {
             player1 = game.getPlayer();
             player2 = game.getOtherPlayer();
-            new HighScoreGUI().checkScore(new int[]{player1.getCandy(), player2.getCandy()}, 0, false);
+            new HighScoreGUI().checkScore(new int[]{player1.getCandy(), player2.getCandy()}, 0, true);
         } else {
             if(game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER ) {
                 player1 = game.getPlayer();
                 player2 = game.getOtherPlayer();
-                new HighScoreGUI().checkScore(new int[]{player1.getCandy()}, 0, false);
+                new HighScoreGUI().checkScore(new int[]{player1.getCandy()}, 0, true);
 
             } else {
                 player1 = game.getOtherPlayer();
                 player2 = game.getPlayer();
-                new HighScoreGUI().checkScore(new int[]{player2.getCandy()}, 0, false);
+                new HighScoreGUI().checkScore(new int[]{player2.getCandy()}, 0, true);
             }
         }
 
         Sound.playGameover();
 
-        ImageView imageView = new ImageView(new Image(MainMenu.class.getResource("main_menu_converted.png").toExternalForm()));
+        ImageView imageView = new ImageView(new Image(MainMenu.class.getResource("background2.png").toExternalForm()));
+
         imageView.setOpacity(0.7);
         ColorAdjust colorAdjust = new ColorAdjust();
         colorAdjust.setBrightness(-0.8);
@@ -131,6 +130,8 @@ public class GameOver {
 
         buttonRestart.setOnAction( (e) -> {
 
+            Sound.playMenu();
+
             if(game.gameMode == Game.GameMode.LOCAL) {
                 gameLauncher.startGame(game.gameMode, null, game.getPlayer().getMovementType(), game.getOtherPlayer().getMovementType());
             }
@@ -162,16 +163,23 @@ public class GameOver {
         });
 
         buttonMainMenu.setOnAction( (e) -> {
+            Sound.playMenu();
             mainMenu.showMainMenu();
         });
 
-        buttonMainMenu.setTranslateX(Window.WIDTH /  2 - 130);
-        buttonMainMenu.setStyle("-fx-font: 24 arial;");
+        buttonMainMenu.setTranslateX(Window.WIDTH /  2 - 150);
+        buttonMainMenu.setStyle("-fx-font: 28 arial;-fx-padding: 10; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0; -fx-border-radius: 10px;  -fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
         buttonMainMenu.setTranslateY(600);
 
-        buttonRestart.setTranslateX(Window.WIDTH / 2 - 130);
-        buttonRestart.setStyle("-fx-font: 24 arial;");
+        buttonRestart.setTranslateX(Window.WIDTH / 2 - 150);
+        buttonRestart.setStyle("-fx-font: 28 arial;-fx-padding: 10; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0; -fx-border-radius: 10px; -fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
         buttonRestart.setTranslateY(500);
+
+
+
+        //buttonMainMenu.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0; -fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
+        //buttonRestart.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0; -fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
+
 
         root.getChildren().addAll(imageView, gameOverTitle, imageViewPlayer1, imageViewPlayer2, textPlayer1, textPlayer2, imageViewCandy1, imageViewCandy2, textCandyPlayer1, textCandyPlayer2, buttonMainMenu, buttonRestart);
         stage.setScene(scene);

@@ -28,8 +28,6 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.lang.Math.round;
 
@@ -174,12 +172,13 @@ public class MovementManager implements EventHandler<InputEvent> {
 
             game.paused = paused;
             if (game.gameMode == Game.GameMode.REMOTE) {
-                    ((NetworkController) game.getGameController()).changeGameStateObject(pausedEvent, eventType);
+                System.out.println("EVENT VERSCHICKEN!");
+                ((NetworkController) game.getGameController()).changeGameStateObject(pausedEvent, eventType);
             }
                 game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
 
             config.setParam("paused", game.paused);
-            if (!(Boolean)config.getParam("muted")) Sound.muteSound();
+            //if (!(Boolean)config.getParam("muted")) Sound.muteSound();
             GameMenu.setRightButtons();
 
             return;
@@ -356,7 +355,7 @@ public class MovementManager implements EventHandler<InputEvent> {
          */
         aStar.setStartPosition(start);
         aStar.setTargetPosition(target);
-        //aStar.fillMap(game.getMap().getMap(), false);
+        aStar.fillMap(game.getMap().getMap(), false);
 
         ArrayList<Node> nodes = aStar.executeAStar();
         CopyOnWriteArrayList<Point> targets = entity.getTargets();

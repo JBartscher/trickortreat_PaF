@@ -3,17 +3,13 @@ package main.java.Menu;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.beans.value.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Toggle;
+import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -29,6 +25,8 @@ import javafx.util.Pair;
 import main.java.*;
 import main.java.Game.GameMode;
 import main.java.Network.ClientEngine;
+import main.java.Network.Event;
+import main.java.Network.NetworkController;
 import main.java.Network.ServerEngine;
 
 import java.util.Arrays;
@@ -188,7 +186,23 @@ public class MainMenu {
 
         pausedMenu = Arrays.asList(new Pair<String, Runnable>("Resume", () -> {
             resumeGame(gameLauncher.getGame());
-        }));
+
+            if(gameLauncher.getGame().gameMode == GameMode.REMOTE) {
+                NetworkController networkController = (NetworkController)gameLauncher.getGame().getGameController();
+                networkController.changeGameStateObject("", Event.EventType.UNPAUSED);
+
+            }
+
+        }), new Pair<String, Runnable>("Back to Main Menu", () -> {
+
+                    Sound.playMenu();
+                    root.setOpacity(1.0);
+                    title.getText().setText("Game Menu");
+                    initMenu(menuData, 0);
+
+        }), new Pair<String, Runnable>("Exit Game", Platform::exit)
+
+        );
     }
 
     private void setDefaultControls() {
@@ -440,6 +454,7 @@ public class MainMenu {
         initMenu(pausedMenu, 45);
         //scene = new Scene(createContent());
         title.getText().setText("");
+        root.setOpacity(0.7);
 
         addTitle("PAUSED");
         stage.setScene(scene);
@@ -484,7 +499,7 @@ public class MainMenu {
 
     private void addBackground() {
 
-        ImageView imageView = new ImageView(new Image(getClass().getResource("main_menu_converted.png").toExternalForm()));
+        ImageView imageView = new ImageView(new Image(getClass().getResource("background2.png").toExternalForm()));
         imageView.setOpacity(0.9);
 
         ColorAdjust colorAdjust = new ColorAdjust();

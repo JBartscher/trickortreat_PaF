@@ -6,7 +6,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import main.java.Menu.GameMenu;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
@@ -77,6 +76,7 @@ public class MapRenderer {
             } else {
                 otherPlayer = game.getPlayer();
                 middleTile = new Rectangle(Game.WIDTH, Window.HEIGHT * 0.1, 2 * Tile.TILE_SIZE, Window.HEIGHT);
+                gc.setFill(Color.rgb(33, 33, 33));
                 gc.fillRect(Game.WIDTH, Window.HEIGHT * 0.1, 2 * Tile.TILE_SIZE, Window.HEIGHT);
             }
 

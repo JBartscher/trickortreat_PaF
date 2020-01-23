@@ -98,6 +98,7 @@ public class NetworkController extends GameController {
         /**
          * set event and set transmitting to false (send it with the next iteration)
          */
+
         gameState.setEvent(new Event(o, type));
         gameState.setEventTransmitted(false);
 
@@ -117,6 +118,7 @@ public class NetworkController extends GameController {
 
         if(!gameState.isEventTransmitted()) {
             type = Message.Type.EVENT;
+            System.out.println("Inner: OBJEKT:" + gameState.getEvent().getObject());
         } else {
             type = Message.Type.GAMESTATE;
         }
@@ -189,6 +191,7 @@ public class NetworkController extends GameController {
                 });
                 break;
             case UNPAUSED:
+                System.out.println("UNPAUSED ERHALTEN!!");
                 game.paused = false;
                 config.setParam("paused", game.paused);
                 /**
@@ -299,6 +302,7 @@ public class NetworkController extends GameController {
     @Override
     public void update(Observable o, Object arg) {
         super.update(o, arg);
+
 
         Event.EventType eventType;
 
