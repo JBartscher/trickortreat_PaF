@@ -10,6 +10,9 @@ import main.java.MovementManager.MovementType;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * this class implements the Network interface and has the ability to communicate with a server
+ */
 public class ClientEngine extends Thread implements Network {
 
     private GameLauncher gameLauncher;
@@ -39,6 +42,9 @@ public class ClientEngine extends Thread implements Network {
         start();
     }
 
+    /**
+     * thread task: join the server, receive the gamestate and start the communication with the server
+     */
     public void run() {
 
         joinServer();
@@ -49,16 +55,24 @@ public class ClientEngine extends Thread implements Network {
             index ++;
             if(index % 10000000 == 0) System.out.println("Warten");
         }
-
         communicate();
-        System.out.println("AUFRUF CLIENT REPLAY");
+
+        /**
+         * if both players want to play again then init a rematch
+         */
         if(ServerEngine.restart && ClientEngine.restart) initReplay();
     }
 
+    /**
+     * join the server based on the IP and PORT
+     */
     public void joinServer() {
         try {
             socket = new Socket(ip, ServerEngine.PORT);
 
+            /**
+             * use the decorator pattern to ensure low latency with puffer
+             */
             output = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
             output.flush();
             input = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -69,6 +83,9 @@ public class ClientEngine extends Thread implements Network {
         }
     }
 
+    /**
+     * read the first gamestate from puffer and create a game with the received data
+     */
     public void receiveFirstGameState() {
 
         try {
@@ -82,11 +99,8 @@ public class ClientEngine extends Thread implements Network {
             this.gameState = gameStateReceived;
             Platform.runLater( () -> {
                 System.out.println(gameStateReceived);
-                game = new Game(this, gameStateReceived, stage, movementType);
+                game = new Game(this, gameStateReceived, stage, movementType, gameLauncher);
                 networkController = (NetworkController)game.getGameController();
-
-
-                //TODO: beim Client ist die Map-Instance nicht gesetzt, führt zu Problemen beim colliden mit Türen, daher diese unschöne Lösung
                 game.getMap().setInstance(game.getMap());
 
                 gameLauncher.startGame(game);
@@ -103,8 +117,10 @@ public class ClientEngine extends Thread implements Network {
         }
     }
 
+    /**
+     * init a replay when both players agreed
+     */
     public void initReplay() {
-        System.out.println("AUFRUF CLIENT REPLAY");
         ready = false;
         ClientEngine.restart = false;
         ServerEngine.restart = false;
@@ -122,6 +138,9 @@ public class ClientEngine extends Thread implements Network {
         if(ServerEngine.restart && ClientEngine.restart) initReplay();
     }
 
+    /**
+     * this method controls the communication between server and client
+     */
     @Override
     public void communicate() {
         System.out.println("Starte Kommunikation vom Client zum Server!");
@@ -129,25 +148,26 @@ public class ClientEngine extends Thread implements Network {
 
             while(true) {
 
-
-                // GameState über ObjectOutputStream an den Server verschicken
+                /**
+                 * send the message via sockets to the server
+                 */
                 networkController.sendMessage(output, gameState);
 
                 if(ClientEngine.restart && ServerEngine.restart) { return; }
 
-                // GameState vom Server lesen
+                /**
+                 * read the gamestate from server and update the own one
+                 */
                 Message msg = (Message)input.readObject();
                 GameState gameStateReceived = msg.getGameState();
-
-                // Eigene Daten anhand des erhaltenen GameStates aktualisieren
                 updateClientData(gameStateReceived);
 
-                // Erhaltenen GameState auf Events überprüfen und ggf. behandeln
+                /**
+                 * handle incoming events and create the new gamestate
+                 */
                 if(msg.getMessageType() == Message.Type.EVENT) {
                     networkController.handleEvents(gameStateReceived);
                 }
-
-                // neuen GameState ermitteln, im Controller updaten und alles delegieren
                 networkController.createAndUpdateGameState();
             }
 
@@ -157,7 +177,10 @@ public class ClientEngine extends Thread implements Network {
         }
     }
 
-    // Eigene Daten an den neuen GameState anpassen
+    /**
+     * update data depending on the received gamestate
+     * @param gameStateReceived
+     */
     public void updateClientData(GameState gameStateReceived) {
         game.setGameTime(gameStateReceived.getGameTime());
         game.getOtherPlayer().setGameStateData(gameStateReceived.getPlayerData());
@@ -168,12 +191,6 @@ public class ClientEngine extends Thread implements Network {
         this.gameState = gameState;
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
-
     public Game getGame() { return game; }
-
-
 
 }

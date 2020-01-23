@@ -11,25 +11,38 @@ import main.java.sprites.GraphicsUtility;
 
 public class GameMenu implements Singleton {
 
+    private final static Configuration<Object> config = new Configuration<Object>();
+
     /**
      * Menu components
      */
     private static final Image backgroundImage = new Image(GameMenu.class.getResourceAsStream("headline.png"));
+    private static final Image imageCandy = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
+
+    public static Image imagePaused = new Image(GraphicsUtility.class.getResourceAsStream("paused2.png"));
+    public static Image imagePlay = new Image(GraphicsUtility.class.getResourceAsStream("play2.png"));
+    public static Image imageMuted = new Image(GraphicsUtility.class.getResourceAsStream("muted2.png"));
+    public static Image imageUnmuted = new Image(GraphicsUtility.class.getResourceAsStream("unmuted2.png"));
+
+    public static ImageView imageViewPaused = new ImageView(imagePaused);
+    public static ImageView imageViewSound = new ImageView(imageUnmuted);
+
+
     /**
      * Singleton instance
      */
     private static GameMenu instance;
     private static ImageView backgroundImageView = new ImageView(backgroundImage);
-    private static ImageView imageCandyPlayer = new ImageView(GraphicsUtility.getCandyImage());
-    private static ImageView imageCandyOtherPlayer = new ImageView(GraphicsUtility.getCandyImage());
+    private static ImageView imageCandyPlayer = new ImageView(imageCandy);
+    private static ImageView imageCandyOtherPlayer = new ImageView(imageCandy);
+
+
     private final String TEXT_STYLE = "-fx-font: 32 arial;";
     private final String TEXT_STYLE_SMALL = "-fx-font: 16 arial;";
     private Text candyTextPlayer = new Text("Spieler 1 - Candy: " + 0);
     private Text candyTextOtherPlayer = new Text("Spieler 2 - Candy: " + 0);
     private Text timerText = new Text("");
     private Text textSound = new Text("MUTE SOUND with KEY M");
-
-    private static ImageView imagePaused = new ImageView(GraphicsUtility.getPausedImage());
 
     /**
      * Observers
@@ -43,8 +56,6 @@ public class GameMenu implements Singleton {
      * Initializes all menu components (size, color, font, placing, etc.).
      */
     private GameMenu() {
-
-
 
         // Timer Text
         timerText.setStyle(TEXT_STYLE_SMALL);
@@ -72,8 +83,17 @@ public class GameMenu implements Singleton {
 
         // Lolipop Icon Player
         GraphicsUtility.setImageProperties(imageCandyPlayer, Window.WIDTH / 3 + 40, 22);
+        imageCandyPlayer.setScaleX(1.5);
+        imageCandyPlayer.setScaleY(1.5);
+
         // Lolipop Icon OtherPlayer
         GraphicsUtility.setImageProperties(imageCandyOtherPlayer, 1120, 22);
+        imageCandyOtherPlayer.setScaleX(1.5);
+        imageCandyOtherPlayer.setScaleY(1.5);
+
+        GraphicsUtility.setImageProperties(imageViewSound, 70, 8);
+        GraphicsUtility.setImageProperties(imageViewPaused, 0, 8);
+
     }
 
     /**
@@ -84,7 +104,6 @@ public class GameMenu implements Singleton {
     public static GameMenu getInstance() {
         if (GameMenu.instance == null)
             GameMenu.instance = new GameMenu();
-
         return GameMenu.instance;
     }
 
@@ -94,7 +113,31 @@ public class GameMenu implements Singleton {
      * @param root the scene which will be drawn
      */
     public void addGameMenuToScene(Group root) {
-        root.getChildren().addAll(backgroundImageView, candyTextPlayer, candyTextOtherPlayer, timerText, textSound, imageCandyPlayer, imageCandyOtherPlayer);
+        setRightButtons();
+        root.getChildren().addAll(backgroundImageView, candyTextPlayer, candyTextOtherPlayer, timerText, textSound, imageCandyPlayer, imageCandyOtherPlayer, imageViewPaused, imageViewSound);
+    }
+
+    public static void setRightButtons() {
+
+        boolean muted = ((Boolean) config.getParam("muted")).booleanValue();
+        boolean paused = ((Boolean) config.getParam("paused")).booleanValue();
+
+        if(!muted) {
+            GameMenu.imageViewSound = new ImageView(imageMuted);
+            GraphicsUtility.setImageProperties(imageViewSound, 70, 8);
+        } else {
+            GameMenu.imageViewSound = new ImageView(imageUnmuted);
+            GraphicsUtility.setImageProperties(imageViewSound, 70, 8);
+        }
+
+        if(paused) {
+            GameMenu.imageViewPaused = new ImageView(imagePaused);
+            GraphicsUtility.setImageProperties(imageViewPaused, 0, 8);
+        } else {
+            GameMenu.imageViewPaused = new ImageView(imagePlay);
+            GraphicsUtility.setImageProperties(imageViewPaused, 0, 8);
+        }
+
     }
 
     /**

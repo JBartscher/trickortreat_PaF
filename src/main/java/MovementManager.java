@@ -5,6 +5,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import main.java.Menu.GameMenu;
 import main.java.Network.Event;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.AliceCooper;
@@ -27,6 +28,8 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.lang.Math.round;
 
@@ -45,11 +48,63 @@ public class MovementManager implements EventHandler<InputEvent> {
     private Game game;
     private AStar aStar;
 
+    private PathWorker pathWorker;
+
     private final static Configuration<Object> config = new Configuration<Object>();
 
     /**
-     * checks if witch reached the interim goal and : if so, then set next interim goal
-     *
+     * define the 3 types of movement in a enumeration
+     */
+    public enum MovementType implements Serializable {
+        KEYBOARD_AWSD, KEYBOARD_ARROW, MOUSE
+    }
+
+    // represents the move directions to animate the entities
+    public enum MoveDirection implements Serializable {
+        DOWN, LEFT, RIGHT, UP
+    }
+
+    /**
+     * constructor of MovementManager class
+     * register the player for a selected movement type
+     * @param game
+     * @param player1
+     * @param player2
+     */
+    public MovementManager(Game game, Player player1, Player player2) {
+        this.game = game;
+        this.map = game.getMap();
+        this.player1 = player1;
+        this.player2 = player2;
+
+        // register the player to movement type
+        registerPlayerInputs(player1);
+        registerPlayerInputs(player2);
+
+        // init Pathfinding
+        this.aStar = new AStar(game.getMap());
+        this.pathWorker = new PathWorker(game, this);
+
+    }
+
+    /**
+     * register the movement of a player object
+     * @param player
+     */
+    public void registerPlayerInputs(Player player) {
+        if (player.movementType == MovementType.KEYBOARD_AWSD) {
+            inputAWSD = player;
+
+        } else if (player.movementType == MovementType.KEYBOARD_ARROW) {
+            inputARROW = player;
+
+        } else if (player.movementType == MovementType.MOUSE) {
+            inputMOUSE = player;
+        }
+    }
+
+    /**
+     * check if the witch reached a interim goal. If that is the case then set next intermin goal as her main target
      * @param entity
      * @param movementSize
      */
@@ -59,13 +114,14 @@ public class MovementManager implements EventHandler<InputEvent> {
          //   System.out.println(game.getWitch().isOnReturn() + " Hexe-Ziel: " + game.getWitch().getFinalTargetPos() + " - Pos: " + game.getWitch().getEntityPos() + " -  Ziele: " + game.getWitch().getTargets());
 
         /**
-         * check if witch is near the door of her home
+         * check if the witch reached the door of her home - set return to false if that is the case
          */
         if (entity instanceof Witch) {
             Witch witch = (Witch) entity;
             if (Math.abs(witch.getxPos() - witch.getHomeX()) < 0.2 * Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) < 0.2 * Tile.TILE_SIZE && witch.isOnReturn()) {
                 //if ( witch.getFinalTargetPos().x == witch.getEntityPos().x && witch.getFinalTargetPos().y == witch.getEntityPos().y && witch.isOnReturn() ) {
                 witch.setOnReturn(false);
+                return;
             }
         }
 
@@ -90,43 +146,8 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
-    // represents the move directions to animate the entities
-    public enum MoveDirection implements Serializable {
-        DOWN, LEFT, RIGHT, UP
-    }
-
-    // Lokaler Multiplayer
-    public MovementManager(Game game, Player player1, Player player2) {
-        this.game = game;
-        this.map = game.getMap();
-        this.player1 = player1;
-        this.player2 = player2;
-
-        // register the player to movement strategies
-        registerPlayerInputs(player1);
-        registerPlayerInputs(player2);
-
-        // init Pathfinding
-        this.aStar = new AStar(game.getMap());
-
-    }
-
-
-    public void registerPlayerInputs(Player player) {
-        if (player.movementType == MovementType.KEYBOARD_AWSD) {
-            inputAWSD = player;
-
-        } else if (player.movementType == MovementType.KEYBOARD_ARROW) {
-            inputARROW = player;
-
-        } else if (player.movementType == MovementType.MOUSE) {
-            inputMOUSE = player;
-        }
-    }
-
     @Override
     public void handle(InputEvent event) {
-
         if (event.getClass() == MouseEvent.class) {
             handleMouse((MouseEvent) event);
         } else if (event.getClass() == KeyEvent.class) {
@@ -134,7 +155,49 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    private void checkButtonClicked(MouseEvent event) {
+        if(event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getSceneX()  < 70 && event.getSceneY() < 70) {
+            String pausedEvent = "";
+            boolean paused = game.paused;
+            Event.EventType eventType;
+            if(paused) {
+                game.paused = false;
+                paused = false;
+                eventType = Event.EventType.UNPAUSED;
+                pausedEvent = "UNPAUSED";
+            } else {
+                game.paused = true;
+                paused = true;
+                eventType = Event.EventType.PAUSED;
+                pausedEvent = "PAUSED";
+            }
+
+            game.paused = paused;
+            if (game.gameMode == Game.GameMode.REMOTE) {
+                    ((NetworkController) game.getGameController()).changeGameStateObject(pausedEvent, eventType);
+            }
+                game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
+
+            config.setParam("paused", game.paused);
+            if (!(Boolean)config.getParam("muted")) Sound.muteSound();
+            GameMenu.setRightButtons();
+
+            return;
+        } else if(event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getSceneX()  >= 70 && event.getSceneX() < 140 && event.getSceneY() < 70) {
+            Sound.muteSound();
+            GameMenu.setRightButtons();
+            return;
+        }
+    }
+
+    /**
+     * process inputs via mouse and delegates the mouse event to the right object
+     * @param event
+     */
     public void handleMouse(MouseEvent event) {
+
+        checkButtonClicked(event);
+
         if (inputMOUSE == null) return;
         if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
             if (inputMOUSE != null) {
@@ -256,7 +319,6 @@ public class MovementManager implements EventHandler<InputEvent> {
                 }
             }
 
-
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
             if (event.getCode() == KeyCode.LEFT) {
                 if (inputARROW != null) {
@@ -289,38 +351,32 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public void findPath(Entity entity, Point start, Point target) {
 
-        /*
-        if(game.getWitch().getTargets().size() > 0) {
-            Witch w = game.getWitch();
-            if(w.getFinalTargetPos().x / Tile.TILE_SIZE == target.x &&
-                    w.getFinalTargetPos().y / Tile.TILE_SIZE == target.y && w.isOnReturn())
-                return;
-        }
-         */
-
-
         /**
          * set start and target position and find path
          */
         aStar.setStartPosition(start);
         aStar.setTargetPosition(target);
-        aStar.fillMap(game.getMap().getMap(), false);
+        //aStar.fillMap(game.getMap().getMap(), false);
 
         ArrayList<Node> nodes = aStar.executeAStar();
         CopyOnWriteArrayList<Point> targets = entity.getTargets();
         targets.clear();
 
-        if (nodes == null) {
-            System.out.println("KEIN PFAD GEFUNDEN");
-            return;
-        }
-
+        if (nodes == null) { System.out.println("KEIN PFAD GEFUNDEN"); return; }
 
         /**
          * add all nodes to the list of targets
          */
         for (Node node : nodes) {
             targets.add(node.getPosition());
+        }
+
+        Node[][] nodeMap = aStar.getMap();
+        for(Point t: targets) {
+
+            if(nodeMap[t.y][t.x].isObstacle()) {
+                System.out.println("VERKEHRT!");
+            }
         }
 
         /**
@@ -332,9 +388,6 @@ public class MovementManager implements EventHandler<InputEvent> {
         } else if (witchTarget != null && game.getWitch().isOnReturn()) {
             targets.add(new Point((int)(game.getWitch().getHomeX() / Tile.TILE_SIZE), (int)game.getWitch().getHomeY() / Tile.TILE_SIZE));
         }
-
-
-
 
         // Terminieren, wenn kein Ziel existiert
         if (targets.size() < 1) return;
@@ -359,14 +412,13 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public Point chooseTarget(Witch witch, Player player, Player otherPlayer) {
 
-        //if(witch.isOnReturn()) {
-        //    return new Point((int)(witch.getHomeX() / Tile.TILE_SIZE), (int)(witch.getHomeY() / Tile.TILE_SIZE));
-        //}
+        if(witch.isOnReturn()) {
+            return new Point((int)(witch.getHomeX() / Tile.TILE_SIZE), (int)(witch.getHomeY() / Tile.TILE_SIZE));
+        }
 
         if (player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
             witchTarget = null;
-            return new Point((int)witch.getHomeX(), (int)witch.getHomeY());
-
+            return new Point((int)witch.getHomeX() / Tile.TILE_SIZE, (int)witch.getHomeY() / Tile.TILE_SIZE);
         }
 
         /**
@@ -379,7 +431,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 return otherPlayer.getEntityPos();
             } else {
                 witchTarget = null;
-                return new Point((int)witch.getHomeX(), (int)witch.getHomeY());
+                return new Point((int)witch.getHomeX() / Tile.TILE_SIZE, (int)witch.getHomeY() / Tile.TILE_SIZE);
             }
 
         } else if (otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
@@ -388,7 +440,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 return player.getEntityPos();
             } else {
                 witchTarget = null;
-                return new Point((int)witch.getHomeX(), (int)witch.getHomeY());
+                return new Point((int)witch.getHomeX() / Tile.TILE_SIZE, (int)witch.getHomeY() / Tile.TILE_SIZE);
             }
         }
 
@@ -425,7 +477,7 @@ public class MovementManager implements EventHandler<InputEvent> {
             /**
              * call pathfinding algorithm for npc
              */
-            if (game.ticks % 7 == 0 /*|| game.ticks == 1 */) {
+            if (game.ticks % 5 == 0 /*|| game.ticks == 1 */) {
 
                 Point target = chooseTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
 
@@ -436,22 +488,22 @@ public class MovementManager implements EventHandler<InputEvent> {
                 double deltaPosTargetX = Math.abs(witch.getxPos() - witch.getFinalTargetPos().x);
                 double deltaPosTargetY = Math.abs(witch.getxPos() - witch.getFinalTargetPos().y);
 
-                //if(witch.getTargets().size() > 0 && deltaTargetX < 2 && deltaTargetY < 2 && game.ticks % 20 != 0) {
-                //    doPathfinding = false;
-                //}
+                if(witch.getTargets().size() > 0 && deltaTargetX < 2 && deltaTargetY < 2 &&
+                        deltaPosTargetX > 200 && deltaPosTargetY > 200 &&
+                        game.ticks % 20 != 0) {
+                    doPathfinding = false;
+                }
 
 
                 if (doPathfinding) {
 
                     if (!witch.isOnReturn()) {
                         if (witch.getFinalTargetPos() != target) {
-                            new PathWorker(witch, start, target, this).start();
-                            //findPath(witch, start, target);
+                            pathWorker.execute(witch, start, target);
                         }
                     } else {
                         if (witch.getFinalTargetPos() != witch.getHomePos()) {
-                            new PathWorker(witch, start, witch.getHomePos(), this).start();
-                            //findPath(witch, start, target);
+                            pathWorker.execute(witch, start, witch.getHomePos());
                         }
                     }
                 }
@@ -471,8 +523,6 @@ public class MovementManager implements EventHandler<InputEvent> {
          * if entity is the npc -> check for targets
          */
         if (entity == game.getWitch()) checkTarget(entity, movementSize);
-
-
         double moveX = 0.0;
         double moveY = 0.0;
 
@@ -546,12 +596,11 @@ public class MovementManager implements EventHandler<InputEvent> {
      * @param listOPlayers
      * @param witch
      */
-    public void moveAllEntites(GameController gameController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
+    public void moveAllEntities(GameController gameController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
         for (Player player : listOPlayers) {
             if (player.getChildrenCount() > 0)
                 moveObject(player);
         }
-
         moveWitch(gameController, witch);
 
     }
@@ -585,6 +634,11 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    /**
+     * check if the player collided with the sprite of Alice Cooper
+     * @param entity
+     * @return
+     */
     public boolean collideWithAliceCooper(Entity entity) {
         return (entity.getEntityPos().x == 5 && entity.getEntityPos().y == 5);
     }
@@ -608,7 +662,6 @@ public class MovementManager implements EventHandler<InputEvent> {
                 entity.setxPos(entity.getxPos() - size);
             }
 
-
             // TODO: LÖST die Kollision zwischen zwei Spielern
         } else {
 
@@ -617,12 +670,20 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    /**
+     * check if the player collect the key within the town hall
+     * @param entity
+     * @return
+     */
     public boolean collideWithKey(Entity entity) {
         return (entity.getEntityPos().x == 31 && entity.getEntityPos().y == 29);
     }
 
+    /**
+     * collect the key within the town hall if key is available
+     * @param entity
+     */
     public void collectKey(Entity entity) {
-
         for (MapObject o : game.getMap().getMapSector().getAllContainingMapObjects()) {
             if (o instanceof TownHall) {
                 TownHall t = (TownHall) o;
@@ -633,48 +694,64 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
-    // There are three different kinds of movement types
-    public enum MovementType implements Serializable {
-        KEYBOARD_AWSD, KEYBOARD_ARROW, MOUSE
-    }
-
+    /**
+     * check if the player collided with a door tile
+     */
     public void checkCollisionWithDoor(Placeable p, Entity entity) {
-
-
-        // collision with door
         if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
             for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                 try {
                     House h = (House) obj;
+                    /**
+                     * call the visit method on the house object
+                     */
                     if (h.intersects(p)) {
                         if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
                             h.visit((Player) entity);
                         }
                     }
+                    /**
+                     * show a error message when the object is not a house
+                     */
                 } catch (ClassCastException ex) {
-                    // the Object is not a House
+                    ex.printStackTrace();
                     continue;
                 }
             }
         }
-
-
     }
 
+    /**
+     * check collisions between the players and between players and the npc
+     * @param entity
+     * @param size
+     * @param directionX
+     */
     public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
         for (Entity e : game.getListOfAllEntities()) {
             if (e == entity) continue;
 
+            /**
+             * the collision with the witch occurred a little bit early
+             */
             double offset = 0.5;
             if (e instanceof Witch) {
-                offset = 1.2;
+                offset = 0.7;
             } else {
                 offset = 0.5;
             }
 
+            /**
+             * when the distance in x and y direction between entities is lower than the product of offset and Tile size
+             * a collision occurred!
+             */
             if (Math.abs(entity.getxPos() - e.getxPos()) < offset * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * offset) {
                 if (e instanceof AliceCooper && entity instanceof Player) {
                     ((AliceCooper) e).playSong((Player) entity);
+
+                    /** When one entity is the npc then reduce childrencount of the other object (player) by 1
+                     * set witch on return and calculate a new path to her home position
+                      */
                 } else if (e instanceof Witch && entity instanceof Player && game.DRAMATIC) {
                     Witch witch = (Witch) e;
                     Player player = (Player) entity;
@@ -688,15 +765,29 @@ public class MovementManager implements EventHandler<InputEvent> {
                     Sound.playChild();
 
                     witch.setOnReturn(true);
-                    new PathWorker(witch, witch.getEntityPos(), new Point((int)(witch.getHomeX() / Tile.TILE_SIZE), (int)(witch.getHomeY() / Tile.TILE_SIZE)), this).start();
+                    //new PathWorker(witch, witch.getEntityPos(), new Point((int)(witch.getHomeX() / Tile.TILE_SIZE), (int)(witch.getHomeY() / Tile.TILE_SIZE)), this).start();
+
+                    /**
+                     * set a protection against further collisions for 50 ticks ( currently 1 s) to avoid multiple collisions at once
+                     */
                     player.setChildrenCount(player.getChildrenCount() - 1);
                     player.setProtectedTicks(50);
 
+                    /**
+                     * if the gameMode is currently a network game then transmit the collision to the other player
+                     */
                     if (game.getGameMode() == Game.GameMode.REMOTE) {
                         ((NetworkController) game.getGameController()).changeGameStateObject(witch, Event.EventType.COLLISION);
                     }
                 }
 
+                if(e instanceof Witch && !game.DRAMATIC) {
+                    size = 0;
+                }
+
+                /**
+                 * undo the last movement step in X or Y- direction if collision(s) occurred
+                 */
                 if (directionX) {
                     entity.setxPos(entity.getxPos() - size);
                 } else {
@@ -729,6 +820,12 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    /**
+     * check if the given player object collide with the inside walls of an house
+     * @param player
+     * @param o
+     * @return true = the player collided - false = no collision occurred
+     */
     private boolean outOfBoundsInside(Player player, MapObject o) {
 
         int e_x = player.getEntityPos().x;
@@ -747,8 +844,5 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         );
     }
-
-
-
 }
 

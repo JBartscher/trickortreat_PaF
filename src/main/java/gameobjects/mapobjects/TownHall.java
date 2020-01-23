@@ -5,6 +5,9 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
+/**
+ * this building is always located in the centre and contains a key when a child is currently captured
+ */
 public class TownHall extends House implements Accessible {
 
     public static final int TOWN_HALL_WIDTH = 5;
@@ -39,8 +42,6 @@ public class TownHall extends House implements Accessible {
         notifyObservers(this);
     }
 
-
-    //TODO: take key - collision with key
 
     /**
      * gives the key to the player and removes it from the townhall

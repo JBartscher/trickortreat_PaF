@@ -10,6 +10,9 @@ import main.java.map.Tile;
 
 import java.util.Random;
 
+/**
+ * the super class of every specialized house object
+ */
 public abstract class House extends MapObject implements Visitable {
 
     protected Tile[][] tileset;
@@ -17,7 +20,6 @@ public abstract class House extends MapObject implements Visitable {
     protected boolean isUnvisited = true;
 
     protected District district = null;
-
 
     /**
      * House constructor.

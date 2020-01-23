@@ -16,6 +16,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * this class implements the Network interface and has the ability to communicate with a client
+ */
 public class ServerEngine extends Thread implements Network {
 
     private ServerSocket serverSocket;
@@ -55,6 +58,9 @@ public class ServerEngine extends Thread implements Network {
         start();
     }
 
+    /**
+     * thread task: create the network gui and start the server
+     */
     @Override
     public void run () {
 
@@ -74,10 +80,15 @@ public class ServerEngine extends Thread implements Network {
         AtomicBoolean finished = new AtomicBoolean(false);
         finished.set(true);
 
-        // Thread am Leben halten, bis der Button gedrückt wurde
+        /**
+         * wait until gui is completely finished
+         */
         while(!finished.get()) {
         }
 
+        /**
+         * start the server and wait for requests from clients
+         */
         startServer();
     }
 
@@ -92,15 +103,18 @@ public class ServerEngine extends Thread implements Network {
 
             });
 
-            // Wartet auf Verbindungen , instanziert einen Thread für Requests und übersendet in diesem Thread den GameState
+            /**
+             * wait for requests and assign incoming request to instance object: "socket"
+             */
             Socket socket = serverSocket.accept();
             this.socket = socket;
 
-            // private Klasse bearbeitet fortan die Kommunikation zwischen Client und Server
+            /**
+             * an object of the private class "RequestHandler" is responsible to handle further communcations
+             * start the handler and shutdown the current thread (there is no need to wait for more requests)
+             */
             requestHandler = new RequestHandler(socket);
             requestHandler.start();
-
-            // Server-Thread, der auf eine Verbindung gewartet hat, wird nicht mehr benötigt und unterbrochen
             this.interrupt();
 
         } catch (IOException e) {
@@ -108,6 +122,9 @@ public class ServerEngine extends Thread implements Network {
         }
     }
 
+    /**
+     * Handler-class that communicates with the client by receiving and transmitting game states and events
+     */
     private class RequestHandler extends Thread {
         private Socket socket;
 
@@ -132,7 +149,9 @@ public class ServerEngine extends Thread implements Network {
             });
             sendFirstGameStateToClient();
 
-            // Wartet auf die Initalisierung der GUI
+            /**
+             * wait for the entering of the client
+             */
             while(!ready) {
                 System.out.println("Serverseitig warten");
 
@@ -142,10 +161,12 @@ public class ServerEngine extends Thread implements Network {
 
         }
 
+        /**
+         * create a new gamestate and send it to the client
+         * also start the game and show the gui
+         */
         public void sendFirstGameStateToClient() {
             Platform.runLater(() -> {
-                // Instanziert ein neues Game-Objekt - sendet GameState zum Client
-
                 Message message = new Message(Message.Type.INIT, ((NetworkController)game.getGameController()).getGameState());
                 gameState = ((NetworkController)game.getGameController()).getGameState();
                 try {
@@ -164,16 +185,19 @@ public class ServerEngine extends Thread implements Network {
             });
         }
 
+        /**
+         * create a new game and send the new game to the client
+         */
         public void initReplay() {
-            System.out.println("SERVER AUFRUF REPLAY!");
-
             ready = false;
             ClientEngine.restart = false; ServerEngine.restart = false;
             initGameAndController();
 
             sendFirstGameStateToClient();
 
-            // Wartet auf die Initalisierung der GUI
+            /**
+             * wait for the client
+             */
             while(!ready) {
                 System.out.println("Serverseitig warten");
 
@@ -184,6 +208,9 @@ public class ServerEngine extends Thread implements Network {
     }
 
 
+    /**
+     * create new game and game controller when a replay was requested by both players
+     */
     public void initGameAndController() {
         game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
         networkController = (NetworkController)game.getGameController();
@@ -191,7 +218,9 @@ public class ServerEngine extends Thread implements Network {
 
     }
 
-    // Diese Methode repräsentiert die Kommunikation zwischen Client u. Server
+    /**
+     * this method controls the communication between server and client
+     */
     @Override
     public void communicate() {
 
@@ -200,34 +229,34 @@ public class ServerEngine extends Thread implements Network {
 
             while(true) {
 
+                /**
+                 * stop the communication when the game is over and both players want a rematch
+                 */
                 if(ClientEngine.restart && ServerEngine.restart) return;
-
-                long start = System.currentTimeMillis();
                 Thread.sleep(10);
 
-                // Nachricht vom Client lesen, in GameState konvertieren u. eigenen GameState aktualisieren
+                /**
+                 * read message, extract the gamestate and update the own gamestate
+                 */
                 Message msg = (Message)input.readObject();
                 GameState gameStateReceived = msg.getGameState();
-
-                // eigene Daten aktualisieren
                 updateServerData(gameStateReceived);
 
-                // Auf Events überprüfen und gegebenfalls verarbeiten
+                /**
+                 * handle incoming events and update the gamestate
+                 */
                 if(msg.getMessageType() == Message.Type.EVENT) {
                     networkController.handleEvents(gameStateReceived);
                 }
 
 
-                // Neuen GameState ermitteln u. überprüfen (sind noch eigene Events nicht verschicken wurden?)
+                /**
+                 * determine the current gamestate and send it to the other player
+                 */
                 GameState newGameState = new GameState(new PlayerData(game.getPlayer()), new PlayerData(game.getOtherPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
                 networkController.updateGameState(newGameState);
-                //GameState newGameState = new GameState(null, null, null, null, null, 20);
-
                 // neuen GameState nach Überprüfung verschicken
                 networkController.sendMessage(output, newGameState);
-
-                //System.out.println("Dauer einer Verbindung:" + (System.currentTimeMillis() - start));
-
             }
 
         } catch(Exception e) {
@@ -235,47 +264,24 @@ public class ServerEngine extends Thread implements Network {
         }
     }
 
-    public long sizeOf(Serializable object){
-        if (object == null) {
-            return 0;
-        }
-
-        try{
-            final ByteCountingOutputStream out = new ByteCountingOutputStream();
-            new ObjectOutputStream(out).writeObject(object);
-            out.close();
-            return out.size();
-        }catch (IOException e){
-
-            return -1;
-        }
-    }
-
+    /**
+     * update the game data when receiving a gamestate from client
+     * @param gameStateReceived
+     */
     private void updateServerData(GameState gameStateReceived) {
         game.getOtherPlayer().setGameStateData(gameStateReceived.getOtherPlayerData());
-
-        //TODO: EVALUIEREN : der Server braucht an sich keine Aktualisierung der HEXE, weil der Server die HEXE steuern soll- außer bei Kollision?
-        //game.getWitch().setGameStateData(gameState.getWitchData());
     }
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
 
     public Game getGame() { return game; }
 
-    public RequestHandler getRequestHandler() {
-        return requestHandler;
-    }
-
-    public void setRequestHandler(RequestHandler requestHandler) {
-        this.requestHandler = requestHandler;
-    }
-
+    /**
+     * stop the handler when the connection is lost
+     */
     public void stopHandler() {
         if(requestHandler != null) {
             requestHandler.interrupt();

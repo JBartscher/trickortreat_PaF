@@ -1,8 +1,10 @@
 package main.java;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
 import main.java.Menu.GameMenu;
+import main.java.Menu.GameOver;
 import main.java.Network.NetworkController;
 import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Player;
@@ -17,21 +19,23 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * super controller that contains the game loop which updates the game and delegates tasks to the single components
+ */
 public class GameController implements Observer {
 
     protected Game game;
+    protected GameLauncher gameLauncher;
+    protected GameLoop gameLoop = new GameLoop();
 
-    public GameController(Game game) {
+    public GameController(Game game, GameLauncher gameLauncher) {
         this.game = game;
+        this.gameLauncher = gameLauncher;
     }
-
-    public GameController() {
-
-    }
-
 
     public void initGUIandSound(Stage stage) {
         // GUI-Bereich
+        game.setStage(stage);
         game.setWindow(new Window(game, stage));
         game.getWindow().createGUI();
         game.setMapRenderer(new MapRenderer(game.getMap(), game.getWindow(), game));
@@ -45,7 +49,6 @@ public class GameController implements Observer {
         Sound.playMusic();
     }
 
-
     /**
      * the players have now each a Observer to change the Score when visiting a house.
      *
@@ -58,7 +61,6 @@ public class GameController implements Observer {
         game.getPlayer().setxPos(game.getMap().getSize() * 0.5 * Tile.TILE_SIZE);
         game.getPlayer().setyPos((game.getMap().getSize() * 0.5 + 3) * Tile.TILE_SIZE);
         game.getPlayer().setTarget( new Point( (int)game.getPlayer().getxPos(), (int)game.getPlayer().getyPos()) );
-
 
         game.getListOfPlayers().add(game.getPlayer());
         // add Score-Observer which notifyes its Score text when this player visits a house
@@ -78,16 +80,12 @@ public class GameController implements Observer {
 
         game.setWitch(new Witch());
 
-        //game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
-        //game.getWitch().setxPos(game.getMap().getSize() * Tile.TILE_SIZE - Tile.TILE_SIZE);
-
         game.getWitch().setxPos(GingerbreadHouse.getInstance().getY() * Tile.TILE_SIZE + Tile.TILE_SIZE);
         game.getWitch().setyPos(GingerbreadHouse.getInstance().getX() * Tile.TILE_SIZE + 2 * Tile.TILE_SIZE);
         game.getWitch().setHomeX(game.getWitch().getxPos());
         game.getWitch().setHomeY(game.getWitch().getyPos());
 
         game.setAliceCooper(new AliceCooper());
-
         game.getListOfAllEntities().addAll(Arrays.asList(game.getPlayer(), game.getOtherPlayer(), game.getWitch()));
 
     }
@@ -142,5 +140,57 @@ public class GameController implements Observer {
             h.updateMap();
         }
 
+    }
+
+    public void startGameLoop() {
+        this.gameLoop.start();
+    }
+
+    private class GameLoop extends AnimationTimer {
+        @Override
+        public void handle(long now) {
+                long startTime = System.currentTimeMillis();
+                game.ticks++;
+                game.update();
+                game.getMapRenderer().render();
+                calculateGameTime(startTime);
+        }
+
+        /**
+         * calculate and update current game time - sleep a few milliseconds when finished work before time goal
+         * @param startTime
+         */
+        public void calculateGameTime(long startTime) {
+            if(!game.paused) {
+                long endTime = System.currentTimeMillis();
+                try {
+                    int sleepTime = (int) (1000 / Game.FRAMES - (endTime - startTime));
+                    if (sleepTime < 0) sleepTime = 0;
+                    Thread.sleep(sleepTime);
+
+                    int gameTime = (int) (game.getGameTime() - (System.currentTimeMillis() - startTime));
+                    if (gameTime > 0) {
+                        game.setGameTime((int) (game.getGameTime() - (System.currentTimeMillis() - startTime)));
+
+                        /** set game as DRAMATIC (enables dramatic music and witch movement)
+                         */
+                        if (game.getGameTime() < 30000 && !game.DRAMATIC) {
+                            game.DRAMATIC = true;
+                            Sound.playCountdown();
+                        }
+                    }
+                    /**
+                     * stop the GameLoop when time is over -> show GameOver menu
+                     */
+                    else {
+                        this.stop();
+                        new GameOver(game, gameLauncher, game.getStage(), gameLauncher.getMainMenu()).showGameOver();
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

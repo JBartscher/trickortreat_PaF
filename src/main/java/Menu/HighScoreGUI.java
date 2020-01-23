@@ -6,10 +6,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.java.Sound;
+import main.java.Window;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -54,17 +58,21 @@ public class HighScoreGUI {
             ois = new ObjectInputStream(fis);
 
             Object o = null;
-            System.out.println("EINLESEN! " + index);
+            //System.out.println("EINLESEN! " + index);
             o = ois.readObject();
             highScores = new ArrayList<>((ArrayList<HighScoreItem>) o);
 
-            // Wenn eine Liste eingelesen wurde, die weniger als 10 Eintr�ge enth�lt -> erweitern
+            /**
+             * add highscore items when size of the current list is lower than 10 elements
+             */
             while (highScores.size() < 10) {
                 highScores.add(new HighScoreItem("LEER", 0));
             }
 
+            /**
+             * show the highscore gui when current player collected enough candies
+             */
             if(score > highScores.get(9).getScore()) {
-
                 stage.show();
                 Label labelScore = new Label("Spieler " + (index + 1) + " ist auf der Highscore-Liste! SCORE: " + score);
                 labelScore.setStyle("-fx-font-size: 2.2em ;");
@@ -105,6 +113,9 @@ public class HighScoreGUI {
                         textFieldInput.setVisible(false);
                         vBox.getChildren().remove(textFieldInput);
 
+                        /**
+                         * save the new highscore list to highscore.txt
+                         */
                         try {
                             FileOutputStream fos = new FileOutputStream("highscore.txt");
                             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -116,7 +127,6 @@ public class HighScoreGUI {
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
-
                     }
 
                 });
@@ -131,7 +141,9 @@ public class HighScoreGUI {
 
             } else {
 
-                // Falls noch ein zweiter Score vorliegt, diesen auf HighScore überprüfen, sonst HighScore anzeigen
+                /**
+                 * if playing locale then also check if the second player is on the highscore list
+                 */
                 if(scores.length > 1) {
 
                     checkScore(scores, finalIndex + 1, false);
@@ -158,12 +170,16 @@ public class HighScoreGUI {
 
                 }
             }
+
         } catch (IOException | ClassNotFoundException e) {
             System.err.println(e);
 
         }
     }
 
+    /**
+     * sort the highscore items in reversed order (descending)
+     */
     public void sort() {
         Collections.sort(highScores, (first, second) -> (first.getScore() < second.getScore()) ? 1 : -1);
 

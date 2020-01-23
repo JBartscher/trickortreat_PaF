@@ -7,6 +7,9 @@ import main.java.gameobjects.Entity;
 import java.awt.*;
 import java.io.Serializable;
 
+/**
+ * this class contains all entity data and is used in network games
+ */
 public class EntityData implements Serializable {
     private static final long serialVersionUID = 5611352444651877561L;
 
@@ -47,16 +50,8 @@ public class EntityData implements Serializable {
         return xPos;
     }
 
-    public void setxPos(double xPos) {
-        this.xPos = xPos;
-    }
-
     public double getyPos() {
         return yPos;
-    }
-
-    public void setyPos(double yPos) {
-        this.yPos = yPos;
     }
 
     public double getSize() {
@@ -71,47 +66,23 @@ public class EntityData implements Serializable {
         return target;
     }
 
-    public void setTarget(Point target) {
-        this.target = target;
-    }
-
     public MovementManager.MoveDirection getMoveDirection() {
         return moveDirection;
-    }
-
-    public void setMoveDirection(MovementManager.MoveDirection moveDirection) {
-        this.moveDirection = moveDirection;
     }
 
     public int getAnimCounter() {
         return animCounter;
     }
 
-    public void setAnimCounter(int animCounter) {
-        this.animCounter = animCounter;
-    }
-
     public int getMoveCounter() {
         return moveCounter;
-    }
-
-    public void setMoveCounter(int moveCounter) {
-        this.moveCounter = moveCounter;
     }
 
     public double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
     public boolean isNoCollision() {
         return noCollision;
-    }
-
-    public void setNoCollision(boolean noCollision) {
-        this.noCollision = noCollision;
     }
 }

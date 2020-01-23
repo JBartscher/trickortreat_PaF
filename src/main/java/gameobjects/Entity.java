@@ -15,6 +15,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.round;
 
+/**
+ * the super class of every object with a movement ability
+ * assume that these objects have a x/y position, movement target, size, sprite, direction and movement speed
+ */
 public abstract class Entity extends Observable implements Serializable {
     /**
      * Entity is now extending Observable, because Player Objects which inherit Entity

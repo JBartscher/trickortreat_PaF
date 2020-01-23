@@ -157,8 +157,6 @@ public class GameOver {
 
                 }
 
-
-                //startGame(game.gameMode, game.getNetworkController().getNetworkEngine(), movementTypePlayer1, movementTypePlayer2);
             }
             Sound.playMusic();
         });
@@ -176,8 +174,6 @@ public class GameOver {
         buttonRestart.setTranslateY(500);
 
         root.getChildren().addAll(imageView, gameOverTitle, imageViewPlayer1, imageViewPlayer2, textPlayer1, textPlayer2, imageViewCandy1, imageViewCandy2, textCandyPlayer1, textCandyPlayer2, buttonMainMenu, buttonRestart);
-
-
         stage.setScene(scene);
     }
 

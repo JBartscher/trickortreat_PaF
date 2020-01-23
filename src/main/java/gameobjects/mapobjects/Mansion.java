@@ -7,6 +7,10 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
+/**
+ * the house of alice cooper
+ * this class also implements the interface -Accessible- that ensures the movement within the building
+ */
 public class Mansion extends House implements Accessible {
 
     public static final int MANSION_WIDTH = 5;

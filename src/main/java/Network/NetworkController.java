@@ -1,5 +1,6 @@
 package main.java.Network;
 
+import javafx.application.Platform;
 import main.java.*;
 import main.java.Menu.GameOver;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
@@ -13,23 +14,32 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 
-// aktualisiert und delegiert den aktuellen GameState zur eingesetzten Engine (Client o. Server)
-// GameStates werden in dieser Klasse aktualisiert
+/**
+ * this class updates the current gamestate and delegates the updates to his networkEngine
+ * also this class is responsible for creating, transmitting and handling events
+ */
 public class NetworkController extends GameController {
 
+    private final static Configuration<Object> config = new Configuration<Object>();
+
+    /**
+     * the role in a network engine is either the server role or the role as a client
+     */
     public enum NetworkRole {
         SERVER, CLIENT
     }
 
     private NetworkRole networkRole;
 
-    // repräsentiert eine Instanz, die das Interface Network implementiert (communicate-method)
-    // ClientEngine und ServerEngine implementieren das Interface
+    /**
+     * networkEngine is either a client instance or server instance
+     * each instance implements the interface Network which ensures the ability to communicate with other computers
+     */
     private Network networkEngine;
     private GameState gameState;
 
-    public NetworkController(Game game, Network networkEngine, NetworkRole networkRole) {
-        super(game);
+    public NetworkController(Game game, Network networkEngine, NetworkRole networkRole, GameLauncher gameLauncher) {
+        super(game, gameLauncher);
         this.networkEngine = networkEngine;
         this.networkRole = networkRole;
     }
@@ -48,7 +58,8 @@ public class NetworkController extends GameController {
     }
 
     /**
-     * vergleicht eigenen GameState mit dem erhaltenen u. berechnet korrekten GameState
+     * compare two gamestates and determine / set the newest one - also registered non transmitted events
+     * ensure that a event that is not already transmitted will not overwritten
      * @param newGameState
      */
     public void updateGameState(GameState newGameState) {
@@ -69,21 +80,38 @@ public class NetworkController extends GameController {
         networkEngine.setGameState(gameState);
     }
 
+    /**
+     * create and update a GameState
+     */
     public void createAndUpdateGameState() {
         GameState newGameState = new GameState(new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), gameState.getEvent(), game.getGameTime());
         updateGameState(newGameState);
     }
 
+    /**
+     * called when a event occurred -> set that event and set Event transmitting to false
+     * @param o
+     * @param type
+     */
     public void changeGameStateObject (Object o, Event.EventType type) {
 
-        // Event setzen u. Übermittlung auf false setzen
+        /**
+         * set event and set transmitting to false (send it with the next iteration)
+         */
         gameState.setEvent(new Event(o, type));
         gameState.setEventTransmitted(false);
 
-        // Weiterleiten an NetworkEngine
+        /**
+         * update gamestate of network engine
+         */
         networkEngine.setGameState(gameState);
     }
 
+    /**
+     * create a deep copy of the gamestate and send it to the other player
+     * @param output
+     * @param gameState
+     */
     public void sendMessage(ObjectOutputStream output, GameState gameState) {
         Message.Type type;
 
@@ -104,6 +132,9 @@ public class NetworkController extends GameController {
         }
     }
 
+    /**
+     * clear all events after sending the events to the other player
+     */
     public void clearAllEvents () {
         gameState.setEvent(null);
         gameState.setEventTransmitted(true);
@@ -143,20 +174,36 @@ public class NetworkController extends GameController {
                 break;
 
             case COLLISION:
-                //Witch witch = (Witch)(gameStateReceived.getEvent().getObject());
-                //game.setWitch(witch);
                 game.getWitch().setGameStateData(gameStateReceived.getWitchData());
                 break;
 
 
             case PAUSED:
                 game.paused = true;
+                config.setParam("paused", game.paused);
+                /**
+                 * show menu when receiving an event of type "paused"
+                 */
+                Platform.runLater( () -> {
+                    game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
+                });
                 break;
             case UNPAUSED:
                 game.paused = false;
+                config.setParam("paused", game.paused);
+                /**
+                 * resume the game when receiving an event of type "unpaused"
+                 */
+                Platform.runLater( () -> {
+                    game.getLauncher().getMainMenu().resumeGame(game);
+                });
+
+
                 break;
+            /**
+             * called when the other player wants to play again and transmitted an event with type "REPLAY"
+             */
             case REPLAY:
-                System.out.println("EVENT REPLAY!");
                 if(networkRole == NetworkRole.SERVER) {
                     ClientEngine.restart = true;
                     if(!ServerEngine.restart) {
@@ -170,6 +217,9 @@ public class NetworkController extends GameController {
                     }
                 }
                 break;
+            /**
+             * called when the other player visited the townhall or collected the key
+             */
             case TOWNHALL:
                 for (MapObject obj : mapObjects) {
                     TownHall eventMapObject = (TownHall) event.getObject();
@@ -241,6 +291,11 @@ public class NetworkController extends GameController {
         }
     }
 
+    /**
+     * update the model data when receiving changes from the observables
+     * @param o   Observable Object which called notifyObservers method
+     * @param arg not used
+     */
     @Override
     public void update(Observable o, Object arg) {
         super.update(o, arg);
@@ -260,6 +315,10 @@ public class NetworkController extends GameController {
         changeGameStateObject(o, eventType);
     }
 
+    /**
+     * remove the second game camera when playing in a network game -> there is no need to render the second player separately
+     * @return
+     */
     @Override
     protected GameCamera setGameCameraEnemy() {
         game.getListOfPlayers().remove(game.getOtherPlayer());

@@ -8,6 +8,11 @@ import java.awt.*;
 
 import static java.lang.Math.round;
 
+/**
+ * this class contains the model data of the npc
+ * the main difference to the super class is the addition of a list of targets and a home position
+ * the list of targets is used to find a walkable path to the next player - the final target is the player or home position
+ */
 public class Witch extends Entity {
 
     private double homeX;
@@ -26,6 +31,10 @@ public class Witch extends Entity {
         this.sprite = spriteSheet.getSpriteImage(0, 1);
     }
 
+    /**
+     * update the witch data when changes like collisions occurred
+     * @param witchData
+     */
     public void setGameStateData(WitchData witchData) {
         super.setGameStateData(witchData);
         this.homeX = witchData.getHomeX();

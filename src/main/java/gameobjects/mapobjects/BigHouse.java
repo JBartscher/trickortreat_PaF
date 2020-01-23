@@ -4,7 +4,9 @@ import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
-
+/**
+ * represents a real house object with a bigger size than a small house
+ */
 public class BigHouse extends House {
 
     public static final int BIG_HOUSE_WIDTH = 2;
@@ -23,26 +25,6 @@ public class BigHouse extends House {
 
     @Override
     public void visit(Player player) {
-        /*
-        if (isUnvisited) {
-            
-            Sound.playRing();
-
-            // Berechne die Menge der Süßigkeiten
-            int candies = 0;
-            Random random = new Random();
-            for(int i = 0; i < player.getChildrenCount(); i++) {
-                int zahl = random.nextInt(2);
-                candies += (int)(this.district.getCandy_multiplikator() + zahl);
-            }
-
-            player.addCandy(candies);
-        }
-        this.isUnvisited = false;
-        notifyObservers(this);
-
-         */
-
         super.visit(player);
     }
 
