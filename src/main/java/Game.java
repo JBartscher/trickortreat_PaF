@@ -32,8 +32,7 @@ public class Game {
     public Player player;
     public Player otherPlayer;
 
-
-
+    
     /**
      * repräsentiert alle Objekte, die von EINER Spielinstanz verwaltet werde
      * LOKAL = Ein Spiel verwaltet 2 Spieler => Liste enthält Spieler 1 und Spieler 2

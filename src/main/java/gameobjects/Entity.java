@@ -47,7 +47,10 @@ public abstract class Entity extends Observable implements Serializable {
     public double speed = 300 * Game.FRAMES / 50;
 
 
-    // Default-Werte
+    /**
+     * constructor of an entity object
+     * abstract class for player and witch object
+     */
     protected Entity() {
         xPos = 0;
         yPos = 0;
