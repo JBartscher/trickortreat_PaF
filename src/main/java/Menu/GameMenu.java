@@ -29,6 +29,8 @@ public class GameMenu implements Singleton {
     private Text timerText = new Text("");
     private Text textSound = new Text("MUTE SOUND with KEY M");
 
+    private static ImageView imagePaused = new ImageView(GraphicsUtility.getPausedImage());
+
     /**
      * Observers
      */
@@ -41,6 +43,7 @@ public class GameMenu implements Singleton {
      * Initializes all menu components (size, color, font, placing, etc.).
      */
     private GameMenu() {
+
 
 
         // Timer Text
