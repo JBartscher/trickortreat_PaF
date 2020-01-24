@@ -38,17 +38,17 @@ public class GameMenu implements Singleton {
 
 
     private final String TEXT_STYLE = "-fx-font: 32 arial;";
-    private final String TEXT_STYLE_SMALL = "-fx-font: 16 arial;";
     private Text candyTextPlayer = new Text("Spieler 1 - Candy: " + 0);
     private Text candyTextOtherPlayer = new Text("Spieler 2 - Candy: " + 0);
     private Text timerText = new Text("");
-    private Text textSound = new Text("MUTE SOUND with KEY M");
 
     /**
      * Observers
      */
     private PlayerScoreObserver firstPlayerObserver = new PlayerScoreObserver();
     private OtherPlayerScoreObserver secondPlayerObserver = new OtherPlayerScoreObserver();
+
+    private ResetScoreObserver resetScoreObserver = new ResetScoreObserver();
 
     /**
      * private GameMenu constructor, can only be called by getInstance().
@@ -58,9 +58,8 @@ public class GameMenu implements Singleton {
     private GameMenu() {
 
         // Timer Text
-        timerText.setStyle(TEXT_STYLE_SMALL);
-        GraphicsUtility.setTextProperties(timerText, TEXT_STYLE_SMALL, Color.WHITE, Window.WIDTH / 2 - 10, 50.0); //
-        //timerText.setStrokeWidth(5.0);
+        GraphicsUtility.setTextProperties(timerText, TEXT_STYLE, Color.WHITE, Window.WIDTH / 2 - 20, 50.0); //
+
         timerText.setId("timerText");
 
         // Player CandyScore Text
@@ -73,13 +72,7 @@ public class GameMenu implements Singleton {
         GraphicsUtility.setTextProperties(candyTextOtherPlayer, TEXT_STYLE, Color.WHITE, 800, 50.0);
         candyTextOtherPlayer.setId("candyTextOtherPlayer");
 
-        // Text Sound;
-        GraphicsUtility.setTextProperties(textSound, TEXT_STYLE_SMALL, Color.WHITE, Window.WIDTH / 2 - 80, 70);
-        textSound.setOnMouseClicked((e) ->
-        {
-            Sound.muteSound();
-        });
-        textSound.setId("textSound");
+
 
         // Lolipop Icon Player
         GraphicsUtility.setImageProperties(imageCandyPlayer, Window.WIDTH / 3 + 40, 22);
@@ -93,6 +86,8 @@ public class GameMenu implements Singleton {
 
         GraphicsUtility.setImageProperties(imageViewSound, 70, 8);
         GraphicsUtility.setImageProperties(imageViewPaused, 0, 8);
+
+        setRightButtons();
 
     }
 
@@ -113,8 +108,7 @@ public class GameMenu implements Singleton {
      * @param root the scene which will be drawn
      */
     public void addGameMenuToScene(Group root) {
-        setRightButtons();
-        root.getChildren().addAll(backgroundImageView, candyTextPlayer, candyTextOtherPlayer, timerText, textSound, imageCandyPlayer, imageCandyOtherPlayer, imageViewPaused, imageViewSound);
+        root.getChildren().addAll(backgroundImageView, candyTextPlayer, candyTextOtherPlayer, timerText, imageCandyPlayer, imageCandyOtherPlayer, imageViewPaused, imageViewSound);
     }
 
     public static void setRightButtons() {
@@ -122,7 +116,7 @@ public class GameMenu implements Singleton {
         boolean muted = ((Boolean) config.getParam("muted")).booleanValue();
         boolean paused = ((Boolean) config.getParam("paused")).booleanValue();
 
-        if(!muted) {
+        if(muted) {
             GameMenu.imageViewSound = new ImageView(imageMuted);
             GraphicsUtility.setImageProperties(imageViewSound, 70, 8);
         } else {
@@ -211,5 +205,24 @@ public class GameMenu implements Singleton {
             Player p = (Player) o;
             GameMenu.getInstance().updateOtherPlayerCandyScore(p.getCandy());
         }
+    }
+
+    /**
+     * Observer - reset score
+     */
+    class ResetScoreObserver implements Observer {
+        @Override
+        public void update(Observable o, Object arg) {
+            GameMenu.getInstance().updatePlayerCandyScore(0);
+            GameMenu.getInstance().updateOtherPlayerCandyScore(0);
+        }
+    }
+
+    public ResetScoreObserver getResetScoreObserver() {
+        return resetScoreObserver;
+    }
+
+    public void setResetScoreObserver(ResetScoreObserver resetScoreObserver) {
+        this.resetScoreObserver = resetScoreObserver;
     }
 }

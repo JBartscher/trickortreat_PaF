@@ -3,8 +3,6 @@ package main.java.Network;
 import main.java.gameobjects.Player;
 import main.java.map.MapObject;
 
-import java.util.Stack;
-
 /**
  * this class contains all player data and is used in network games
  */

@@ -2,7 +2,6 @@ package main.java;
 
 import javafx.stage.Stage;
 import main.java.Menu.GameMenu;
-import main.java.Menu.GameOver;
 import main.java.Network.GameStateInit;
 import main.java.Network.Network;
 import main.java.Network.NetworkController;
@@ -10,8 +9,10 @@ import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.Witch;
+import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
+import main.java.map.MapObject;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -136,6 +137,12 @@ public class Game {
 
         this.listOfAllEntities.addAll(Arrays.asList(player, otherPlayer, witch));
         this.map = gameState.getMap();
+
+        for(MapObject o : map.getMapSector().getAllContainingMapObjects()) {
+            if(o instanceof GingerbreadHouse) {
+                GingerbreadHouse.setInstance((GingerbreadHouse)o);
+            }
+        }
 
         gameController.initGUIandSound(stage);
         gameController.initObservers();

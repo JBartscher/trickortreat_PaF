@@ -45,8 +45,6 @@ public class GameController implements Observer {
         // Movement - Weiterleiten an Controller-Klasse
         game.getWindow().getScene().addEventHandler(InputEvent.ANY, game.getMovementManager());
 
-        // Hintergrundmusik
-        Sound.playMusic();
     }
 
     /**
@@ -116,6 +114,8 @@ public class GameController implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
+
+
         if (o instanceof GingerbreadHouse) {
             for (MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
                 if (obj instanceof TownHall) {

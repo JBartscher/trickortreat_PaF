@@ -5,7 +5,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import main.java.Menu.GameMenu;
 import main.java.map.Tile;
 
 
@@ -781,7 +780,10 @@ public class GraphicsUtility {
     }
 
     public static void initImages() {
+        //candyImage = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
+
         candyImage = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
+
         keyImage = new Image(GraphicsUtility.class.getResourceAsStream("key.png"));
         witchDoor = new Image(GraphicsUtility.class.getResourceAsStream("witch_door.png"));
 

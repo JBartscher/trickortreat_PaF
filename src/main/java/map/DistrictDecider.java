@@ -34,9 +34,9 @@ public class DistrictDecider {
         //shuffle to get a random outcome each time so that the pos of a sector isnt fixed
         RichDistrict richSector1 = new RichDistrict(sectors.get(4));
         sectors.remove(sectors.get(4));
+        RichDistrict richSector2 = new RichDistrict(sectors.get(0));
+        sectors.remove(sectors.get(0));
         Collections.shuffle(sectors);
-
-        RichDistrict richSector2 = new RichDistrict(sectors.get(3));
 
         NormalDistrict normalDistrict1 = new NormalDistrict(sectors.get(0));
         NormalDistrict normalDistrict2 = new NormalDistrict(sectors.get(4));
@@ -46,7 +46,7 @@ public class DistrictDecider {
 
         District randomDistrict1 = randomDistrict(sectors.get(2));
         District randomDistrict2 = randomDistrict(sectors.get(6));
-        District randomDistrict3 = randomDistrict(sectors.get(7));
+        District randomDistrict3 = randomDistrict(sectors.get(3));
 
 
         ArrayList<District> districts = new ArrayList<>();
