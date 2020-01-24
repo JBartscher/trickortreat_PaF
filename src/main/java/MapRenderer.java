@@ -16,7 +16,7 @@ public class MapRenderer {
 
     private Map map;
     private Window window;
-    private Tile[][][] tileMap;
+    private Tile[][] tileMap;
     private Game game;
 
     public MapRenderer(Map map, Window window, Game game) {
@@ -104,66 +104,73 @@ public class MapRenderer {
      */
     private void drawMap(GraphicsContext gc, GameCamera gameCamera, int widthOffset, Player player, Player otherPlayer, Player playerObj) {
         // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
-        for (int z = 0; z < 3; z++) {
 
-            if (!Game.DRAMATIC && z == 0) {
-                drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
-            }
 
-            /**
-             * checks if current Layer is Layer 2 (overlapping objects
-             * draw player between Layer 1 and 2
-             */
-            if (z == 2 && !game.getPlayer().isInside() && !game.getOtherPlayer().isInside()) {
-                drawPlayer(gameCamera, player, widthOffset, gc);
-                drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                if (Game.DRAMATIC) {
-                    drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
-                }
-            }
+        if (!Game.DRAMATIC) {
+            drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+        }
 
-            /**
-             * draw every tile depending on tile nr
-             */
-            for (int y = 0; y < tileMap.length; y++) {
-                for (int x = 0; x < tileMap[y].length; x++) {
-                    int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
-                    int yPos = (int) (y * Tile.TILE_SIZE - gameCamera.getYOffset() + Window.HEIGHT * 0.1);
-                    // nur Zeichnen, wenn sichtbar - sonst verwerfen
 
-                    if (tileMap[y][x][z].getTileNr() == 0) continue;
+        /**
+         * draw every tile depending on tile nr
+         */
+        for (int y = 0; y < tileMap.length; y++) {
+            for (int x = 0; x < tileMap[y].length; x++) {
+                int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
+                int yPos = (int) (y * Tile.TILE_SIZE - gameCamera.getYOffset() + Window.HEIGHT * 0.1);
+                // nur Zeichnen, wenn sichtbar - sonst verwerfen
+
+                if (tileMap[y][x].getTileNr() == 0) continue;
+
+                /**
+                 * check if position is within the current viewport
+                 */
+                if (isInViewPort(yPos, xPos, widthOffset)) {
+                    /**
+                     * set effect when player has no children
+                     */
+                    if (playerObj.getChildrenCount() == 0) {
+                        gc.setGlobalAlpha(0.7);
+                    } else {
+                        gc.setGlobalAlpha(1.0);
+                    }
+                    /**
+                     * draw all 3 layers on top of each other
+                     */
+                    Image image = tileMap[y][x].getImage();
+                    gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
+                    image = tileMap[y][x].objectLayer.getImage();
+                    gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
                     /**
-                     * check if position is within the current viewport
+                     * checks if current Layer is Layer 2 (overlapping objects
+                     * draw player between Layer 1 and 2
                      */
-                    if (isInViewPort(yPos, xPos, widthOffset)) {
-                        /**
-                         * set effect when player has no children
-                         */
-                        if (playerObj.getChildrenCount() == 0) {
-                            gc.setGlobalAlpha(0.7);
-                        } else {
-                            gc.setGlobalAlpha(1.0);
+                    if (!game.getPlayer().isInside() && !game.getOtherPlayer().isInside()) {
+                        drawPlayer(gameCamera, player, widthOffset, gc);
+                        drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
+                        if (Game.DRAMATIC) {
+                            drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
                         }
-
-                        Image image = tileMap[y][x][z].getImage();
-                        gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
-
                     }
+
+                    image = tileMap[y][x].coverLayer.getImage();
+                    gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
                 }
             }
+        }
 
-            if (game.getPlayer().isInside() || game.getOtherPlayer().isInside()) {
-                drawPlayer(gameCamera, player, widthOffset, gc);
-                drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                if (Game.DRAMATIC)
-                    drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
-            }
+        if (game.getPlayer().isInside() || game.getOtherPlayer().isInside()) {
+            drawPlayer(gameCamera, player, widthOffset, gc);
+            drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
+            if (Game.DRAMATIC)
+                drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
         }
         gc.setGlobalAlpha(1.0);
-
-
     }
+
 
     /**
      * check if the current viewport contains this position

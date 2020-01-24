@@ -15,7 +15,7 @@ public class Map implements Serializable, Singleton {
     private static Map instance;
     final Sector mapSector;
     private final int size;
-    Tile[][][] map;
+    Tile[][] map;
 
     public final static Point xTopLeftCentre = new Point(21, 21);
     public final static Point xTopRightCentre = new Point(40, 21);
@@ -27,7 +27,7 @@ public class Map implements Serializable, Singleton {
 
         this.size = size;
 
-        map = new Tile[size][size][3];
+        map = new Tile[size][size];
 
         mapSector = new Sector(0, 0, size, size);
         Map.instance = this;
@@ -58,11 +58,11 @@ public class Map implements Serializable, Singleton {
         return mapSector;
     }
 
-    public Tile[][][] getMap() {
+    public Tile[][] getMap() {
         return map;
     }
 
-    public void setMap(Tile[][][] newMap) {
+    public void setMap(Tile[][] newMap) {
         this.map = newMap;
     }
 }

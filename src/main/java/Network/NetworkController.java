@@ -9,7 +9,6 @@ import main.java.gameobjects.mapobjects.Mansion;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.Map;
 import main.java.map.MapObject;
-import main.java.map.Tile;
 
 import java.io.ObjectOutputStream;
 import java.util.List;
@@ -244,7 +243,7 @@ public class NetworkController extends GameController {
                             ((TownHall)obj).setHasKey(false);
                             ((TownHall)obj).repaintAfterVisit();
                             if(((TownHall)obj).getNumberOfPlayerInside() > 0) {
-                                game.getMap().getMap()[29][31][1] = new Tile(133);
+                                game.getMap().getMap()[29][31].objectLayer.setImage(120); // TODO = new Tile(133);
                             }
                         }
                     }
@@ -285,7 +284,7 @@ public class NetworkController extends GameController {
                 t.repaintAfterVisit();
                 t.updateMap();
                 if(t.getNumberOfPlayerInside() > 0 ) {
-                    game.getMap().getMap()[29][31][1] = new Tile(120);
+                    game.getMap().getMap()[29][31].objectLayer.setImage(120); // TODO = new Tile(120);
                 }
 
 

@@ -14,12 +14,8 @@ public class DecoratorLayer extends Layer {
     }
 
     @Override
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    @Override
     public void setImage(int nr) {
+        this.nr = nr;
         this.image = GraphicsUtility.getTileImage(nr);
     }
 }

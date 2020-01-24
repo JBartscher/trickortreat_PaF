@@ -612,7 +612,7 @@ public class MovementManager implements EventHandler<InputEvent> {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
         
         if ((map.getMapSector().entityIntersectsWithContainingItems(entity) ||
-                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0 ||
+                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x].objectLayer.getImageNr() < 0 ||
                 collideWithKey(entity)
         )) {
 
@@ -650,7 +650,7 @@ public class MovementManager implements EventHandler<InputEvent> {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
 
         if ((map.getMapSector().entityIntersectsWithContainingItems(entity) && !entity.isNoCollision() ||
-                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0)
+                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x].objectLayer.getImageNr() < 0)
                 || collideWithKey(entity)
         ) {
             // revert movement when entity is not a player and has a collision detection
@@ -687,7 +687,7 @@ public class MovementManager implements EventHandler<InputEvent> {
             if (o instanceof TownHall) {
                 TownHall t = (TownHall) o;
                 t.takeKey((Player) entity);
-                game.getMap().getMap()[29][31][1] = new Tile(133);
+                game.getMap().getMap()[29][31].objectLayer.setImage(133); //TODO = new Tile(133);
                 break;
             }
         }
@@ -697,7 +697,7 @@ public class MovementManager implements EventHandler<InputEvent> {
      * check if the player collided with a door tile
      */
     public void checkCollisionWithDoor(Placeable p, Entity entity) {
-        if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
+        if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x].isDoorTile()) {
             for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                 try {
                     House h = (House) obj;

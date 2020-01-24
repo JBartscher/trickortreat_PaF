@@ -124,7 +124,7 @@ public class GameController implements Observer {
                     t.repaintAfterVisit();
                     t.updateMap();
                     if (t.getNumberOfPlayerInside() > 0) {
-                        game.getMap().getMap()[29][31][1] = new Tile(120);
+                        game.getMap().getMap()[29][31].objectLayer.setImage(120);
                     }
                     break; // found townhall no further looping necessary
                 }

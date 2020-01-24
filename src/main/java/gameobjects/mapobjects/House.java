@@ -99,11 +99,11 @@ public abstract class House extends MapObject implements Visitable {
      */
     public void updateMap() {
 
-        Tile[][][] map = Map.getInstance().getMap();
+        Tile[][] map = Map.getInstance().getMap();
 
         for (int y = 0; y < tileset[0].length; y++) {
             for (int x = 0; x < tileset.length; x++) {
-                map[x + this.getX()][y + this.getY()][1] = tileset[x][y];
+                map[x + this.getX()][y + this.getY()].objectLayer = tileset[x][y].objectLayer;
             }
         }
         Map.getInstance().setMap(map);

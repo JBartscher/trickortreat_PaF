@@ -74,14 +74,14 @@ public class TownHall extends House implements Accessible {
      */
     public void updateMap() {
 
-        Tile[][][] map = Map.getInstance().getMap();
+        Tile[][] map = Map.getInstance().getMap();
 
         for (int y = 0; y < tileset[0].length; y++) {
             for (int x = 0; x < tileset.length; x++) {
                 if(x == 0) {
-                    map[x + this.getX()][y + this.getY()][2] = tileset[x][y];
+                    map[x + this.getX()][y + this.getY()].coverLayer = tileset[x][y].coverLayer;
                 } else {
-                    map[x + this.getX()][y + this.getY()][1] = tileset[x][y];
+                    map[x + this.getX()][y + this.getY()].objectLayer = tileset[x][y].objectLayer;
                 }
             }
         }
