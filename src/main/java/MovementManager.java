@@ -12,10 +12,7 @@ import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.Witch;
-import main.java.gameobjects.mapobjects.GingerbreadHouse;
-import main.java.gameobjects.mapobjects.House;
-import main.java.gameobjects.mapobjects.Mansion;
-import main.java.gameobjects.mapobjects.TownHall;
+import main.java.gameobjects.mapobjects.*;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Placeable;
@@ -701,12 +698,13 @@ public class MovementManager implements EventHandler<InputEvent> {
             for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                 try {
                     House h = (House) obj;
+                    HouseDecorator houseDecorator = new SoundDecorator(h);
                     /**
                      * call the visit method on the house object
                      */
                     if (h.intersects(p)) {
                         if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
-                            h.visit((Player) entity);
+                            houseDecorator.visit((Player) entity);
                         }
                     }
                     /**
