@@ -11,7 +11,6 @@ import java.io.Serializable;
 public abstract class District implements Serializable {
 
     protected double candy_multiplikator = 0;
-    protected int houseColorKey = 5;
     private Sector sector;
 
     public District(Sector sector) {
@@ -28,7 +27,7 @@ public abstract class District implements Serializable {
 
 
     public enum BiomeType {
-        Gras, Sand, Desert, Snow;
+        Gras, Sand, Desert, Snow
     }
 
     public BiomeType getBiomeType() {

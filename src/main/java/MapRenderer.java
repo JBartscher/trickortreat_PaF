@@ -4,9 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import main.java.Menu.GameMenu;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
@@ -112,18 +110,19 @@ public class MapRenderer {
 
     /**
      * draw the map for the current player - get called two times in locale mode (split screen) and once in a network game
+     *
      * @param
-     * @param gameCamera - get the position of the viewport
+     * @param gameCamera  - get the position of the viewport
      * @param widthOffset - in locale mode the second player is placed on the right screen side with this offset
-     * @param player - player1
+     * @param player      - player1
      * @param otherPlayer - player2
-     * @param playerObj - current player object that invoked this method
+     * @param playerObj   - current player object that invoked this method
      */
     private void drawMap(GraphicsContext gc, GameCamera gameCamera, int widthOffset, Player player, Player otherPlayer, Player playerObj) {
         // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
         for (int z = 0; z < 3; z++) {
 
-            if(!game.DRAMATIC && z == 0) {
+            if (!Game.DRAMATIC && z == 0) {
                 drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
             }
 
@@ -134,7 +133,7 @@ public class MapRenderer {
             if (z == 2 && !game.getPlayer().isInside() && !game.getOtherPlayer().isInside()) {
                 drawPlayer(gameCamera, player, widthOffset, gc);
                 drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                if(game.DRAMATIC) {
+                if (Game.DRAMATIC) {
                     drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
                 }
             }
@@ -153,8 +152,7 @@ public class MapRenderer {
                     /**
                      * check if position is within the current viewport
                      */
-                    if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
-
+                    if (isInViewPort(xPos, yPos, widthOffset)) {
                         /**
                          * set effect when player has no children
                          */
@@ -172,13 +170,25 @@ public class MapRenderer {
             if (game.getPlayer().isInside() || game.getOtherPlayer().isInside()) {
                 drawPlayer(gameCamera, player, widthOffset, gc);
                 drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                if(game.DRAMATIC)
+                if (Game.DRAMATIC)
                     drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
             }
         }
         gc.setGlobalAlpha(1.0);
 
 
+    }
+
+    /**
+     * check if the current viewport contains this position
+     *
+     * @param yPos        x position of obj
+     * @param xPos        y position of obj
+     * @param widthOffset width offset
+     * @return true/false
+     */
+    private boolean isInViewPort(int yPos, int xPos, int widthOffset) {
+        return yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset;
     }
 
     /**

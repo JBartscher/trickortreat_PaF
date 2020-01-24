@@ -9,7 +9,6 @@ public class RichDistrict extends District {
     public RichDistrict(Sector sector) {
         super(sector);
         this.candy_multiplikator = 0;
-        this.houseColorKey = 6;
     }
 
     @Override
@@ -33,12 +32,12 @@ public class RichDistrict extends District {
     }
 
     @Override
-    public Tile[][] getGingerbreadHouseVisitedTileset(){
+    public Tile[][] getGingerbreadHouseVisitedTileset() {
         return TileCollection.getGingerbreadHouseVisitedTiles();
     }
 
     @Override
-    public Tile[][] getGingerbreadHouseUnvisitedTileset(){
+    public Tile[][] getGingerbreadHouseUnvisitedTileset() {
         return TileCollection.getGingerbreadHouseUnvisitedTiles();
     }
 
