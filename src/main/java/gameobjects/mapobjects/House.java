@@ -80,18 +80,6 @@ public abstract class House extends MapObject implements Visitable {
      */
     public void visit(Player player) {
         if (isUnvisited) {
-
-            // Sound.playRing();
-
-            // calculate the amount of candy the player gets
-            int candies = 0;
-            Random random = new Random();
-            for (int i = 0; i < player.getChildrenCount(); i++) {
-                int zahl = random.nextInt(2);
-                candies += (int) (this.district.getCandy_multiplikator() + zahl);
-            }
-
-            player.addCandy(candies);
             player.notifyObservers(player);
         }
         this.isUnvisited = false;
