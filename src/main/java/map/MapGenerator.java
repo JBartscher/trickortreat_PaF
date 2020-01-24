@@ -8,6 +8,7 @@ import main.java.gameobjects.mapobjects.districts.District;
 import main.java.gameobjects.mapobjects.districts.NormalDistrict;
 import main.java.pathfinding.AStar;
 import main.java.pathfinding.Node;
+import main.java.sprites.GraphicsUtility;
 
 import java.awt.*;
 import java.util.Queue;
@@ -42,6 +43,7 @@ public class MapGenerator {
         DistrictDecider districtDecider = new DistrictDecider(map);
         try {
             this.districtManager = new DistrictManager(districtDecider.generateDistricts());
+            fillMap(); // A Star needs a initialized map
             this.aStar = new AStar(gameMap);
         } catch (SectorOverlappingException e) {
             e.printStackTrace();
@@ -68,6 +70,94 @@ public class MapGenerator {
         transferPlacedObjectsTilesToTileMap();
         disableHouseOffsets();
         createStreetNetwork();
+    }
+
+    /**
+     *
+     */
+    private void fillMap() {
+        /**
+         * iterate over the whole map and create a tile
+         */
+        for (int z = 0; z < 3; z++) {
+            for (int y = 0; y < gameMap.getSize(); y++) {
+                for (int x = 0; x < gameMap.getSize(); x++) {
+                    fillTile(z, y, x);
+                }
+            }
+        }
+    }
+
+    /**
+     * create each tile on the given coordinates
+     */
+    private void fillTile(int z, int y, int x) {
+        if (z == 1) {
+            /**
+             * embellish the centre with obstacles and decorations
+             */
+            if (x > Map.xTopLeftCentre.x && x < Map.xTopRightCentre.x && y > Map.xTopLeftCentre.y && y < Map.xBottomLeftCentre.y) {
+
+                gameMap.map[y][x][z] = new Tile(0);
+                gameMap.map[y][x][0] = new Tile(325);
+
+                if (x % 3 == 0 && (y + x) % 5 == 0) {
+                    gameMap.map[y][x][1] = new Tile(-7);
+                } else if (x % 6 == 0 && (y + x) % 6 == 0) {
+                    gameMap.map[y][x][1] = new Tile(-307);
+                } else if (x % 7 == 0 && (y + x) % 7 == 0) {
+                    gameMap.map[y][x][1] = new Tile(-308);
+                } else if (x % 8 == 0 && (y + x) % 8 == 0) {
+                    gameMap.map[y][x][1] = new Tile(-309);
+                }
+
+                if (x % 4 == 0 && (y + x) % 3 == 0) {
+                    gameMap.map[y][x][1] = new Tile(26);
+                }
+
+                if ((x % 4 == 0 && (y + x) % 2 == 0) || (x % 3 == 0 && (y - x) % 2 == 0)) {
+                    gameMap.map[y][x][0] = new Tile(327);
+                }
+
+
+                if (y == 33 && x == 29) {
+                    gameMap.map[y][x][1] = new Tile(-311);
+                    gameMap.map[y][x][0] = new Tile(326);
+                }
+
+                if (y == 31 && x == 27) {
+                    gameMap.map[y][x][1] = new Tile(-320);
+                    gameMap.map[y][x][0] = new Tile(327);
+                }
+
+                if (y == 33 && x == 33) {
+                    gameMap.map[y][x][1] = new Tile(-311);
+                    gameMap.map[y][x][0] = new Tile(326);
+                }
+
+                if (y == 31 && x == 35) {
+                    gameMap.map[y][x][1] = new Tile(-320);
+                    gameMap.map[y][x][0] = new Tile(327);
+                }
+
+                // fountain
+                if (y == 34 && x == 31) {
+                    gameMap.map[y][x][1] = new Tile(-306);
+                }
+                return;
+            }
+
+            /**
+             * generate borders between biomes and districts
+             */
+            if ((x == gameMap.getSize() / 3 || x == (gameMap.getSize() / 3 + 1) || y == gameMap.getSize() / 3 || y == (gameMap.getSize() / 3 + 1)) || (x == gameMap.getSize() * 2 / 3 || x == (gameMap.getSize() * 2 / 3 + 1) || y == gameMap.getSize() * 2 / 3 || y == (gameMap.getSize() * 2 / 3 + 1))) {
+                gameMap.map[y][x][z] = new Tile(20);
+                gameMap.map[y][x][0] = new Tile(20);
+                return;
+            }
+        }
+        gameMap.map[y][x][z] = new Tile(0);
+
     }
 
     /**
@@ -103,16 +193,22 @@ public class MapGenerator {
                                     nr = 1;
                                     if (zahl < 15)
                                         if (buildableWithDeko(yTotal, xTotal)) {
-                                            if (zahl < 5) currentTileDeko.setTileNr(-7);
-                                            else
-                                                currentTileDeko.setTileNr(-5);
+                                            if (zahl < 5) {
+                                                gameMap.getMap()[yTotal][xTotal][1] = new Tile(-7);
+                                                gameMap.getMap()[yTotal][xTotal][1].objectLayer.setImage(GraphicsUtility.getTileImage(-7));
+                                            } else
+                                                gameMap.getMap()[yTotal][xTotal][1] = new Tile(-5);
+                                            gameMap.getMap()[yTotal][xTotal][1].objectLayer.setImage(GraphicsUtility.getTileImage(-5));
+
                                         }
 
                                 }
                                 if (zahl >= 60 && zahl < 70) nr = 2;
                                 if (zahl >= 66 && zahl < 80) nr = 3;
                                 if (zahl >= 80) nr = 4;
-                                currentTile.setTileNr(nr);
+                                gameMap.getMap()[yTotal][xTotal][0] = new Tile(nr);
+                                gameMap.getMap()[yTotal][xTotal][0].baseLayer.setImage(GraphicsUtility.getTileImage(nr));
+
 
                                 break;
 
@@ -120,9 +216,9 @@ public class MapGenerator {
                                 zahl = random.nextInt(100);
                                 if (zahl < 12)
                                     if (buildableWithDeko(yTotal, xTotal)) {
-                                        if (zahl < 8) currentTileDeko.setTileNr(-3);
+                                        if (zahl < 8) currentTileDeko = new Tile(-3);
                                         else
-                                            currentTileDeko.setTileNr(-7);
+                                            currentTileDeko = new Tile(-7);
                                     }
 
                                 if (zahl < 60) nr = 5;
@@ -130,28 +226,34 @@ public class MapGenerator {
                                 if (zahl >= 66 && zahl < 80) nr = 7;
                                 if (zahl >= 80) nr = 8;
 
-                                currentTile.setTileNr(nr);
-
+                                currentTile = new Tile(nr);
+                                gameMap.getMap()[yTotal][xTotal][0] = currentTile;
+                                gameMap.getMap()[yTotal][xTotal][0].baseLayer.setImage(GraphicsUtility.getTileImage(currentTile.getTileNr()));
+                                gameMap.getMap()[yTotal][xTotal][1] = currentTileDeko;
+                                gameMap.getMap()[yTotal][xTotal][1].objectLayer.setImage(GraphicsUtility.getTileImage(currentTileDeko.getTileNr()));
                                 break;
 
                             case Desert:
-                                currentTile.setTileNr(9);
+                                currentTile = new Tile(9);
                                 zahl = random.nextInt(100);
                                 if (zahl < 10) {
                                     if (buildableWithDeko(yTotal, xTotal)) {
                                         if (zahl < 5)
-                                            currentTileDeko.setTileNr(-12);
+                                            currentTileDeko = new Tile(-12);
                                         else
-                                            currentTileDeko.setTileNr(-13);
+                                            currentTileDeko = new Tile(-13);
                                     }
 
                                 } else if (zahl >= 12 && zahl < 20) {
-                                    currentTile.setTileNr(10);
+                                    currentTile = new Tile(10);
                                 } else if (zahl >= 20 && zahl < 26 && currentTile.getTileNr() < 20 && currentTile.getTileNr() > 25)
-                                    currentTileDeko.setTileNr(11);
+                                    currentTileDeko = new Tile(11);
 
+                                gameMap.getMap()[yTotal][xTotal][0] = currentTile;
+                                gameMap.getMap()[yTotal][xTotal][0].baseLayer.setImage(GraphicsUtility.getTileImage(currentTile.getTileNr()));
+                                gameMap.getMap()[yTotal][xTotal][1] = currentTileDeko;
+                                gameMap.getMap()[yTotal][xTotal][1].objectLayer.setImage(GraphicsUtility.getTileImage(currentTileDeko.getTileNr()));
                                 break;
-
                             case Snow:
                                 zahl = random.nextInt(100);
                                 if (zahl < 15) nr = 15;
@@ -164,12 +266,14 @@ public class MapGenerator {
                                  * sets snow as ground if underlying ground is NOT a street tile
                                  */
                                 if (currentTile.getTileNr() < 20 && currentTile.getTileNr() > 25) {
-                                    currentTile.setTileNr(14);
+                                    gameMap.getMap()[yTotal][xTotal][0] = new Tile(14);
+                                    gameMap.getMap()[yTotal][xTotal][0].baseLayer.setImage(GraphicsUtility.getTileImage(14));
 
                                 }
 
                                 if ((currentTile.getTileNr() < 20 || currentTile.getTileNr() > 25) && zahl < 60) {
-                                    currentTileDeko.setTileNr(nr);
+                                    gameMap.getMap()[yTotal][xTotal][0] = new Tile(nr);
+                                    gameMap.getMap()[yTotal][xTotal][0].baseLayer.setImage(GraphicsUtility.getTileImage(nr));
                                 }
 
                                 break;
@@ -337,8 +441,7 @@ public class MapGenerator {
                     if (x == 0 && currentMapObject instanceof House) {
                         gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][2] = currentMapObject.getTileByTileIndex(x, y);
                         gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][1] = currentMapObject.getTileByTileIndex(x, y);
-                    }
-                    else
+                    } else
                         gameMap.map[currentMapObject.getX() + x][currentMapObject.getY() + y][1] = currentMapObject.getTileByTileIndex(x, y);
                 }
             }
@@ -376,7 +479,7 @@ public class MapGenerator {
      */
     private void createCentreBigHouses(int numberOfHouses) {
         // 2x2
-        for(int j = 0; j < 2; j++) {
+        for (int j = 0; j < 2; j++) {
             for (int i = 0; i < numberOfHouses / 2; i++) {
                 // stub Object, the placeable will be overridden in the findObjectSpot method
                 House bigHouse = HouseFactory.createNewInstance("big");
@@ -384,7 +487,7 @@ public class MapGenerator {
                 int x = (int) (gameMap.getSize() * 0.39) + i * 4;
                 int y = (int) (gameMap.getSize() * 0.42);
 
-                if(j == 1) {
+                if (j == 1) {
                     y += 11;
                 }
                 /**
@@ -415,6 +518,7 @@ public class MapGenerator {
 
     /**
      * set the house to given coordinates and add it to the sector
+     *
      * @param house
      * @param x
      * @param y
@@ -466,7 +570,7 @@ public class MapGenerator {
         int x = doorPoints.get(0).x;
         int y = doorPoints.get(0).y;
 
-        tileMap[y][x][1].setTileNr(getBiomeStreetType(x, y));
+        tileMap[y][x][1] = new Tile(getBiomeStreetType(x, y));
 
         for (int i = 0; i < size; i++) {
 
@@ -511,6 +615,7 @@ public class MapGenerator {
 
     /**
      * check if current tile is replaceable by a decoration tile
+     *
      * @param yTotal
      * @param xTotal
      * @return
@@ -524,6 +629,7 @@ public class MapGenerator {
 
     /**
      * find the next nearest door
+     *
      * @param doorPoints
      * @param x
      * @param y
@@ -550,6 +656,7 @@ public class MapGenerator {
 
     /**
      * draw street tiles depending on given targets
+     *
      * @param targets
      */
     public void drawStreet(CopyOnWriteArrayList<Point> targets) {
@@ -561,20 +668,21 @@ public class MapGenerator {
 
                 streetType = getBiomeStreetType(point.x, point.y);
 
-                gameMap.getMap()[point.y][point.x][1].setTileNr(streetType);
+                gameMap.getMap()[point.y][point.x][1] = new Tile(streetType);
             }
         }
     }
 
     /**
      * return the biome depending on x- and y-variable
+     *
      * @param x
      * @param y
      * @return
      */
     public int getBiomeStreetType(int x, int y) {
 
-        if(x > Map.xTopLeftCentre.x && x < Map.xTopRightCentre.x && y > Map.xTopLeftCentre.y && y < Map.xBottomLeftCentre.y) {
+        if (x > Map.xTopLeftCentre.x && x < Map.xTopRightCentre.x && y > Map.xTopLeftCentre.y && y < Map.xBottomLeftCentre.y) {
             return 25;
         }
 

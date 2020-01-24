@@ -124,7 +124,7 @@ public class GameController implements Observer {
                     t.repaintAfterVisit();
                     t.updateMap();
                     if (t.getNumberOfPlayerInside() > 0) {
-                        game.getMap().getMap()[29][31][1].setTileNr(120);
+                        game.getMap().getMap()[29][31][1] = new Tile(120);
                     }
                     break; // found townhall no further looping necessary
                 }
@@ -174,8 +174,8 @@ public class GameController implements Observer {
 
                         /** set game as DRAMATIC (enables dramatic music and witch movement)
                          */
-                        if (game.getGameTime() < 30000 && !game.DRAMATIC) {
-                            game.DRAMATIC = true;
+                        if (game.getGameTime() < 30000 && !Game.DRAMATIC) {
+                            Game.DRAMATIC = true;
                             Sound.playCountdown();
                         }
                     }

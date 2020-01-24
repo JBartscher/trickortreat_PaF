@@ -76,8 +76,6 @@ public class GraphicsUtility {
     public static void initGraphics() {
         initTileImages();
         initImages();
-
-
     }
 
     public static void initTileImages() {
@@ -125,10 +123,6 @@ public class GraphicsUtility {
 
 
         System.out.println("fertig");
-
-
-        // TODO: ÜBERGANGSWEISE, wird später überarbeitet
-
 
         Image imageTileSetGras = new Image(GraphicsUtility.class.getResourceAsStream("tileset_gras.png"));
         Image imageTileSet = new Image(GraphicsUtility.class.getResourceAsStream("tileset_ground.png"));

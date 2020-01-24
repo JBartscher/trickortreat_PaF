@@ -135,8 +135,8 @@ public class MovementManager implements EventHandler<InputEvent> {
                 if (targets.size() > 1) {
                     targets.remove(0);
                     if (targets.size() > 0) {
-                        int transformedX = (int) (targets.get(0).x * Tile.TILE_SIZE);
-                        int transformedY = (int) (targets.get(0).y * Tile.TILE_SIZE);
+                        int transformedX = targets.get(0).x * Tile.TILE_SIZE;
+                        int transformedY = targets.get(0).y * Tile.TILE_SIZE;
                         entity.setTarget(new Point(transformedX, transformedY));
                     }
                 }
@@ -469,7 +469,7 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         //move NPC
         if ( (game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && Game.DRAMATIC) {
-            if(game.DRAMATIC) {
+            if (Game.DRAMATIC) {
                 moveObject(witch);
             }
 
@@ -687,7 +687,7 @@ public class MovementManager implements EventHandler<InputEvent> {
             if (o instanceof TownHall) {
                 TownHall t = (TownHall) o;
                 t.takeKey((Player) entity);
-                game.getMap().getMap()[29][31][1].setTileNr(133);
+                game.getMap().getMap()[29][31][1] = new Tile(133);
                 break;
             }
         }
@@ -750,8 +750,8 @@ public class MovementManager implements EventHandler<InputEvent> {
 
                     /** When one entity is the npc then reduce childrencount of the other object (player) by 1
                      * set witch on return and calculate a new path to her home position
-                      */
-                } else if (e instanceof Witch && entity instanceof Player && game.DRAMATIC) {
+                     */
+                } else if (e instanceof Witch && entity instanceof Player && Game.DRAMATIC) {
                     Witch witch = (Witch) e;
                     Player player = (Player) entity;
                     if (player.getChildrenCount() <= 0) return;
@@ -780,7 +780,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                     }
                 }
 
-                if(e instanceof Witch && !game.DRAMATIC) {
+                if (e instanceof Witch && !Game.DRAMATIC) {
                     size = 0;
                 }
 

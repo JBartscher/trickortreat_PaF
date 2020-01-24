@@ -12,8 +12,6 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.sprites.GraphicsUtility;
 
-import java.util.concurrent.TimeUnit;
-
 public class MapRenderer {
 
     private Map map;
@@ -26,20 +24,6 @@ public class MapRenderer {
         this.tileMap = map.getMap();
         this.window = window;
         this.game = game;
-        GraphicsUtility.initGraphics();
-    }
-
-    public static String calculateTime(Game game) {
-
-        int gameTime = game.getGameTime();
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(gameTime);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(gameTime - minutes * 1000 * 60);
-        String secondsString = String.valueOf(seconds);
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        }
-
-        return minutes + ":" + secondsString;
     }
 
     public void render() {
@@ -75,7 +59,6 @@ public class MapRenderer {
             } else {
                 otherPlayer = game.getPlayer();
                 middleTile = new Rectangle(Game.WIDTH, Window.HEIGHT * 0.1, 2 * Tile.TILE_SIZE, Window.HEIGHT);
-                gc.setFill(Color.rgb(33, 33, 33));
                 gc.fillRect(Game.WIDTH, Window.HEIGHT * 0.1, 2 * Tile.TILE_SIZE, Window.HEIGHT);
             }
 
@@ -105,7 +88,7 @@ public class MapRenderer {
          * Singleton GameMenu-JavaFx Group, welche alle InGameMenu Elemente hält, und so nicht in jeder draw() neu initialisiert werden muss
          */
 
-        GameMenu.getInstance().updateTimeText(calculateTime(game));
+        GameMenu.getInstance().updateTimeText(game);
         GameMenu.getInstance().addGameMenuToScene(root);
     }
 
@@ -153,7 +136,7 @@ public class MapRenderer {
                     /**
                      * check if position is within the current viewport
                      */
-                    if (isInViewPort(xPos, yPos, widthOffset)) {
+                    if (isInViewPort(yPos, xPos, widthOffset)) {
                         /**
                          * set effect when player has no children
                          */
@@ -162,8 +145,10 @@ public class MapRenderer {
                         } else {
                             gc.setGlobalAlpha(1.0);
                         }
-                        Image image = GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr());
+
+                        Image image = tileMap[y][x][z].getImage();
                         gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
                     }
                 }
             }
@@ -189,7 +174,7 @@ public class MapRenderer {
      * @return true/false
      */
     private boolean isInViewPort(int yPos, int xPos, int widthOffset) {
-        return yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset;
+        return (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset);
     }
 
     /**

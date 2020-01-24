@@ -13,6 +13,7 @@ import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
 import main.java.map.MapObject;
+import main.java.sprites.GraphicsUtility;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -28,7 +29,7 @@ public class Game {
     public final static int TIME = ((Number) config.getParam("time")).intValue();
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
-    public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
+    public static int HEIGHT = (int) (Window.HEIGHT * 0.9);
     public static boolean DRAMATIC = false;
 
     private Map map;
@@ -79,10 +80,16 @@ public class Game {
     public GameMode gameMode;
     public GameController gameController;
 
-    /** main constructor when playing locale or host a game
-     *  networkEngine is only used in gameMode Remote otherwise the reference is null and not used
-      */
+    /**
+     * main constructor when playing locale or host a game
+     * networkEngine is only used in gameMode Remote otherwise the reference is null and not used
+     */
     public Game(GameLauncher launcher, Stage stage, GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
+        /**
+         * the initGraphics call must be finished before the tile map is created.
+         */
+        GraphicsUtility.initGraphics();
+
         Game.DRAMATIC = false;
         this.launcher = launcher;
         map = new Map(60);
@@ -90,7 +97,7 @@ public class Game {
         generator.createMap();
         this.gameMode = gameMode;
 
-        if(gameMode == GameMode.REMOTE) {
+        if (gameMode == GameMode.REMOTE) {
             gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.SERVER, launcher);
         } else {
             gameController = new GameController(this, launcher);
@@ -110,10 +117,15 @@ public class Game {
      * the client gets a gamestate from the server and use this to create their own game
      */
     public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType, GameLauncher gameLauncher) {
+        /**
+         * the initGraphics call must be finished before the tile map is created.
+         */
+        GraphicsUtility.initGraphics();
+
         Game.DRAMATIC = false;
         this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT, gameLauncher);
         this.launcher = gameLauncher;
-        ((NetworkController)gameController).updateGameState(gameState);
+        ((NetworkController) gameController).updateGameState(gameState);
         this.gameMode = GameMode.REMOTE;
 
         this.player = new Player(movementType);
@@ -138,9 +150,9 @@ public class Game {
         this.listOfAllEntities.addAll(Arrays.asList(player, otherPlayer, witch));
         this.map = gameState.getMap();
 
-        for(MapObject o : map.getMapSector().getAllContainingMapObjects()) {
-            if(o instanceof GingerbreadHouse) {
-                GingerbreadHouse.setInstance((GingerbreadHouse)o);
+        for (MapObject o : map.getMapSector().getAllContainingMapObjects()) {
+            if (o instanceof GingerbreadHouse) {
+                GingerbreadHouse.setInstance((GingerbreadHouse) o);
             }
         }
 
@@ -152,7 +164,7 @@ public class Game {
      * update game data like game camera and animation images
      */
     public void update() {
-        if(paused) return;
+        if (paused) return;
         checkGameOver();
         updateProtection();
         movementManager.moveAllEntities(gameController, listOfPlayers, witch);
@@ -160,12 +172,12 @@ public class Game {
         /**
          * show animation image of other entity
          */
-        if(gameMode == GameMode.REMOTE) {
+        if (gameMode == GameMode.REMOTE) {
             otherPlayer.setEntityImage(true);
         }
 
         gameCamera.centerOnPlayer();
-        if(gameMode == GameMode.LOCAL) {
+        if (gameMode == GameMode.LOCAL) {
             gameCameraEnemy.centerOnPlayer();
         }
     }
@@ -175,7 +187,7 @@ public class Game {
      */
     public void checkGameOver() {
 
-        if(player.getChildrenCount() == 0 && otherPlayer.getChildrenCount() == 0) {
+        if (player.getChildrenCount() == 0 && otherPlayer.getChildrenCount() == 0) {
             gameTime = 0;
         }
     }
@@ -186,16 +198,16 @@ public class Game {
      */
     public void updateProtection() {
 
-        if(player.getChildrenCount() <= 0) {
+        if (player.getChildrenCount() <= 0) {
             listOfAllEntities.remove(player);
         }
 
-        if(otherPlayer.getChildrenCount() <= 0) {
+        if (otherPlayer.getChildrenCount() <= 0) {
             listOfAllEntities.remove(otherPlayer);
         }
 
-        for(Player player : listOfPlayers) {
-            if(player.getProtectedTicks() > 0) {
+        for (Player player : listOfPlayers) {
+            if (player.getProtectedTicks() > 0) {
                 player.setProtectedTicks(player.getProtectedTicks() - 1);
             }
         }
@@ -203,21 +215,36 @@ public class Game {
 
     /**
      * Getter and Setter-methods
+     *
      * @return
      */
-    public Player getPlayer() { return player; }
+    public Player getPlayer() {
+        return player;
+    }
 
-    public Player getOtherPlayer() { return otherPlayer; }
+    public Player getOtherPlayer() {
+        return otherPlayer;
+    }
 
-    public Witch getWitch() { return witch; }
+    public Witch getWitch() {
+        return witch;
+    }
 
-    public void setWitch(Witch witch) { this.witch = witch; }
+    public void setWitch(Witch witch) {
+        this.witch = witch;
+    }
 
-    public AliceCooper getAliceCooper() { return aliceCooper; }
+    public AliceCooper getAliceCooper() {
+        return aliceCooper;
+    }
 
-    public int getGameTime() { return gameTime; }
+    public int getGameTime() {
+        return gameTime;
+    }
 
-    public void setGameTime(int gameTime) { this.gameTime = gameTime; }
+    public void setGameTime(int gameTime) {
+        this.gameTime = gameTime;
+    }
 
     public GameCamera getGameCamera() {
         return gameCamera;
@@ -235,15 +262,21 @@ public class Game {
         return listOfPlayers;
     }
 
-    public Map getMap() { return map; }
+    public Map getMap() {
+        return map;
+    }
 
-    public void setMap(Map map) { this.map = map; }
+    public void setMap(Map map) {
+        this.map = map;
+    }
 
     public Window getWindow() {
         return window;
     }
 
-    public GameMode getGameMode() { return gameMode;  }
+    public GameMode getGameMode() {
+        return gameMode;
+    }
 
     public CopyOnWriteArrayList<Entity> getListOfAllEntities() {
         return listOfAllEntities;

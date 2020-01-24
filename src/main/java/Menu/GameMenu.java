@@ -9,6 +9,8 @@ import main.java.*;
 import main.java.gameobjects.Player;
 import main.java.sprites.GraphicsUtility;
 
+import java.util.concurrent.TimeUnit;
+
 public class GameMenu implements Singleton {
 
     private final static Configuration<Object> config = new Configuration<Object>();
@@ -153,12 +155,32 @@ public class GameMenu implements Singleton {
     }
 
     /**
+     * takes the current game time and formats it so the timerText label displays the right amount of time
+     * left to play.
+     *
+     * @param game game instance, which is needed to get the current game time
+     * @return a formated string whith the leftover time in "mm:ss" format
+     */
+    public static String calculateTime(Game game) {
+
+        int gameTime = game.getGameTime();
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(gameTime);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(gameTime - minutes * 1000 * 60);
+        String secondsString = String.valueOf(seconds);
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        }
+
+        return minutes + ":" + secondsString;
+    }
+
+    /**
      * updates the timer Text Element of this menu
      *
-     * @param s String sconds left
+     * @param game game instance, which is needed to get the current game time
      */
-    public void updateTimeText(String s) {
-        timerText.setText(s);
+    public void updateTimeText(Game game) {
+        timerText.setText(calculateTime(game));
     }
 
     /**

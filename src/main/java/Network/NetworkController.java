@@ -9,6 +9,7 @@ import main.java.gameobjects.mapobjects.Mansion;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.Map;
 import main.java.map.MapObject;
+import main.java.map.Tile;
 
 import java.io.ObjectOutputStream;
 import java.util.List;
@@ -232,18 +233,18 @@ public class NetworkController extends GameController {
                          */
                         if(eventMapObject.getEventType() == TownHall.EventType.VISITED) {
                             //System.out.println("ANZAHL SPIELER INTERN: " + ((TownHall) obj).getNumberOfPlayerInside() + " BEKOMMEN: " + eventMapObject.getNumberOfPlayerInside());
-                            ((TownHall)obj).setNumberOfPlayerInside(((TownHall) eventMapObject).getNumberOfPlayerInside());
-                            ((TownHall)eventMapObject).repaintAfterVisit();
+                            ((TownHall) obj).setNumberOfPlayerInside(eventMapObject.getNumberOfPlayerInside());
+                            eventMapObject.repaintAfterVisit();
                             System.out.println(((TownHall) obj).getNumberOfPlayerInside());
 
-                            ((TownHall)obj).repaintAfterVisit();
-                            ((TownHall)obj).updateMap();
+                            ((TownHall) obj).repaintAfterVisit();
+                            ((TownHall) obj).updateMap();
 
                         } else if(eventMapObject.getEventType() == TownHall.EventType.KEY) {
                             ((TownHall)obj).setHasKey(false);
                             ((TownHall)obj).repaintAfterVisit();
                             if(((TownHall)obj).getNumberOfPlayerInside() > 0) {
-                                game.getMap().getMap()[29][31][1].setTileNr(133);
+                                game.getMap().getMap()[29][31][1] = new Tile(133);
                             }
                         }
                     }
@@ -284,7 +285,7 @@ public class NetworkController extends GameController {
                 t.repaintAfterVisit();
                 t.updateMap();
                 if(t.getNumberOfPlayerInside() > 0 ) {
-                    game.getMap().getMap()[29][31][1].setTileNr(120);
+                    game.getMap().getMap()[29][31][1] = new Tile(120);
                 }
 
 
