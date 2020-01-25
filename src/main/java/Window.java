@@ -28,10 +28,9 @@ public class Window {
     }
 
     private void closeEvent() {
-
         stage.setOnHiding( event -> {
             game.getGameController().shutDownNetwork();
-            Platform.exit();
+            //Platform.exit();
         });
     }
 

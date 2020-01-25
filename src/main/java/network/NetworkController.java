@@ -305,8 +305,6 @@ public class NetworkController extends GameController {
                 }
 
                 break;
-
-
         }
     }
 
