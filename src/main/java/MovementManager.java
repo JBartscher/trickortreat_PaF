@@ -178,8 +178,8 @@ public class MovementManager implements EventHandler<InputEvent> {
             game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
 
             config.setParam("paused", game.paused);
-            //if (!(Boolean)config.getParam("muted")) Sound.muteSound();
-            GameMenu.setRightButtons();
+
+
 
             return;
         } else if (event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getSceneX() >= 70 && event.getSceneX() < 140 && event.getSceneY() < 70) {
@@ -197,6 +197,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void handleMouse(MouseEvent event) {
 
         checkButtonClicked(event);
+        if(event.getSceneY() < Window.HEIGHT * 0.1) return;
 
         if (inputMOUSE == null) return;
         if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
@@ -213,21 +214,31 @@ public class MovementManager implements EventHandler<InputEvent> {
 
     public void handleKeyboard(KeyEvent event) {
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-            if (event.getCode() == KeyCode.M) {
-                Sound.muteSound();
-            }
 
-            if (event.getCode() == KeyCode.P) {
-                if (game.gameMode == Game.GameMode.REMOTE) {
-                    if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                        ((NetworkController) game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
-                        game.paused = true;
-                    }
-                } else if (game.getGameMode() == Game.GameMode.LOCAL) {
+            if(event.getCode() == KeyCode.ESCAPE) {
+                String pausedEvent = "";
+                boolean paused = game.paused;
+                Event.EventType eventType;
+                if (paused) {
+                    game.paused = false;
+                    paused = false;
+                    eventType = Event.EventType.UNPAUSED;
+                    pausedEvent = "UNPAUSED";
+                } else {
                     game.paused = true;
-
+                    paused = true;
+                    eventType = Event.EventType.PAUSED;
+                    pausedEvent = "PAUSED";
                 }
-                if (!(Boolean) config.getParam("muted")) Sound.muteSound();
+
+                game.paused = paused;
+                if (game.gameMode == Game.GameMode.REMOTE) {
+                    System.out.println("EVENT VERSCHICKEN!");
+                    ((NetworkController) game.getGameController()).changeGameStateObject(pausedEvent, eventType);
+                }
+                game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
+
+                config.setParam("paused", game.paused);
             }
 
             if (event.getCode() == KeyCode.A) {
@@ -255,18 +266,6 @@ public class MovementManager implements EventHandler<InputEvent> {
             }
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
-
-            if (event.getCode() == KeyCode.R) {
-                if (game.gameMode == Game.GameMode.REMOTE) {
-                    if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                        ((NetworkController) game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
-                        game.paused = false;
-                    }
-                } else if (game.getGameMode() == Game.GameMode.LOCAL) {
-                    game.paused = false;
-                }
-                if ((Boolean) config.getParam("muted")) Sound.muteSound();
-            }
 
             if (event.getCode() == KeyCode.A) {
                 if (inputAWSD != null) {
@@ -633,6 +632,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 //System.out.println("COLLIDE!");
                 entity.setyPos(entity.getyPos() - size);
                 if(entity instanceof Witch) {
+                    //entity.setxPos(entity.getxPos() - 0.25 * Tile.TILE_SIZE);
                     Point target = chooseTarget((Witch)entity, game.getPlayer(), game.getOtherPlayer());
                     findPath(entity, entity.getEntityPos(), target);
                 }
