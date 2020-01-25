@@ -3,6 +3,7 @@ package main.java.map;
 import main.java.MovementManager;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Witch;
+import main.java.pattern.Composite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * tries to place a new  object.
  * Sector implements the Composite Pattern.
  */
-public class Sector extends Placeable {
+public class Sector extends Placeable implements Composite<Sector> {
 
     /**
      * mapObjects that are contained by this sector
@@ -154,34 +155,47 @@ public class Sector extends Placeable {
     }
 
     /**
+     * remove a childSector from this Sector and all its MapObjects.
+     *
+     * @param child the childSector that shall be removed
+     */
+    @Override
+    public void removeChild(Sector child) {
+        this.childSectors.remove(child);
+        child.getAllContainingMapObjects().forEach(mapObject -> this.removeMapObject(mapObject));
+    }
+
+    /**
      * add a Sector to this Sectors child list.
      *
      * Sets the parent reference of the child to this Sector.
      *
-     * @param childSector the sector that gets added to this sector
+     * @param child the sector that gets added to this sector
      */
-    public void addChildSector(Sector childSector){
-        this.childSectors.add(childSector);
-        this.sectorObjects.addAll(childSector.sectorObjects);
-        childSector.setParentSector(this);
+    @Override
+    public void addChild(Sector child) {
+        this.childSectors.add(child);
+        this.sectorObjects.addAll(child.sectorObjects);
+        child.setParent(this);
     }
 
     /**
      * set the parentReference of this Sector.
      *
-     * @param parentSector the new parentSector
+     * @param parent the new parentSector
      */
-    private void setParentSector(Sector parentSector){
-        this.parent = parentSector;
+    @Override
+    public void setParent(Sector parent) {
+        this.parent = parent;
     }
 
     /**
-     * remove a childSector from this Sector and all its MapObjects.
+     * get the entire list of child objects of this sector.
      *
-     * @param childSector the childSector that shall be removed
+     * @return a list of all child sectors of this sector
      */
-    public void removeChildSector(Sector childSector){
-        this.childSectors.remove(childSector);
-        childSector.getAllContainingMapObjects().forEach(mapObject -> this.removeMapObject(mapObject));
+    @Override
+    public List<Sector> getChildren() {
+        return this.childSectors;
     }
 }

@@ -1,6 +1,6 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Singleton;
+import main.java.pattern.Singleton;
 import main.java.Sound;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;

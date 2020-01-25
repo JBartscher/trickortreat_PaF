@@ -1,6 +1,6 @@
 package main.java.map;
 
-import main.java.Configuration;
+import main.java.configuration.Configuration;
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
 import main.java.gameobjects.mapobjects.*;

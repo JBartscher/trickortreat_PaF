@@ -1,6 +1,6 @@
 package main.java;
 
-import main.java.Configuration;
+import main.java.configuration.Configuration;
 
 import java.io.File;
 

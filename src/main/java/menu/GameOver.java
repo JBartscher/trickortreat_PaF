@@ -16,6 +16,7 @@ import main.java.network.Event;
 import main.java.network.NetworkController;
 import main.java.network.ServerEngine;
 import main.java.gameobjects.Player;
+import main.java.pattern.Observable;
 import main.java.sprites.GraphicsUtility;
 
 public class GameOver extends Observable {

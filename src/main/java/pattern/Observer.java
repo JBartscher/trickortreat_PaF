@@ -1,4 +1,4 @@
-package main.java;
+package main.java.pattern;
 
 /**
  * Interface that marks a class as an Observer which can be notified by its observables.

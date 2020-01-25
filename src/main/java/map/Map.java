@@ -1,6 +1,6 @@
 package main.java.map;
 
-import main.java.Singleton;
+import main.java.pattern.Singleton;
 
 import java.awt.*;
 import java.io.Serializable;

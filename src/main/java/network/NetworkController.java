@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.java.*;
+import main.java.configuration.Configuration;
 import main.java.menu.GameOver;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
@@ -14,6 +15,7 @@ import main.java.gameobjects.mapobjects.Mansion;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.Map;
 import main.java.map.MapObject;
+import main.java.pattern.Observable;
 
 import java.io.ObjectOutputStream;
 import java.util.List;
