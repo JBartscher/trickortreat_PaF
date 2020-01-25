@@ -66,7 +66,7 @@ public class GameOver extends Observable {
             } else {
                 player1 = game.getOtherPlayer();
                 player2 = game.getPlayer();
-                new HighScoreGUI().checkScore(new int[]{player1.getCandy()}, 0, true);
+                new HighScoreGUI().checkScore(new int[]{player2.getCandy()}, 0, true);
             }
         }
 
