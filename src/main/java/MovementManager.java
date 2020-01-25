@@ -718,20 +718,17 @@ public class MovementManager implements EventHandler<InputEvent> {
             for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                 try {
                     House h = (House) obj;
-                    SoundDecorator houseSoundDecorator = new SoundDecorator(h);
-                    CandyDecorator houseCandyDecorator = new CandyDecorator(h);
                     /**
                      * call the visit method on the house object
                      */
                     if (h.intersects(p)) {
                         if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
-                            /**
-                             * the order of the call is not trivial and should be followed,
-                             * because the soundDecorator does not care if a house has already been visited,
-                             * the CandyDecorator does.
-                             */
-                            houseCandyDecorator.visit((Player) entity);
-                            houseSoundDecorator.visit((Player) entity);
+
+                            HouseDecorator houseDecorator = new SoundDecorator(h);
+                            if(houseDecorator.getDecoratedHouse() instanceof SmallHouse || houseDecorator.getDecoratedHouse() instanceof BigHouse)
+                                houseDecorator = new CandyDecorator(houseDecorator);
+
+                            houseDecorator.visit((Player) entity);
                         }
                     }
                     /**
