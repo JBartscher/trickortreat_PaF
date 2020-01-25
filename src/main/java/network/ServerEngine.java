@@ -13,6 +13,7 @@ import javafx.stage.StageStyle;
 import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
+import main.java.Sound;
 import main.java.MovementManager.MovementType;
 
 import java.io.*;
@@ -86,8 +87,9 @@ public class ServerEngine extends Thread implements Network {
             vBox.setStyle("-fx-background-color: black;");
             vBox.setAlignment(Pos.CENTER);
             this.labelRequests = new Label();
-            Button buttonClose = new Button("Cancel");
-            buttonClose.setStyle("-fx-text-fill: black; -fx-font-size: 1.25em; -fx-font-weight: bold;");
+            Button buttonClose = new Button("CANCEL");
+            buttonClose.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0;" +
+            "-fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
 
             buttonClose.setOnAction( (e) -> {
 
@@ -100,15 +102,16 @@ public class ServerEngine extends Thread implements Network {
                 }
 
                 stageNetwork.close();
+                Sound.playMenu();
 
             });
 
-            labelRequests.setStyle("-fx-text-fill: white; -fx-font-size: 1.25em; -fx-font-weight: bold;");
+            labelRequests.setStyle("-fx-text-fill: white; -fx-font-size: 1.25em;");
             vBox.getChildren().addAll(labelRequests, buttonClose);
             stageNetwork = new Stage();
             stageNetwork.initStyle(StageStyle.UNDECORATED);
 
-            Scene scene = new Scene(vBox, 550, 150);
+            Scene scene = new Scene(vBox, 550, 120);
             stageNetwork.setScene(scene);
             stageNetwork.show();
 
