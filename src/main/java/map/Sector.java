@@ -40,6 +40,7 @@ public class Sector extends MapObject implements Composite<Sector> {
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
         sectorObjects = new ArrayList<>();
+
     }
 
     @Override
@@ -159,6 +160,7 @@ public class Sector extends MapObject implements Composite<Sector> {
         sectorObjects.remove(mapObject);
     }
 
+
     /**
      * remove a childSector from this Sector and all its MapObjects.
      *
@@ -169,7 +171,6 @@ public class Sector extends MapObject implements Composite<Sector> {
         this.childSectors.remove(child);
         child.getAllContainingMapObjects().forEach(mapObject -> this.removeMapObject(mapObject));
     }
-
     /**
      * add a Sector to this Sectors child list.
      *

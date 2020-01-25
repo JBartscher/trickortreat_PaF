@@ -124,7 +124,6 @@ public class GameController implements Observer {
     @Override
     public void update(Observable o, Object arg) {
 
-
         if (o instanceof GingerbreadHouse) {
             for (MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
                 if (obj instanceof TownHall) {
