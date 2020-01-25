@@ -187,7 +187,6 @@ public class HighScoreGUI {
                     lighting.setSurfaceScale(5.0);
                     vBox.setEffect(lighting);
 
-
                     stage.show();
                     highScoreItemListView = new ListView<>();
                     highScoreItemListView.setStyle("-fx-font-size: 1.8em;");

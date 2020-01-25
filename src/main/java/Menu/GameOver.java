@@ -20,7 +20,6 @@ import main.java.sprites.GraphicsUtility;
 
 public class GameOver extends Observable {
 
-
     private Game game;
     private GameLauncher gameLauncher;
     private Stage stage;
@@ -67,7 +66,7 @@ public class GameOver extends Observable {
             } else {
                 player1 = game.getOtherPlayer();
                 player2 = game.getPlayer();
-                new HighScoreGUI().checkScore(new int[]{player1.getCandy()}, 1, true);
+                new HighScoreGUI().checkScore(new int[]{player1.getCandy()}, 0, true);
             }
         }
 
