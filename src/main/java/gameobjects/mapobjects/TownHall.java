@@ -1,5 +1,6 @@
 package main.java.gameobjects.mapobjects;
 
+import main.java.Game;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.Tile;
@@ -37,7 +38,7 @@ public class TownHall extends House implements Accessible {
          * The player can only visits the TownHall when protection is over
          *
          */
-        if(player.getProtectedTicks() > 0) return;
+        if(player.getProtectedTicks() > 0 || (Game.DRAMATIC && !player.isInside())) return;
         setInsideMode(player);
         repaintAfterVisit();
         eventType = EventType.VISITED;

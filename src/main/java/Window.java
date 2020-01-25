@@ -23,7 +23,6 @@ public class Window {
         this.game = game;
         this.stage = stage;
         closeEvent();
-
     }
 
     private void closeEvent() {

@@ -14,7 +14,7 @@ import java.util.List;
  * tries to place a new  object.
  * Sector implements the Composite Pattern.
  */
-public class Sector extends Placeable implements Composite<Sector> {
+public class Sector extends MapObject implements Composite<Sector> {
 
     /**
      * mapObjects that are contained by this sector
@@ -40,6 +40,11 @@ public class Sector extends Placeable implements Composite<Sector> {
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
         sectorObjects = new ArrayList<>();
+    }
+
+    @Override
+    public Tile getTileByTileIndex(int x, int y) {
+        return null;
     }
 
     /**
