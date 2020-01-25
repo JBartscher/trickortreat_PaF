@@ -5,7 +5,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
@@ -14,10 +17,13 @@ import main.java.MovementManager.MovementType;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * this class implements the Network interface and has the ability to communicate with a client
+ * this class implements the Network interface and has the ability to
+ * communicate with a client
  */
 public class ServerEngine extends Thread implements Network {
 
@@ -68,11 +74,23 @@ public class ServerEngine extends Thread implements Network {
         Platform.runLater( () -> {
 
             vBox = new VBox(10);
+
+            Light.Distant light = new Light.Distant();
+            light.setAzimuth(0);
+
+            Lighting lighting = new Lighting(light);
+            lighting.setSurfaceScale(5.0);
+
+            vBox.setEffect(lighting);
+            vBox.setStyle("-fx-background-color: black;");
             vBox.setAlignment(Pos.CENTER);
             this.labelRequests = new Label();
+            labelRequests.setStyle("-fx-text-fill: white; -fx-font-size: 1.25em; -fx-font-weight: bold;");
             vBox.getChildren().addAll(labelRequests);
             stageNetwork = new Stage();
-            Scene scene = new Scene(vBox, 350, 30);
+            stageNetwork.initStyle(StageStyle.UNDECORATED);
+
+            Scene scene = new Scene(vBox, 550, 60);
             stageNetwork.setScene(scene);
             stageNetwork.show();
 
@@ -100,8 +118,14 @@ public class ServerEngine extends Thread implements Network {
 
             Platform.runLater( () -> {
 
-                labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
+                try {
+                    labelRequests.setText(
+                            "SERVER STARTED AT " + InetAddress.getLocalHost().getHostAddress() + ":" + PORT + " - WAITING FOR CLIENT");
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
                 initGameAndController();
+
             });
 
             /**
