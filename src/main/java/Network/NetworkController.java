@@ -130,7 +130,7 @@ public class NetworkController extends GameController {
             Message msg = Message.deepCopy(new Message(type, gameState));
             output.writeObject(msg);
             output.flush();
-            if(msg.getGameState().getEvent() != null && gameState.getEvent() == null)
+            if(msg.getGameState().getEvent() == null && gameState.getEvent() != null)
                 changeGameStateObject(gameState.getEvent().getObject(), gameState.getEvent().getType());
             else
                 clearAllEvents();
@@ -213,7 +213,6 @@ public class NetworkController extends GameController {
                 Platform.runLater( () -> {
                     game.getLauncher().getMainMenu().resumeGame(game);
                 });
-
 
                 break;
             /**
