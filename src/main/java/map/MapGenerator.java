@@ -22,8 +22,8 @@ public class MapGenerator {
     private static final Random r = new Random();
     private static final Configuration<Object> config = new Configuration<Object>();
 
-    DistrictManager districtManager;
-    HouseFactory houseFactory = new HouseFactory();
+    private final HouseFactory houseFactory = new HouseFactory();
+    private DistrictManager districtManager;
 
     final private Map gameMap;
     private AStar aStar;
@@ -51,7 +51,6 @@ public class MapGenerator {
 
     /**
      * Method which calls all the creation Objects and methods.
-     * TODO: Switch with Builder Pattern.
      */
     public void createMap() {
 
@@ -59,10 +58,10 @@ public class MapGenerator {
 
         // supply the center of the map
         createTownHall(gameMap.getSize() / 2 - TownHall.TOWN_HALL_HEIGHT / 2, gameMap.getSize() / 2 - TownHall.TOWN_HALL_WIDTH / 2 + 1);
-        createMansion(4, 3); //TODO: remove fixed value (@see collideWithAliceCooper() in MovementManager)
+        createMansion();
 
-        createCentreSmallHouses(4);
-        createCentreBigHouses(8);
+        createCentreSmallHouses();
+        createCentreBigHouses();
         createCentreHouses();
 
         createHouses();
@@ -74,7 +73,7 @@ public class MapGenerator {
     /**
      * generates biomes for every district
      */
-    public void generateBioms() {
+    private void generateBioms() {
         ArrayList<District> mapDistricts = districtManager.getMapDistricts();
         int mapThirdSize = gameMap.getSize() / 3;
         Random random = new Random();
@@ -117,7 +116,7 @@ public class MapGenerator {
 
                                 break;
 
-                            case Sand:
+                            case Earth:
                                 zahl = random.nextInt(100);
                                 if (zahl < 12)
                                     if (buildableWithDeko(yTotal, xTotal)) {
@@ -185,9 +184,9 @@ public class MapGenerator {
     }
 
 
-    private void createMansion(int x, int y) {
+    private void createMansion() {
         // 8x5
-        Mansion mansion = new Mansion(x, y);
+        Mansion mansion = new Mansion(4, 3);
         // the first item cannot intersect with other items because its new.
         gameMap.getMapSector().addMapObject(mansion);
         transferQueue.add(mansion);
@@ -298,7 +297,6 @@ public class MapGenerator {
             int y = r.nextInt(gameMap.getSize() - 4) + 2;
             int x = r.nextInt(gameMap.getSize() - 4) + 2;
 
-            // TODO: Verhindert zu dichtes Spawnen am Stadtzentrum
             if (x > gameMap.getSize() * 0.36 && x < gameMap.getSize() * 0.64 && y > gameMap.getSize() * 0.36 && y < gameMap.getSize() * 0.64)
                 continue;
 
@@ -356,11 +354,10 @@ public class MapGenerator {
     /**
      * places a number of houses in the centre of the map.
      *
-     * @param numberOfHouses the amount of houses that get placed at the center of the map
      */
-    private void createCentreSmallHouses(int numberOfHouses) {
+    private void createCentreSmallHouses() {
         // 2x2
-        for (int i = 0; i < numberOfHouses; i++) {
+        for (int i = 0; i < 4; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
             House smallHouse = houseFactory.createNewInstance("small");
 
@@ -373,12 +370,11 @@ public class MapGenerator {
     /**
      * places a number of houses in the centre of the map.
      *
-     * @param numberOfHouses the amount of houses that get placed at the center of the map
      */
-    private void createCentreBigHouses(int numberOfHouses) {
+    private void createCentreBigHouses() {
         // 2x2
         for(int j = 0; j < 2; j++) {
-            for (int i = 0; i < numberOfHouses / 2; i++) {
+            for (int i = 0; i < 8 / 2; i++) {
                 // stub Object, the placeable will be overridden in the findObjectSpot method
                 House bigHouse = houseFactory.createNewInstance("big");
 
@@ -443,7 +439,7 @@ public class MapGenerator {
     /**
      * create the street network with AStar algorithm
      */
-    public void createStreetNetwork() {
+    private void createStreetNetwork() {
         ArrayList<Point> doorPoints = new ArrayList<>();
         Tile[][][] tileMap = gameMap.getMap();
 
@@ -452,7 +448,8 @@ public class MapGenerator {
                 int tileNr = tileMap[y][x][1].getTileNr();
                 String nr = String.valueOf(tileNr);
                 if (nr.length() == 1) nr = "0" + nr;
-                if (nr.length() == 3 || tileNr >= 90) nr = "XX";
+                if (nr.length() == 3 || tileNr >= 90) {
+                }
 
                 if (tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 70 || tileNr == 74 || tileNr == 85 || tileNr == 110 || tileNr == 224) {
 
@@ -488,7 +485,16 @@ public class MapGenerator {
     }
 
     // uses AStar Algorithm
-    public void findStreetConnection(int x, int y, int targetX, int targetY) {
+
+    /**
+     * find the way between two points, which will be setted to street tiles.
+     *
+     * @param x x start position
+     * @param y y start position
+     * @param targetX x end position
+     * @param targetY y end position
+     */
+    private void findStreetConnection(int x, int y, int targetX, int targetY) {
 
         aStar.setStartPosition(new Point(x, y));
         aStar.setTargetPosition(new Point(targetX, targetY));
@@ -516,7 +522,7 @@ public class MapGenerator {
      * @param xTotal
      * @return
      */
-    public boolean buildableWithDeko(int yTotal, int xTotal) {
+    private boolean buildableWithDeko(int yTotal, int xTotal) {
 
         //if ((xTotal <= 1 && yTotal <= 1) || (xTotal >= 58 && yTotal >= 58)) return false;
 
@@ -525,15 +531,15 @@ public class MapGenerator {
 
     /**
      * find the next nearest door
-     * @param doorPoints
-     * @param x
-     * @param y
-     * @return
+     * @param doorPoints list of door point
+     * @param x x position
+     * @param y y position
+     * @return Point
      */
-    public Point findLowestDistance(ArrayList<Point> doorPoints, int x, int y) {
+    private Point findLowestDistance(ArrayList<Point> doorPoints, int x, int y) {
 
         double min = 1000.0;
-        double distance = 1000.0;
+        double distance;
         int targetX = 0;
         int targetY = 0;
         for (Point points : doorPoints) {
@@ -553,7 +559,7 @@ public class MapGenerator {
      * draw street tiles depending on given targets
      * @param targets
      */
-    public void drawStreet(CopyOnWriteArrayList<Point> targets) {
+    private void drawStreet(CopyOnWriteArrayList<Point> targets) {
 
         for (Point point : targets) {
             int tileNr = gameMap.getMap()[point.y][point.x][1].getTileNr();
@@ -568,12 +574,13 @@ public class MapGenerator {
     }
 
     /**
-     * return the biome depending on x- and y-variable
-     * @param x
-     * @param y
-     * @return
+     * return the correct street tile for a biome depending on x- and y-position.
+     *
+     * @param  x x position
+     * @param y y position
+     * @return tileNr of a streettile matching the biome in which is it positioned
      */
-    public int getBiomeStreetType(int x, int y) {
+    private int getBiomeStreetType(int x, int y) {
 
         if(x > Map.xTopLeftCentre.x && x < Map.xTopRightCentre.x && y > Map.xTopLeftCentre.y && y < Map.xBottomLeftCentre.y) {
             return 25;
@@ -588,7 +595,7 @@ public class MapGenerator {
 
             case Gras:
                 return 21;
-            case Sand:
+            case Earth:
                 return 22;
             case Desert:
                 return 23;
