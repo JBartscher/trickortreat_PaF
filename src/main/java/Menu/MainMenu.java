@@ -451,7 +451,7 @@ public class MainMenu {
 
     public void showPausedMenu(Scene gameScene) {
         this.gameScene = gameScene;
-        initMenu(pausedMenu, 45);
+        initMenu(pausedMenu, 95);
         //scene = new Scene(createContent());
         title.getText().setText("");
         root.setOpacity(0.7);
@@ -466,8 +466,6 @@ public class MainMenu {
         stage.setScene(gameScene);
 
     }
-
-
 
     private void initStage() {
 
