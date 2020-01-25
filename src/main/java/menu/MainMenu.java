@@ -80,6 +80,7 @@ public class MainMenu {
     private Light.Distant light = new Light.Distant();
     private Lighting lighting = new Lighting(light);
     private Scene gameScene;
+    private Separator separator = new Separator();
     private static boolean soundOnBefore;
 
     public MainMenu(Stage stage, GameLauncher gameLauncher) {
@@ -89,6 +90,9 @@ public class MainMenu {
 
         light.setAzimuth(0);
         lighting.setSurfaceScale(5.0);
+        buttonOk.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0;" +
+        "-fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
+
         setDefaultControls();
     }
 
@@ -370,7 +374,7 @@ public class MainMenu {
     
             labelPlayerOne.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
             labelPlayerTwo.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-            controlsBox.getChildren().addAll(labelPlayerOne, radioButtonWASD, radioButtonARROW, radioButtonMOUSE, labelPlayerTwo, radioButtonWASDtwo, radioButtonARROWtwo, radioButtonMOUSEtwo, buttonOk);
+            controlsBox.getChildren().addAll(labelPlayerOne, radioButtonWASD, radioButtonARROW, radioButtonMOUSE, separator, labelPlayerTwo, radioButtonWASDtwo, radioButtonARROWtwo, radioButtonMOUSEtwo, buttonOk);
 
             initScene(controlsBox, 200, 300);
 
