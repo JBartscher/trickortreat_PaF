@@ -48,13 +48,13 @@ public class Sound {
      * https://freesound.org/people/baujahr66/sounds/157250/
      */
 
-    private final static Media music = new Media(new File((String) config.getParam("musicFile")).toURI().toString());
-    private final static Media ring = new Media(new File((String) config.getParam("ringFile")).toURI().toString());
-    private final static Media child = new Media(new File((String) config.getParam("childFile")).toURI().toString());
-    private final static Media cooper = new Media(new File((String) config.getParam("cooperFile")).toURI().toString());
-    private final static Media countdown = new Media(new File((String) config.getParam("countdownFile")).toURI().toString());
-    private final static Media gameover = new Media(new File((String) config.getParam("gameoverFile")).toURI().toString());
-    private final static Media menu = new Media(new File((String) config.getParam("menuFile")).toURI().toString());
+    private final static Media music = new Media(new File("src/main/java/sounds/music.wav").toURI().toString());
+    private final static Media ring = new Media(new File("src/main/java/sounds/ring.mp3").toURI().toString());
+    private final static Media child = new Media(new File("src/main/java/sounds/child.wav").toURI().toString());
+    private final static Media cooper = new Media(new File("src/main/java/sounds/poison.mp3").toURI().toString());
+    private final static Media countdown = new Media(new File("src/main/java/sounds/countdown.mp3").toURI().toString());
+    private final static Media gameover = new Media(new File("src/main/java/sounds/gameover.mp3").toURI().toString());
+    private final static Media menu = new Media(new File("src/main/java/sounds/menu.wav").toURI().toString());
 
     private final static MediaPlayer musicPlayer = new MediaPlayer(music);
     private final static MediaPlayer ringPlayer = new MediaPlayer(ring);
@@ -64,15 +64,15 @@ public class Sound {
     private final static MediaPlayer gameoverPlayer = new MediaPlayer(gameover);
     private final static MediaPlayer menuPlayer = new MediaPlayer(menu);
 
-    // private constructor to prevent initiation
+    /**
+     * private constructor to prevent initiation
+     */
     private Sound() {
     }
 
     /**
-     * music
+     * background music
      */
-
-    // background music
     public static void playMusic() {
 
         try {
@@ -100,7 +100,9 @@ public class Sound {
         }
     }
 
-    // coundown for last 30 seconds
+    /**
+     * coundown for last 30 seconds
+     */
     public static void playCountdown() {
 
         try {
@@ -122,7 +124,9 @@ public class Sound {
         }
     }
 
-    // poison from cooper in mansion
+    /**
+     * poison from cooper in mansion
+     */
     public static void playCooper() {
 
         try {
@@ -145,10 +149,8 @@ public class Sound {
     } 
 
     /** 
-     * effects
-     */
-
-    // door bell
+     * door bell
+     */ 
     public static void playRing() {
 
         try {
@@ -168,7 +170,9 @@ public class Sound {
         }
     }
 
-    // child catched by witch
+    /**
+     * child catched by witch
+     */
     public static void playChild() {
 
         try {
@@ -188,7 +192,9 @@ public class Sound {
         }
     }
 
-    // gameover sound
+    /** 
+     * gameover sound
+     */
     public static void playGameover() {
 
         try {
@@ -211,7 +217,9 @@ public class Sound {
         }
     }
 
-    // menu item clicks
+    /**
+     * menu item clicks
+     */
     public static void playMenu() {
 
         try {
@@ -235,10 +243,8 @@ public class Sound {
     }
 
     /**
-     * controls
+     * unmute all sounds
      */
-
-
     public static void unmuteSound() {
         try {
 
@@ -257,7 +263,9 @@ public class Sound {
 
     }
     
-    // mutes all sounds
+    /**
+     * mute/unmute toggle
+     */
     public static void muteSound() {
 
         try {
@@ -291,7 +299,9 @@ public class Sound {
         }
     }
 
-    // stops all music
+    /**
+     * stops only music
+     */
     public static void stopMusic() {
 
         musicPlayer.stop();

@@ -52,7 +52,7 @@ public class HighScoreGUI {
         ObjectInputStream ois = null;
 
         try {
-            File file = new File("highscore.txt");
+            File file = new File("src/main/java/menu/highscore.txt");
             if (!file.exists()) {
                 file.createNewFile();
                 ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
@@ -135,7 +135,7 @@ public class HighScoreGUI {
                          * save the new highscore list to highscore.txt
                          */
                         try {
-                            FileOutputStream fos = new FileOutputStream("highscore.txt");
+                            FileOutputStream fos = new FileOutputStream("src/main/java/menu/highscore.txt");
                             ObjectOutputStream oos = new ObjectOutputStream(fos);
                             oos.writeObject(highScores);
                             oos.flush();

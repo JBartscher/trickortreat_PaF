@@ -71,7 +71,7 @@ public class MainMenu {
     private Button buttonOk = new Button("OK");
     private ToggleGroup group = new ToggleGroup();
     private ToggleGroup groupTwo = new ToggleGroup();
-    private TextField textFieldServer = new TextField((String)config.getParam("ip"));
+    private TextField textFieldServer = new TextField(ip);
     private MovementManager.MovementType movementTypePlayer1;
     private MovementManager.MovementType movementTypePlayer2;
     private List<Pair<String, Runnable>> menuData;
@@ -116,7 +116,7 @@ public class MainMenu {
 
                 Sound.playMenu();
                 gameMode = Game.GameMode.REMOTE;
-                initMenu(clientMenuData, 0);
+                initMenu(clientMenuData, 45);
 
             }), new Pair<String, Runnable>("Highscore", () -> {
 
@@ -459,10 +459,11 @@ public class MainMenu {
         controlsBox.setStyle("-fx-background-color: black;");
         controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
+        textFieldServer.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(textFieldServer, buttonOk);
         buttonOk.setText("CONNECT TO SERVER");
         
-        initScene(controlsBox, 200, 80);
+        initScene(controlsBox, 200, 110);
 
         buttonOk.setOnAction((e) -> {
             ip = textFieldServer.getText();

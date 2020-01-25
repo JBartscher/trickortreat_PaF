@@ -1,4 +1,4 @@
-package main.java.map;
+package main.java.pattern;
 
 /**
  * Interface that ensures that a class will be a factory
