@@ -31,6 +31,7 @@ import main.java.network.ClientEngine;
 import main.java.network.Event;
 import main.java.network.NetworkController;
 import main.java.network.ServerEngine;
+import main.java.sounds.Sound;
 
 import java.util.Arrays;
 import java.util.List;

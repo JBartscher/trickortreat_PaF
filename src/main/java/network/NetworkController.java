@@ -21,6 +21,7 @@ import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.pattern.Observable;
+import main.java.sounds.Sound;
 
 import java.io.ObjectOutputStream;
 import java.util.List;

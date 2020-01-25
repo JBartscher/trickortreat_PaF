@@ -1,4 +1,4 @@
-package main.java;
+package main.java.sounds;
 
 import main.java.configuration.Configuration;
 
