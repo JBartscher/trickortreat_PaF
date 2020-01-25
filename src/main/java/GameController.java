@@ -5,6 +5,7 @@ import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
 import main.java.menu.GameMenu;
 import main.java.menu.GameOver;
+import main.java.network.ClientEngine;
 import main.java.network.NetworkController;
 import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Player;
@@ -14,6 +15,7 @@ import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.MapObject;
 import main.java.map.Tile;
+import main.java.network.ServerEngine;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -193,6 +195,19 @@ public class GameController implements Observer {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+    public void shutDownNetwork() {
+        if (game.gameMode == Game.GameMode.REMOTE) {
+            if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                ServerEngine serverEngine = ((ServerEngine) ((NetworkController) game.gameController).getNetworkEngine());
+                serverEngine.stopHandler();
+                serverEngine = null;
+            } else if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
+                ClientEngine clientEngine = ((ClientEngine) ((NetworkController) game.gameController).getNetworkEngine());
+                clientEngine.interrupt();
+                clientEngine = null;
             }
         }
     }

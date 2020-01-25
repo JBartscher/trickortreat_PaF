@@ -1,6 +1,11 @@
 package main.java.network;
 
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import main.java.*;
 import main.java.menu.GameOver;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
@@ -328,6 +333,24 @@ public class NetworkController extends GameController {
         }
 
         changeGameStateObject(o, eventType);
+    }
+
+    @Override
+    public void shutDownNetwork() {
+        super.shutDownNetwork();
+        Platform.runLater ( () -> {
+            Stage errorStage = new Stage();
+            Label labelError = new Label("Lost connection to other player! - shutdown network and set game to game over");
+            labelError.setStyle("-fx-font-size: 16");
+            VBox vBox = new VBox(10);
+            Scene scene = new Scene(vBox, 500, 200);
+            vBox.getChildren().add(labelError);
+            errorStage.setScene(scene);
+            errorStage.initModality(Modality.APPLICATION_MODAL);
+            game.setGameTime(0);
+            errorStage.show();
+        });
+
     }
 
     /**

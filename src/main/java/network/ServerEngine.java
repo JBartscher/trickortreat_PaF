@@ -257,6 +257,7 @@ public class ServerEngine extends Thread implements Network {
             }
 
         } catch(Exception e) {
+            networkController.shutDownNetwork();
 
         }
     }

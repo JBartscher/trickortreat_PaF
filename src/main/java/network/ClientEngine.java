@@ -1,6 +1,9 @@
 package main.java.network;
 
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.java.Game;
 import main.java.GameLauncher;
@@ -172,6 +175,8 @@ public class ClientEngine extends Thread implements Network {
             }
 
         } catch(Exception e) {
+
+            networkController.shutDownNetwork();
             System.out.println(e);
 
         }

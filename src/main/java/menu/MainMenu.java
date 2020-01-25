@@ -209,9 +209,18 @@ public class MainMenu {
                     title.getText().setText("Game Menu");
                     initMenu(menuData, 0);
 
-        }), new Pair<String, Runnable>("Exit Game", Platform::exit)
+                    if(gameMode == GameMode.REMOTE) {
+                        ((NetworkController)gameLauncher.getGame().getGameController()).shutDownNetwork();
+                    }
 
-        );
+        }), new Pair<String, Runnable>("Exit Game", () -> {
+            if(gameMode == GameMode.REMOTE) {
+                ((NetworkController)gameLauncher.getGame().getGameController()).shutDownNetwork();
+            }
+
+            Platform.exit();
+        }));
+
     }
 
     private void setDefaultControls() {

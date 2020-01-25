@@ -11,14 +11,12 @@ import main.java.network.ServerEngine;
 public class Window {
 
     private Game game;
-
     private Stage stage;
     private Group root;
     private Scene scene;
 
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 768;
-
 
     public Window(Game game, Stage stage) {
         this.game = game;
@@ -31,30 +29,13 @@ public class Window {
     private void closeEvent() {
 
         stage.setOnHiding( event -> {
-
-            if(game.gameMode == Game.GameMode.REMOTE) {
-                if(game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                    ServerEngine serverEngine = ((ServerEngine)((NetworkController)game.gameController).getNetworkEngine());
-                    serverEngine.stopHandler();
-                    serverEngine = null;
-                } else if(game.gameController.getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
-                    ClientEngine clientEngine = ((ClientEngine)((NetworkController)game.gameController).getNetworkEngine());
-                    clientEngine.interrupt();
-                    clientEngine = null;
-                }
-            }
-
-
-        } );
+            game.getGameController().shutDownNetwork();
+        });
     }
-
 
     public void createGUI() {
         this.root = new Group();
         this.scene = new Scene(root, WIDTH, HEIGHT);
-
-
-
     }
 
     /**
