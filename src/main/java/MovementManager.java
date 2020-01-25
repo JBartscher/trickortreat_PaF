@@ -21,6 +21,7 @@ import main.java.map.Tile;
 import main.java.pathfinding.AStar;
 import main.java.pathfinding.Node;
 import main.java.pathfinding.PathWorker;
+import main.java.sounds.Sound;
 
 import java.awt.*;
 import java.io.Serializable;

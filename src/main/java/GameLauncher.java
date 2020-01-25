@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import main.java.configuration.Configuration;
 import main.java.menu.MainMenu;
 import main.java.network.Network;
+import main.java.sounds.Sound;
 import main.java.sprites.GraphicsUtility;
 
 

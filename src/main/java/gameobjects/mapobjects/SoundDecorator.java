@@ -1,7 +1,7 @@
 package main.java.gameobjects.mapobjects;
 
 import main.java.Game;
-import main.java.Sound;
+import main.java.sounds.Sound;
 import main.java.gameobjects.Player;
 
 /**

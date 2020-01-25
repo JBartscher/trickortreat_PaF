@@ -18,6 +18,7 @@ import main.java.map.Tile;
 import main.java.network.ServerEngine;
 import main.java.pattern.Observable;
 import main.java.pattern.Observer;
+import main.java.sounds.Sound;
 
 import java.awt.*;
 import java.util.Arrays;
