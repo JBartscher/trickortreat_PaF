@@ -1,7 +1,5 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Game;
-import main.java.Sound;
 import main.java.gameobjects.Player;
 
 import java.util.Random;

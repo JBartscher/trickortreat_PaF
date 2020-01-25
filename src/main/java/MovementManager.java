@@ -178,8 +178,8 @@ public class MovementManager implements EventHandler<InputEvent> {
             game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
 
             config.setParam("paused", game.paused);
-            //if (!(Boolean)config.getParam("muted")) Sound.muteSound();
-            GameMenu.setRightButtons();
+
+
 
             return;
         } else if (event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getSceneX() >= 70 && event.getSceneX() < 140 && event.getSceneY() < 70) {
@@ -197,6 +197,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void handleMouse(MouseEvent event) {
 
         checkButtonClicked(event);
+        if(event.getSceneY() < Window.HEIGHT * 0.1) return;
 
         if (inputMOUSE == null) return;
         if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
@@ -213,9 +214,31 @@ public class MovementManager implements EventHandler<InputEvent> {
 
     public void handleKeyboard(KeyEvent event) {
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-            
-            if (event.getCode() == KeyCode.ESCAPE) {
-                // TODO: Pausemenu schmeißen
+
+            if(event.getCode() == KeyCode.ESCAPE) {
+                String pausedEvent = "";
+                boolean paused = game.paused;
+                Event.EventType eventType;
+                if (paused) {
+                    game.paused = false;
+                    paused = false;
+                    eventType = Event.EventType.UNPAUSED;
+                    pausedEvent = "UNPAUSED";
+                } else {
+                    game.paused = true;
+                    paused = true;
+                    eventType = Event.EventType.PAUSED;
+                    pausedEvent = "PAUSED";
+                }
+
+                game.paused = paused;
+                if (game.gameMode == Game.GameMode.REMOTE) {
+                    System.out.println("EVENT VERSCHICKEN!");
+                    ((NetworkController) game.getGameController()).changeGameStateObject(pausedEvent, eventType);
+                }
+                game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
+
+                config.setParam("paused", game.paused);
             }
 
             if (event.getCode() == KeyCode.A) {
@@ -449,7 +472,7 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         //move NPC
         if ((game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && Game.DRAMATIC) {
-            if (game.DRAMATIC) {
+            if (Game.DRAMATIC) {
                 moveObject(witch);
             }
 
@@ -609,6 +632,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                 //System.out.println("COLLIDE!");
                 entity.setyPos(entity.getyPos() - size);
                 if(entity instanceof Witch) {
+                    //entity.setxPos(entity.getxPos() - 0.25 * Tile.TILE_SIZE);
                     Point target = chooseTarget((Witch)entity, game.getPlayer(), game.getOtherPlayer());
                     findPath(entity, entity.getEntityPos(), target);
                 }
@@ -694,28 +718,17 @@ public class MovementManager implements EventHandler<InputEvent> {
             for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                 try {
                     House h = (House) obj;
-
                     /**
                      * call the visit method on the house object
                      */
                     if (h.intersects(p)) {
                         if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
-                            /**
-                             * the order of the call is not trivial and should be followed,
-                             * because the soundDecorator does not care if a house has already been visited,
-                             * the CandyDecorator does.
-                             */
-                            //houseCandyDecorator.visit((Player) entity);
-                            //houseSoundDecorator.visit((Player) entity);
-                            HouseDecorator houseDecorator = new SoundDecorator(h);
 
+                            HouseDecorator houseDecorator = new SoundDecorator(h);
                             if(houseDecorator.getDecoratedHouse() instanceof SmallHouse || houseDecorator.getDecoratedHouse() instanceof BigHouse)
                                 houseDecorator = new CandyDecorator(houseDecorator);
 
                             houseDecorator.visit((Player) entity);
-
-
-
                         }
                     }
                     /**
@@ -761,7 +774,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                     /** When one entity is the npc then reduce childrencount of the other object (player) by 1
                      * set witch on return and calculate a new path to her home position
                      */
-                } else if (e instanceof Witch && entity instanceof Player && game.DRAMATIC) {
+                } else if (e instanceof Witch && entity instanceof Player && Game.DRAMATIC) {
                     Witch witch = (Witch) e;
                     Player player = (Player) entity;
                     if (player.getChildrenCount() <= 0) return;
@@ -790,7 +803,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                     }
                 }
 
-                if (e instanceof Witch && !game.DRAMATIC) {
+                if (e instanceof Witch && !Game.DRAMATIC) {
                     size = 0;
                 }
 

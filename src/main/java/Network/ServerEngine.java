@@ -21,8 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ServerEngine extends Thread implements Network {
 
-    private ServerSocket serverSocket;
-    private Socket socket;
     private Stage stage;
     private GameLauncher gameLauncher;
     public static final int PORT = 30000;
@@ -95,7 +93,7 @@ public class ServerEngine extends Thread implements Network {
     // Erstellt bereits ein Game-Objekt
     public void startServer() {
         try {
-            this.serverSocket = new ServerSocket(PORT);
+            ServerSocket serverSocket = new ServerSocket(PORT);
             Platform.runLater( () -> {
 
                 labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
@@ -107,7 +105,6 @@ public class ServerEngine extends Thread implements Network {
              * wait for requests and assign incoming request to instance object: "socket"
              */
             Socket socket = serverSocket.accept();
-            this.socket = socket;
 
             /**
              * an object of the private class "RequestHandler" is responsible to handle further communcations

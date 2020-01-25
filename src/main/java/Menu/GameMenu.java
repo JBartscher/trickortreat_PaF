@@ -20,7 +20,7 @@ public class GameMenu implements Singleton {
     private static final Image imageCandy = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
 
     public static Image imagePaused = new Image(GraphicsUtility.class.getResourceAsStream("paused2.png"));
-    public static Image imagePlay = new Image(GraphicsUtility.class.getResourceAsStream("play2.png"));
+    //public static Image imagePlay = new Image(GraphicsUtility.class.getResourceAsStream("play2.png"));
     public static Image imageMuted = new Image(GraphicsUtility.class.getResourceAsStream("muted2.png"));
     public static Image imageUnmuted = new Image(GraphicsUtility.class.getResourceAsStream("unmuted2.png"));
 
@@ -37,7 +37,6 @@ public class GameMenu implements Singleton {
     private static ImageView imageCandyOtherPlayer = new ImageView(imageCandy);
 
 
-    private final String TEXT_STYLE = "-fx-font: 32 arial;";
     private Text candyTextPlayer = new Text("Spieler 1 - Candy: " + 0);
     private Text candyTextOtherPlayer = new Text("Spieler 2 - Candy: " + 0);
     private Text timerText = new Text("");
@@ -58,6 +57,7 @@ public class GameMenu implements Singleton {
     private GameMenu() {
 
         // Timer Text
+        String TEXT_STYLE = "-fx-font: 32 arial;";
         GraphicsUtility.setTextProperties(timerText, TEXT_STYLE, Color.WHITE, Window.WIDTH / 2 - 20, 50.0); //
 
         timerText.setId("timerText");
@@ -122,14 +122,6 @@ public class GameMenu implements Singleton {
         } else {
             GameMenu.imageViewSound = new ImageView(imageUnmuted);
             GraphicsUtility.setImageProperties(imageViewSound, 70, 8);
-        }
-
-        if(paused) {
-            GameMenu.imageViewPaused = new ImageView(imagePaused);
-            GraphicsUtility.setImageProperties(imageViewPaused, 0, 8);
-        } else {
-            GameMenu.imageViewPaused = new ImageView(imagePlay);
-            GraphicsUtility.setImageProperties(imageViewPaused, 0, 8);
         }
 
     }

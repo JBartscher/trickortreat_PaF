@@ -11,11 +11,10 @@ class MapGeneratorTest {
 
 
     private MapGenerator mapGenerator;
-    private Map gameMap;
 
     @BeforeEach
     void setUp() {
-        this.gameMap = new Map(50);
+        Map gameMap = new Map(50);
         this.mapGenerator = new MapGenerator(gameMap);
     }
 

@@ -12,11 +12,8 @@ public class GameLauncher extends Application {
 
     private final static Configuration<Object> config = new Configuration<Object>();
     private Game game;
-    private GameController gameController;
     private Stage stage;
     private MainMenu mainMenu;
-    private MovementManager.MovementType movementTypePlayer1;
-    private MovementManager.MovementType movementTypePlayer2;
 
     public void start(Stage stage) throws Exception {
         this.stage = stage;
@@ -32,8 +29,6 @@ public class GameLauncher extends Application {
      * @param movementTypePlayer2 - movement type of player2
      */
     public void startGame(Game.GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
-        this.movementTypePlayer1 = movementTypePlayer1;
-        this.movementTypePlayer2 = movementTypePlayer2;
         this.game = new Game(this, stage, gameMode, networkEngine, movementTypePlayer1, movementTypePlayer2);
         startGameLoop();
     }
@@ -51,7 +46,7 @@ public class GameLauncher extends Application {
      */
     private void startGameLoop() {
         Sound.playMusic();
-        this.gameController = game.getGameController();
+        GameController gameController = game.getGameController();
         game.getWindow().showGameGUI();
         gameController.startGameLoop();
     }

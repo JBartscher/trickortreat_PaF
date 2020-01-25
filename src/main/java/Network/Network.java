@@ -5,12 +5,12 @@ package main.java.Network;
  */
 public interface Network {
 
-    public void communicate();
+    void communicate();
 
     /**
      * update the gamestate of an network engine
      * @param gameState
      */
-    public void setGameState(GameState gameState);
+    void setGameState(GameState gameState);
 
 }

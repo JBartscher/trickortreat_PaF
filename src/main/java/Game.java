@@ -32,7 +32,6 @@ public class Game {
     public static boolean DRAMATIC = false;
 
     private Map map;
-    private MapGenerator generator;
 
     public Player player;
     public Player otherPlayer;
@@ -86,7 +85,7 @@ public class Game {
         Game.DRAMATIC = false;
         this.launcher = launcher;
         map = new Map(60);
-        generator = new MapGenerator(map);
+        MapGenerator generator = new MapGenerator(map);
         generator.createMap();
         this.gameMode = gameMode;
 

@@ -16,10 +16,9 @@ public class AStar {
     private Point targetPosition;
     private Heap<Node> openNodes;
     private Set<Node> closedNodes;
-    private int mapDimension;
 
     public AStar(Map gameMap){
-        mapDimension = gameMap.getSize();
+        int mapDimension = gameMap.getSize();
         map = new Node[mapDimension][mapDimension];
         startPosition = new Point(0, 0);
         targetPosition = new Point(0, 0);

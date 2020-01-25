@@ -53,14 +53,13 @@ public class MainMenu {
 
     private String ip;
     private Stage controlsStage;
-    private Scene controlsScene;
     private VBox controlsBox;
     private Label labelPlayerOne = new Label("CONTROLS PLAYER ONE");
     private Label labelPlayerTwo = new Label("CONTROLS PLAYER TWO");
-    private RadioButton radioButtonWASD = new RadioButton("KEYBOARD - WASD");;
+    private RadioButton radioButtonWASD = new RadioButton("KEYBOARD - WASD");
     private RadioButton radioButtonARROW = new RadioButton("KEYBOARD - ARROWS");
     private RadioButton radioButtonMOUSE = new RadioButton("MOUSE");
-    private RadioButton radioButtonWASDtwo = new RadioButton("KEYBOARD - WASD");;
+    private RadioButton radioButtonWASDtwo = new RadioButton("KEYBOARD - WASD");
     private RadioButton radioButtonARROWtwo = new RadioButton("KEYBOARD - ARROWS");
     private RadioButton radioButtonMOUSEtwo = new RadioButton("MOUSE");
     private RadioButton enabled = new RadioButton("ENABLED");
@@ -476,7 +475,7 @@ public class MainMenu {
 
     private void initScene(VBox box, int width, int height) {
 
-        controlsScene = new Scene(box, width, height);
+        Scene controlsScene = new Scene(box, width, height);
         controlsStage.setScene(controlsScene);
         controlsStage.show();
     }

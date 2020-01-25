@@ -124,9 +124,17 @@ public class NetworkController extends GameController {
         }
 
         try {
-            output.writeObject(Message.deepCopy(new Message(type, gameState)));
+            /**
+             * create deep copy and send message to other player
+             */
+            Message msg = Message.deepCopy(new Message(type, gameState));
+            output.writeObject(msg);
             output.flush();
-            clearAllEvents();
+            if(msg.getGameState().getEvent() != null && gameState.getEvent() == null)
+                changeGameStateObject(gameState.getEvent().getObject(), gameState.getEvent().getType());
+            else
+                clearAllEvents();
+            
             networkEngine.setGameState(gameState);
 
         } catch (Exception e) {

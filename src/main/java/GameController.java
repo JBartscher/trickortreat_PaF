@@ -177,8 +177,8 @@ public class GameController implements Observer {
 
                         /** set game as DRAMATIC (enables dramatic music and witch movement)
                          */
-                        if (game.getGameTime() < 30000 && !game.DRAMATIC) {
-                            game.DRAMATIC = true;
+                        if (game.getGameTime() < 30000 && !Game.DRAMATIC) {
+                            Game.DRAMATIC = true;
                             Sound.playCountdown();
                         }
                     }
