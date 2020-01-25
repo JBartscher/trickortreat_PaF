@@ -26,10 +26,10 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 import main.java.*;
 import main.java.Game.GameMode;
-import main.java.Network.ClientEngine;
-import main.java.Network.Event;
-import main.java.Network.NetworkController;
-import main.java.Network.ServerEngine;
+import main.java.network.ClientEngine;
+import main.java.network.Event;
+import main.java.network.NetworkController;
+import main.java.network.ServerEngine;
 
 import java.util.Arrays;
 import java.util.List;

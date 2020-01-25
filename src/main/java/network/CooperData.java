@@ -1,4 +1,4 @@
-package main.java.Network;
+package main.java.network;
 
 import main.java.gameobjects.AliceCooper;
 

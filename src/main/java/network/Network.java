@@ -1,4 +1,4 @@
-package main.java.Network;
+package main.java.network;
 
 /**
  * every class that has the ability to communicate within a network implements this interface
