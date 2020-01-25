@@ -5,7 +5,7 @@ import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
 import main.java.Menu.GameMenu;
 import main.java.Menu.GameOver;
-import main.java.Network.NetworkController;
+import main.java.network.NetworkController;
 import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.Witch;
