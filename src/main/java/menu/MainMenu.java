@@ -5,7 +5,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Pos;
+import javafx.geometry.Pos;import javafx.stage.StageStyle;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import main.java.*;
@@ -431,7 +432,7 @@ public class MainMenu {
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
 
-        initScene(controlsBox, 200, 100);
+        initScene(controlsBox, 200, 120);
 
         buttonOk.setOnAction((e) -> {
 
@@ -514,6 +515,8 @@ public class MainMenu {
         controlsStage = new Stage();
         controlsBox = new VBox(10);
         group = new ToggleGroup();
+
+        controlsStage.initStyle(StageStyle.UNDECORATED);
     }
 
     private void initScene(VBox box, int width, int height) {

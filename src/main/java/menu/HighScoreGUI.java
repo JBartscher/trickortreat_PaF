@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import main.java.Sound;
 
 import java.io.*;
@@ -38,6 +39,8 @@ public class HighScoreGUI {
         this.stage = new Stage();
         this.vBox = new VBox(10);
         this.scene = new Scene(vBox, 600, 650);
+
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
         stage.setTitle("HIGHSCORE - LISTE");
         stage.initModality(Modality.APPLICATION_MODAL);
