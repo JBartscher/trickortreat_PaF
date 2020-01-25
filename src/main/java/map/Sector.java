@@ -11,16 +11,44 @@ import java.util.List;
  * A Sector is a bigger chunk of the map which holds placed Objects.
  * Its purpose is to prevent a loop through all placed objects if one
  * tries to place a new  object.
+ * Sector implements the Composite Pattern.
  */
 public class Sector extends Placeable {
 
     //private ArrayList<Placeable> containingPlacebles;
     private final List<MapObject> sectorObjects;
 
+    //Refrence to parent
+    Sector parent = null;
+    //Collection of child sectors.
+    private List<Sector> childSectors = new ArrayList<Sector>();
 
+    /**
+     * sector constructor
+     *
+     * @param x x position
+     * @param y y position
+     * @param width width of sector
+     * @param height height of sector
+     */
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
         sectorObjects = new ArrayList<>();
+    }
+
+    /**
+     * sector constructor with parent reference
+     *
+     * @param x x position
+     * @param y y position
+     * @param width width of sector
+     * @param height height of sector
+     * @param parent parent sector
+     */
+    public Sector(int x, int y, int width, int height, Sector parent) {
+        super(x, y, width, height, 0);
+        sectorObjects = new ArrayList<>();
+        this.parent = parent;
     }
 
     /**
@@ -92,6 +120,12 @@ public class Sector extends Placeable {
      */
     public void addMapObject(MapObject mapObject) {
         sectorObjects.add(mapObject);
+        /**
+         * if this sector is a child of another sector, the mapObject is also added to his list of mapObjects.
+         */
+        if(this.parent != null){
+            parent.addMapObject(mapObject);
+        }
     }
 
     /**
@@ -112,5 +146,37 @@ public class Sector extends Placeable {
      */
     public void removeMapObject(MapObject mapObject) {
         sectorObjects.remove(mapObject);
+    }
+
+    /**
+     * add a Sector to this Sectors child list.
+     *
+     * Sets the parent reference of the child to this Sector.
+     *
+     * @param childSector the sector that gets added to this sector
+     */
+    public void addChildSector(Sector childSector){
+        this.childSectors.add(childSector);
+        this.sectorObjects.addAll(childSector.sectorObjects);
+        childSector.setParentSector(this);
+    }
+
+    /**
+     * set the parentReference of this Sector.
+     *
+     * @param parentSector the new parentSector
+     */
+    public void setParentSector(Sector parentSector){
+        this.parent = parentSector;
+    }
+
+    /**
+     * remove a childSector from this Sector and all its MapObjects.
+     *
+     * @param childSector the childSector that shall be removed
+     */
+    public void removeChildSector(Sector childSector){
+        this.childSectors.remove(childSector);
+        childSector.getAllContainingMapObjects().forEach(mapObject -> this.removeMapObject(mapObject));
     }
 }
