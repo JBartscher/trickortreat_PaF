@@ -213,21 +213,9 @@ public class MovementManager implements EventHandler<InputEvent> {
 
     public void handleKeyboard(KeyEvent event) {
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-            if (event.getCode() == KeyCode.M) {
-                Sound.muteSound();
-            }
-
-            if (event.getCode() == KeyCode.P) {
-                if (game.gameMode == Game.GameMode.REMOTE) {
-                    if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                        ((NetworkController) game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
-                        game.paused = true;
-                    }
-                } else if (game.getGameMode() == Game.GameMode.LOCAL) {
-                    game.paused = true;
-
-                }
-                if (!(Boolean) config.getParam("muted")) Sound.muteSound();
+            
+            if (event.getCode() == KeyCode.ESCAPE) {
+                // TODO: Pausemenu schmeißen
             }
 
             if (event.getCode() == KeyCode.A) {
@@ -255,18 +243,6 @@ public class MovementManager implements EventHandler<InputEvent> {
             }
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
-
-            if (event.getCode() == KeyCode.R) {
-                if (game.gameMode == Game.GameMode.REMOTE) {
-                    if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                        ((NetworkController) game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
-                        game.paused = false;
-                    }
-                } else if (game.getGameMode() == Game.GameMode.LOCAL) {
-                    game.paused = false;
-                }
-                if ((Boolean) config.getParam("muted")) Sound.muteSound();
-            }
 
             if (event.getCode() == KeyCode.A) {
                 if (inputAWSD != null) {
