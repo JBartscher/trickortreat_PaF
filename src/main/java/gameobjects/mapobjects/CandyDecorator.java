@@ -40,7 +40,7 @@ public class CandyDecorator extends HouseDecorator {
         Random random = new Random();
         for (int i = 0; i < childrenCount; i++) {
             int zahl = random.nextInt(2);
-            candies += (int) (((HouseDecorator)this.getDecoratedHouse()).getDecoratedHouse().district.getCandy_multiplikator() + zahl);
+            candies += (int) (((HouseDecorator)this.getDecoratedHouse()).getDecoratedHouse().district.getCandyMultiplikator() + zahl);
         }
         System.out.println("CANDY:" + candies);
         return candies;

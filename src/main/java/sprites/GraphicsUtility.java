@@ -126,14 +126,10 @@ public class GraphicsUtility {
 
         System.out.println("fertig");
 
-
-        // TODO: ÜBERGANGSWEISE, wird später überarbeitet
-
-
         Image imageTileSetGras = new Image(GraphicsUtility.class.getResourceAsStream("tileset_gras.png"));
         Image imageTileSet = new Image(GraphicsUtility.class.getResourceAsStream("tileset_ground.png"));
         Image imageTileSnowAndDesert = new Image(GraphicsUtility.class.getResourceAsStream("tileset_snow_desert.png"));
-
+        Image palmTile = new Image(GraphicsUtility.class.getResourceAsStream("palmtree4.png"));
 
         //centreTile = new WritableImage(imageTileSet.getPixelReader(), 3 * (Tile.TILE_SIZE), 2 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         centreTile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 0 * (Tile.TILE_SIZE), 0 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -162,6 +158,7 @@ public class GraphicsUtility {
         desertDeko1Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 3 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         desertDeko2Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 4 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
         desertDeko3Tile = new WritableImage(imageTileSet.getPixelReader(), 7 * (Tile.TILE_SIZE), 3 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
+        desertDeko3Tile = new WritableImage(palmTile.getPixelReader(),64,64);
         desertDeko4Tile = new WritableImage(imageTileSnowAndDesert.getPixelReader(), 5 * (Tile.TILE_SIZE), 1 * (Tile.TILE_SIZE + 32) + 32, Tile.TILE_SIZE, Tile.TILE_SIZE);
 
 

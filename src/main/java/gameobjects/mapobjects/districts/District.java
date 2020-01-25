@@ -22,7 +22,7 @@ public abstract class District implements Serializable {
         return sector;
     }
 
-    public double getCandy_multiplikator() {
+    public double getCandyMultiplikator() {
         return candy_multiplikator;
     }
 
