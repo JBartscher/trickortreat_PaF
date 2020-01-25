@@ -21,7 +21,6 @@ public class PlayerData extends EntityData {
     private int xOffSet, yOffSet;
 
     private boolean inside;
-    private boolean noCollision;
     private MapObject insideObject;
     private boolean hasKey;
 
@@ -34,7 +33,7 @@ public class PlayerData extends EntityData {
         this.xOffSet = player.getxOffSet();
         this.yOffSet = player.getyOffSet();
         this.inside = player.isInside();
-        this.noCollision = player.isNoCollision();
+        boolean noCollision = player.isNoCollision();
         this.insideObject = player.getInsideObject();
         this.protectedTicks = player.getProtectedTicks();
         this.hasKey = player.hasKey();

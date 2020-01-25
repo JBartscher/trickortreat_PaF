@@ -9,10 +9,8 @@ import javafx.scene.text.Text;
 public class MenuTitle extends Pane {
 
     private Text text;
-    private int size = 48;
 
     public MenuTitle(String name, int size) {
-        this.size = size;
         String spread = "";
         for (char c : name.toCharArray()) {
             spread += c + " ";

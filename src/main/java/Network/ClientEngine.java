@@ -16,7 +16,6 @@ import java.net.Socket;
 public class ClientEngine extends Thread implements Network {
 
     private GameLauncher gameLauncher;
-    private Socket socket;
     private Stage stage;
     private String ip;
 
@@ -68,7 +67,7 @@ public class ClientEngine extends Thread implements Network {
      */
     public void joinServer() {
         try {
-            socket = new Socket(ip, ServerEngine.PORT);
+            Socket socket = new Socket(ip, ServerEngine.PORT);
 
             /**
              * use the decorator pattern to ensure low latency with puffer

@@ -53,7 +53,6 @@ public class MainMenu {
 
     private String ip;
     private Stage controlsStage;
-    private Scene controlsScene;
     private VBox controlsBox;
     private Label labelPlayerOne = new Label("CONTROLS PLAYER ONE");
     private Label labelPlayerTwo = new Label("CONTROLS PLAYER TWO");
@@ -476,7 +475,7 @@ public class MainMenu {
 
     private void initScene(VBox box, int width, int height) {
 
-        controlsScene = new Scene(box, width, height);
+        Scene controlsScene = new Scene(box, width, height);
         controlsStage.setScene(controlsScene);
         controlsStage.show();
     }

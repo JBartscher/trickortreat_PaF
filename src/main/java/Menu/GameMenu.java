@@ -37,7 +37,6 @@ public class GameMenu implements Singleton {
     private static ImageView imageCandyOtherPlayer = new ImageView(imageCandy);
 
 
-    private final String TEXT_STYLE = "-fx-font: 32 arial;";
     private Text candyTextPlayer = new Text("Spieler 1 - Candy: " + 0);
     private Text candyTextOtherPlayer = new Text("Spieler 2 - Candy: " + 0);
     private Text timerText = new Text("");
@@ -58,6 +57,7 @@ public class GameMenu implements Singleton {
     private GameMenu() {
 
         // Timer Text
+        String TEXT_STYLE = "-fx-font: 32 arial;";
         GraphicsUtility.setTextProperties(timerText, TEXT_STYLE, Color.WHITE, Window.WIDTH / 2 - 20, 50.0); //
 
         timerText.setId("timerText");
