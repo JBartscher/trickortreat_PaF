@@ -16,17 +16,13 @@ import java.util.concurrent.Executors;
  */
 public class PathWorker {
 
-    private Entity entity;
-    private Point start;
-    private Point end;
     private MovementManager movementManager;
-    private Game game;
     ExecutorService executor = Executors.newCachedThreadPool();
 
 
 
     public PathWorker(Game game, MovementManager movementManager)
-    {   this.game = game;
+    {
         this.movementManager = movementManager;
     }
 
@@ -37,9 +33,6 @@ public class PathWorker {
      * @param end
      */
     public void execute(Entity entity, Point start, Point end) {
-        this.entity = entity;
-        this.start = start;
-        this.end = end;
 
         Runnable r = () -> {
             System.out.println(Thread.currentThread());

@@ -12,10 +12,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class MenuItem extends Pane {
-    private Text text;
-
-    private Effect shadow = new DropShadow(5, Color.BLACK);
-    private Effect blur = new BoxBlur(1, 1, 3);
 
     public MenuItem(String name) {
         Polygon bg = new Polygon(
@@ -34,12 +30,14 @@ public class MenuItem extends Pane {
                         .otherwise(Color.color(0, 0, 0, 0.25))
         );
 
-        text = new Text(name);
+        Text text = new Text(name);
         text.setTranslateX(5);
         text.setTranslateY(20);
         text.setFont(Font.loadFont(MenuItem.class.getResource("Penumbra-HalfSerif-Std_35114.ttf").toExternalForm(), 24));
         text.setFill(Color.WHITE);
 
+        Effect blur = new BoxBlur(1, 1, 3);
+        Effect shadow = new DropShadow(5, Color.BLACK);
         text.effectProperty().bind(
                 Bindings.when(hoverProperty())
                         .then(shadow)

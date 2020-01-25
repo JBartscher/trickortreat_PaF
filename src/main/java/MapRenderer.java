@@ -17,13 +17,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MapRenderer {
 
-    private Map map;
     private Window window;
     private Tile[][][] tileMap;
     private Game game;
 
     public MapRenderer(Map map, Window window, Game game) {
-        this.map = map;
         this.tileMap = map.getMap();
         this.window = window;
         this.game = game;
