@@ -55,7 +55,7 @@ public class MainMenu {
     private Line line;
     private MenuTitle title;
 
-    private String ip;
+    private String ip = ((String)config.getParam("ip"));
     private Stage controlsStage;
     private VBox controlsBox;
     private Label labelPlayerOne = new Label("CONTROLS PLAYER ONE");
