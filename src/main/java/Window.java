@@ -1,13 +1,9 @@
 package main.java;
 
-import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import main.java.network.ClientEngine;
 import main.java.network.NetworkController;
-import main.java.network.ServerEngine;
 
 public class Window {
 

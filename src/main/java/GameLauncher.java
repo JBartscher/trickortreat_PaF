@@ -1,18 +1,14 @@
 package main.java;
 
-
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.java.configuration.Configuration;
 import main.java.menu.MainMenu;
 import main.java.network.Network;
 import main.java.sounds.Sound;
 import main.java.sprites.GraphicsUtility;
 
-
 public class GameLauncher extends Application {
 
-    private final static Configuration<Object> config = new Configuration<Object>();
     private Game game;
     private Stage stage;
     private MainMenu mainMenu;
