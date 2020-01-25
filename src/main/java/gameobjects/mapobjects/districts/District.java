@@ -26,7 +26,6 @@ public abstract class District implements Serializable {
         return candy_multiplikator;
     }
 
-
     public enum BiomeType {
         Gras, Sand, Desert, Snow
     }
