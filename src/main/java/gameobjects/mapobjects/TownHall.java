@@ -5,6 +5,8 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
+import java.awt.*;
+
 /**
  * this building is always located in the centre and contains a key when a child is currently captured
  */
@@ -114,9 +116,10 @@ public class TownHall extends House implements Accessible {
         if (!player.isInside()) {
             player.setNoCollision(true);
             player.setInside(true);
-            player.setyPos(player.getyPos() + - Tile.TILE_SIZE);
+            player.setyPos(player.getyPos() - 1.5 * Tile.TILE_SIZE);
+            player.setTarget(new Point((int)player.getxPos(), (int)player.getyPos()));
             player.setInsideObject(this);
-            player.setProtectedTicks(5);
+            player.setProtectedTicks(10);
             numberOfPlayerInside++;
 
         } else {
@@ -124,7 +127,7 @@ public class TownHall extends House implements Accessible {
             player.setInside(false);
             player.setyPos(player.getyPos() + 1.5 * Tile.TILE_SIZE);
             player.setInsideObject(null);
-            player.setProtectedTicks(5);
+            player.setProtectedTicks(10);
             numberOfPlayerInside--;
         }
     }
