@@ -29,6 +29,7 @@ public class GameController implements Observer {
 
     protected Game game;
     protected GameLauncher gameLauncher;
+
     protected GameLoop gameLoop = new GameLoop();
 
     public GameController(Game game, GameLauncher gameLauncher) {
@@ -151,6 +152,9 @@ public class GameController implements Observer {
     public void startGameLoop() {
         this.gameLoop.start();
     }
+    protected void stopGameLoop() {
+        this.gameLoop.stop();
+    }
 
     private class GameLoop extends AnimationTimer {
         @Override
@@ -223,4 +227,6 @@ public class GameController implements Observer {
             }
         }
     }
+
+
 }

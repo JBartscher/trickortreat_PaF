@@ -72,7 +72,6 @@ public class ServerEngine extends Thread implements Network {
      */
     @Override
     public void run () {
-
         Platform.runLater( () -> {
 
             vBox = new VBox(10);
@@ -305,6 +304,7 @@ public class ServerEngine extends Thread implements Network {
             }
 
         } catch(Exception e) {
+
             networkController.shutDownNetwork();
 
         }

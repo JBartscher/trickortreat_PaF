@@ -22,7 +22,6 @@ public class Window {
     public Window(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
-
         closeEvent();
 
     }
