@@ -1,6 +1,5 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
 
 /**

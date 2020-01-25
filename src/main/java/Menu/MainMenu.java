@@ -56,10 +56,10 @@ public class MainMenu {
     private VBox controlsBox;
     private Label labelPlayerOne = new Label("CONTROLS PLAYER ONE");
     private Label labelPlayerTwo = new Label("CONTROLS PLAYER TWO");
-    private RadioButton radioButtonWASD = new RadioButton("KEYBOARD - WASD");;
+    private RadioButton radioButtonWASD = new RadioButton("KEYBOARD - WASD");
     private RadioButton radioButtonARROW = new RadioButton("KEYBOARD - ARROWS");
     private RadioButton radioButtonMOUSE = new RadioButton("MOUSE");
-    private RadioButton radioButtonWASDtwo = new RadioButton("KEYBOARD - WASD");;
+    private RadioButton radioButtonWASDtwo = new RadioButton("KEYBOARD - WASD");
     private RadioButton radioButtonARROWtwo = new RadioButton("KEYBOARD - ARROWS");
     private RadioButton radioButtonMOUSEtwo = new RadioButton("MOUSE");
     private RadioButton enabled = new RadioButton("ENABLED");

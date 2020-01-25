@@ -472,7 +472,7 @@ public class MovementManager implements EventHandler<InputEvent> {
 
         //move NPC
         if ((game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && Game.DRAMATIC) {
-            if (game.DRAMATIC) {
+            if (Game.DRAMATIC) {
                 moveObject(witch);
             }
 
@@ -774,7 +774,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                     /** When one entity is the npc then reduce childrencount of the other object (player) by 1
                      * set witch on return and calculate a new path to her home position
                      */
-                } else if (e instanceof Witch && entity instanceof Player && game.DRAMATIC) {
+                } else if (e instanceof Witch && entity instanceof Player && Game.DRAMATIC) {
                     Witch witch = (Witch) e;
                     Player player = (Player) entity;
                     if (player.getChildrenCount() <= 0) return;
@@ -803,7 +803,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                     }
                 }
 
-                if (e instanceof Witch && !game.DRAMATIC) {
+                if (e instanceof Witch && !Game.DRAMATIC) {
                     size = 0;
                 }
 

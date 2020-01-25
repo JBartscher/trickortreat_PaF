@@ -7,8 +7,6 @@ import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Tile;
 
-import java.util.Random;
-
 /**
  * the super class of every specialized house object
  */

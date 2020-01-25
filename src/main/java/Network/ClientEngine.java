@@ -6,6 +6,7 @@ import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
 import main.java.MovementManager.MovementType;
+import main.java.map.Map;
 
 import java.io.*;
 import java.net.Socket;
@@ -100,7 +101,7 @@ public class ClientEngine extends Thread implements Network {
                 System.out.println(gameStateReceived);
                 game = new Game(this, gameStateReceived, stage, movementType, gameLauncher);
                 networkController = (NetworkController)game.getGameController();
-                game.getMap().setInstance(game.getMap());
+                Map.setInstance(game.getMap());
 
                 gameLauncher.startGame(game);
                 System.out.println("GameState vom Server erhalten");

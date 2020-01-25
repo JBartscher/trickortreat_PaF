@@ -28,7 +28,7 @@ public abstract class District implements Serializable {
 
 
     public enum BiomeType {
-        Gras, Sand, Desert, Snow;
+        Gras, Sand, Desert, Snow
     }
 
     public BiomeType getBiomeType() {

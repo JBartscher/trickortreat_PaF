@@ -2,10 +2,7 @@ package main.java.pathfinding;
 
 import main.java.Game;
 import main.java.MovementManager;
-import main.java.Singleton;
 import main.java.gameobjects.Entity;
-import main.java.gameobjects.mapobjects.BigHouse;
-import main.java.gameobjects.mapobjects.GingerbreadHouse;
 
 import java.awt.*;
 import java.util.concurrent.ExecutorService;
