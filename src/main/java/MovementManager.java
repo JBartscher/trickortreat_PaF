@@ -108,9 +108,6 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     public void checkTarget(Entity entity, double movementSize) {
 
-        //if(game.getWitch().getTargets().size() < 5)
-        //   System.out.println(game.getWitch().isOnReturn() + " Hexe-Ziel: " + game.getWitch().getFinalTargetPos() + " - Pos: " + game.getWitch().getEntityPos() + " -  Ziele: " + game.getWitch().getTargets());
-
         /**
          * check if the witch reached the door of her home - set return to false if that is the case
          */
@@ -144,6 +141,13 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    /**
+     * handle input events of type mouse or mouse.
+     *
+     * @param event event that gets handlesd
+     * @see MovementManager#handleMouse(MouseEvent)
+     * @see MovementManager#handleKeyboard(KeyEvent)
+     */
     @Override
     public void handle(InputEvent event) {
         if (event.getClass() == MouseEvent.class) {
@@ -180,7 +184,6 @@ public class MovementManager implements EventHandler<InputEvent> {
             config.setParam("paused", game.paused);
 
 
-
             return;
         } else if (event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getSceneX() >= 70 && event.getSceneX() < 140 && event.getSceneY() < 70) {
             Sound.muteSound();
@@ -197,7 +200,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void handleMouse(MouseEvent event) {
 
         checkButtonClicked(event);
-        if(event.getSceneY() < Window.HEIGHT * 0.1) return;
+        if (event.getSceneY() < Window.HEIGHT * 0.1) return;
 
         if (inputMOUSE == null) return;
         if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
@@ -215,7 +218,7 @@ public class MovementManager implements EventHandler<InputEvent> {
     public void handleKeyboard(KeyEvent event) {
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
 
-            if(event.getCode() == KeyCode.ESCAPE) {
+            if (event.getCode() == KeyCode.ESCAPE) {
                 String pausedEvent = "";
                 boolean paused = game.paused;
                 Event.EventType eventType;
@@ -631,9 +634,9 @@ public class MovementManager implements EventHandler<InputEvent> {
             } else {
                 //System.out.println("COLLIDE!");
                 entity.setyPos(entity.getyPos() - size);
-                if(entity instanceof Witch) {
+                if (entity instanceof Witch) {
                     //entity.setxPos(entity.getxPos() - 0.25 * Tile.TILE_SIZE);
-                    if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER || game.gameMode == Game.GameMode.LOCAL) {
+                    if (game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER || game.gameMode == Game.GameMode.LOCAL) {
                         Point target = chooseTarget((Witch) entity, game.getPlayer(), game.getOtherPlayer());
                         findPath(entity, entity.getEntityPos(), target);
                     }
@@ -672,8 +675,8 @@ public class MovementManager implements EventHandler<InputEvent> {
             } else {
                 //System.out.println("COLLIDE!");
                 entity.setxPos(entity.getxPos() - size);
-                if(entity instanceof Witch) {
-                    if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER || game.gameMode == Game.GameMode.LOCAL) {
+                if (entity instanceof Witch) {
+                    if (game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER || game.gameMode == Game.GameMode.LOCAL) {
                         Point target = chooseTarget((Witch) entity, game.getPlayer(), game.getOtherPlayer());
                         findPath(entity, entity.getEntityPos(), target);
                     }
@@ -729,7 +732,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                         if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
 
                             HouseDecorator houseDecorator = new SoundDecorator(h);
-                            if(houseDecorator.getDecoratedHouse() instanceof SmallHouse || houseDecorator.getDecoratedHouse() instanceof BigHouse)
+                            if (houseDecorator.getDecoratedHouse() instanceof SmallHouse || houseDecorator.getDecoratedHouse() instanceof BigHouse)
                                 houseDecorator = new CandyDecorator(houseDecorator);
 
                             houseDecorator.visit((Player) entity);
