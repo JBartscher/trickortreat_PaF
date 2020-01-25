@@ -15,13 +15,18 @@ import java.util.List;
  */
 public class Sector extends Placeable {
 
-    //private ArrayList<Placeable> containingPlacebles;
+    /**
+     * mapObjects that are contained by this sector
+     */
     private final List<MapObject> sectorObjects;
-
-    //Refrence to parent
-    Sector parent = null;
-    //Collection of child sectors.
-    private List<Sector> childSectors = new ArrayList<Sector>();
+    /**
+     * collection of all child sectors of this sector
+     */
+    private final List<Sector> childSectors = new ArrayList<Sector>();
+    /**
+     * reference to the parent sector of this sector
+     */
+    private Sector parent = null;
 
     /**
      * sector constructor
@@ -54,7 +59,7 @@ public class Sector extends Placeable {
     /**
      * checks every item in containingPlacebles if it intersects with the given placeble.
      *
-     * @param placeable the placeble that is checked wherater it intersects with any item in the sector
+     * @param placeable the placeble that is checked if it intersects with any item in the sector
      * @return true if the object intersects with other objects
      */
     public boolean intersectsWithContainingItems(Placeable placeable) {
@@ -77,8 +82,8 @@ public class Sector extends Placeable {
      */
     public boolean entityIntersectsWithContainingItems(Entity entity) {
 
-        /**
-         * when the entity is the witch then do not use collision detection with more currency
+        /*
+          when the entity is the witch then do not use collision detection with more currency
          */
         if(entity instanceof Witch) {
             Placeable pWitch = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
@@ -89,8 +94,8 @@ public class Sector extends Placeable {
         double yOffset = 0;
 
 
-        /** improve collision with obstacles when moving in left direction
-         *
+        /* improve collision with obstacles when moving in left direction
+
          */
         if(entity.getMoveDirection() == MovementManager.MoveDirection.LEFT) {
             xOffset = -0.33;
@@ -120,8 +125,8 @@ public class Sector extends Placeable {
      */
     public void addMapObject(MapObject mapObject) {
         sectorObjects.add(mapObject);
-        /**
-         * if this sector is a child of another sector, the mapObject is also added to his list of mapObjects.
+        /*
+          if this sector is a child of another sector, the mapObject is also added to his list of mapObjects.
          */
         if(this.parent != null){
             parent.addMapObject(mapObject);
@@ -166,7 +171,7 @@ public class Sector extends Placeable {
      *
      * @param parentSector the new parentSector
      */
-    public void setParentSector(Sector parentSector){
+    private void setParentSector(Sector parentSector){
         this.parent = parentSector;
     }
 
