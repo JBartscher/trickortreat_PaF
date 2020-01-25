@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import main.java.Menu.MainMenu;
 import main.java.Network.Network;
+import main.java.sprites.GraphicsUtility;
 
 
 public class GameLauncher extends Application {
@@ -68,6 +69,10 @@ public class GameLauncher extends Application {
      * @param args
      */
     public static void main(String[] args){
+        /**
+         * make sure every sprite is loaded
+         */
+        GraphicsUtility.initGraphics();
         launch();
     }
 }
