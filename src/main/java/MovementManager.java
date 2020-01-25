@@ -480,7 +480,7 @@ public class MovementManager implements EventHandler<InputEvent> {
             /**
              * call pathfinding algorithm for npc
              */
-            if (game.ticks % 5 == 0 /*|| game.ticks == 1 */) {
+            if (game.ticks % 7 == 0 /*|| game.ticks == 1 */) {
 
                 Point target = chooseTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
 
@@ -632,6 +632,10 @@ public class MovementManager implements EventHandler<InputEvent> {
             } else {
                 //System.out.println("COLLIDE!");
                 entity.setyPos(entity.getyPos() - size);
+                if(entity instanceof Witch) {
+                    Point target = chooseTarget((Witch)entity, game.getPlayer(), game.getOtherPlayer());
+                    findPath(entity, entity.getEntityPos(), target);
+                }
             }
 
         } else {
@@ -666,6 +670,10 @@ public class MovementManager implements EventHandler<InputEvent> {
             } else {
                 //System.out.println("COLLIDE!");
                 entity.setxPos(entity.getxPos() - size);
+                if(entity instanceof Witch) {
+                    Point target = chooseTarget((Witch)entity, game.getPlayer(), game.getOtherPlayer());
+                    findPath(entity, entity.getEntityPos(), target);
+                }
             }
 
             // TODO: LÖST die Kollision zwischen zwei Spielern

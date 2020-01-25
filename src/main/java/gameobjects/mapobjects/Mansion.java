@@ -7,6 +7,8 @@ import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
 
+import java.awt.*;
+
 /**
  * the house of alice cooper
  * this class also implements the interface -Accessible- that ensures the movement within the building
@@ -98,6 +100,7 @@ public class Mansion extends House implements Accessible {
             player.setNoCollision(true);
             player.setInside(true);
             player.setyPos(player.getyPos() + -Tile.TILE_SIZE * 1);
+            player.setTarget(new Point((int)player.getxPos(), (int)player.getyPos()));
             player.setInsideObject(this);
             player.setProtectedTicks(25);
             this.tileset = TileCollection.getMansionInsideTiles();
