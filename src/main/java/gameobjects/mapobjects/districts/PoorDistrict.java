@@ -32,13 +32,4 @@ public class PoorDistrict extends District {
         return TileCollection.getPoorBigHouseVisitedTiles();
     }
 
-    @Override
-    public Tile[][] getGingerbreadHouseVisitedTileset(){
-        return TileCollection.getGingerbreadHouseVisitedTiles();
-    }
-
-    @Override
-    public Tile[][] getGingerbreadHouseUnvisitedTileset(){
-        return TileCollection.getGingerbreadHouseUnvisitedTiles();
-    }
 }

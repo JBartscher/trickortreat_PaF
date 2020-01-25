@@ -12,34 +12,44 @@ public class RichDistrict extends District {
         this.houseColorKey = 6;
     }
 
+    /**
+     * get small, rich unvisited House tileset.
+     *
+     * @return TileArray for a small, rich unvisited House
+     */
     @Override
     public Tile[][] getSmallHouseUnvisitedTileset() {
         return TileCollection.getRichSmallHouseUnvisitedTiles();
     }
 
+    /**
+     * get small, rich visited House tileset.
+     *
+     * @return TileArray for a small, rich visited House
+     */
     @Override
     public Tile[][] getSmallHouseVisitedTileset() {
         return TileCollection.getRichSmallHouseVisitedTiles();
     }
 
+    /**
+     * get big, rich unvisited House tileset.
+     *
+     * @return TileArray for a big, rich unvisited House
+     */
     @Override
     public Tile[][] getBigHouseUnvisitedTileset() {
         return TileCollection.getRichBigHouseUnvisitedTiles();
     }
 
+    /**
+     * get big, rich visited House tileset.
+     *
+     * @return TileArray for a small, big visited House
+     */
     @Override
     public Tile[][] getBigHouseVisitedTileset() {
         return TileCollection.getRichBigHouseVisitedTiles();
-    }
-
-    @Override
-    public Tile[][] getGingerbreadHouseVisitedTileset(){
-        return TileCollection.getGingerbreadHouseVisitedTiles();
-    }
-
-    @Override
-    public Tile[][] getGingerbreadHouseUnvisitedTileset(){
-        return TileCollection.getGingerbreadHouseUnvisitedTiles();
     }
 
 
