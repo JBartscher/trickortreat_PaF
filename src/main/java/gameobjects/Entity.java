@@ -224,10 +224,10 @@ public abstract class Entity extends Observable implements Serializable {
             this.xPos = entityData.getxPos();
             this.yPos = entityData.getyPos();
         } else {
-            this.xPos = entityData.getxPos();
-            this.yPos = entityData.getyPos();
-            //this.xPos = (entityData.getxPos() + xPos) / 2;
-            //this.yPos = (entityData.getyPos() + yPos) / 2;
+            //this.xPos = entityData.getxPos();
+            //this.yPos = entityData.getyPos();
+            this.xPos = (entityData.getxPos() + xPos) / 2;
+            this.yPos = (entityData.getyPos() + yPos) / 2;
         }
 
         this.size = entityData.getSize();
