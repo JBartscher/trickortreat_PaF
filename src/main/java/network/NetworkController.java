@@ -1,11 +1,16 @@
 package main.java.network;
 
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.scene.control.Button;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import main.java.*;
 import main.java.configuration.Configuration;
 import main.java.menu.GameOver;
@@ -349,16 +354,34 @@ public class NetworkController extends GameController {
 
         }
             Platform.runLater(() -> {
+                Light.Distant light = new Light.Distant();
+                light.setAzimuth(0);
+                Lighting lighting = new Lighting(light);
+                lighting.setSurfaceScale(5.0);
                 Stage errorStage = new Stage();
-                Label labelError = new Label("Lost connection to other player! - shutdown network and set game to game over");
-                labelError.setStyle("-fx-font-size: 16");
+                Label labelError = new Label("LOST CONNECTION TO OTHER PLAYER - SHUTDOWN NETWORK");
+                labelError.setStyle("-fx-text-fill: white; -fx-font-size: 1.25em; ");
                 VBox vBox = new VBox(10);
-                Scene scene = new Scene(vBox, 500, 200);
-                vBox.getChildren().add(labelError);
+                vBox.setEffect(lighting);
+                vBox.setStyle("-fx-background-color: black;");
+                vBox.setAlignment(Pos.CENTER);
+                Scene scene = new Scene(vBox, 550, 120);
+                Button buttonClose = new Button("CANCEL");
+                buttonClose.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0;" +
+                "-fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
+                vBox.getChildren().addAll(labelError, buttonClose);
                 errorStage.setScene(scene);
+                errorStage.initStyle(StageStyle.UNDECORATED);
                 errorStage.initModality(Modality.APPLICATION_MODAL);
                 game.setGameTime(0);
                 errorStage.show();
+
+                buttonClose.setOnAction( (e) -> {
+
+                    Sound.playMenu();
+                    errorStage.close();
+    
+                });
             });
 
 
