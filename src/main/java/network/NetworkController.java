@@ -313,8 +313,6 @@ public class NetworkController extends GameController {
                 }
 
                 break;
-
-
         }
     }
 
@@ -367,20 +365,23 @@ public class NetworkController extends GameController {
                 vBox.setStyle("-fx-background-color: black;");
                 vBox.setAlignment(Pos.CENTER);
                 Scene scene = new Scene(vBox, 550, 120);
-                Button buttonClose = new Button("CANCEL");
+                Button buttonClose = new Button("EXIT TO DESKTOP");
                 buttonClose.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0;" +
                 "-fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
                 vBox.getChildren().addAll(labelError, buttonClose);
                 errorStage.setScene(scene);
                 errorStage.initStyle(StageStyle.UNDECORATED);
                 errorStage.initModality(Modality.APPLICATION_MODAL);
-                game.setGameTime(0);
                 errorStage.show();
 
                 buttonClose.setOnAction( (e) -> {
-
                     Sound.playMenu();
+
                     errorStage.close();
+                    stopGameLoop();
+                    Platform.exit();
+                    //gameLauncher.getMainMenu().showMainMenu();
+
     
                 });
             });

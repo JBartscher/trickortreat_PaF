@@ -23,7 +23,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * all model, view and controllers are encapsulated within the Game-Class
  */
 public class Game {
-
     private final static Configuration<Object> config = new Configuration<Object>();
     public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
     public final static int TIME = ((Number) config.getParam("time")).intValue();

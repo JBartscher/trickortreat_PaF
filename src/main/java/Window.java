@@ -22,16 +22,14 @@ public class Window {
     public Window(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
-
         closeEvent();
 
     }
 
     private void closeEvent() {
-
         stage.setOnHiding( event -> {
             game.getGameController().shutDownNetwork();
-            Platform.exit();
+            //Platform.exit();
         });
     }
 
