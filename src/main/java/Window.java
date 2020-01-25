@@ -1,5 +1,6 @@
 package main.java;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -30,6 +31,7 @@ public class Window {
 
         stage.setOnHiding( event -> {
             game.getGameController().shutDownNetwork();
+            Platform.exit();
         });
     }
 

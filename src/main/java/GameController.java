@@ -18,6 +18,7 @@ import main.java.map.Tile;
 import main.java.network.ServerEngine;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -203,7 +204,16 @@ public class GameController implements Observer {
             if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
                 ServerEngine serverEngine = ((ServerEngine) ((NetworkController) game.gameController).getNetworkEngine());
                 serverEngine.stopHandler();
+                try {
+                    if(serverEngine.serverSocket != null)
+                        serverEngine.serverSocket.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+
+                }
                 serverEngine = null;
+
+
             } else if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
                 ClientEngine clientEngine = ((ClientEngine) ((NetworkController) game.gameController).getNetworkEngine());
                 clientEngine.interrupt();

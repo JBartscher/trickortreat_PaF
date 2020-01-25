@@ -319,7 +319,6 @@ public class NetworkController extends GameController {
     public void update(Observable o, Object arg) {
         super.update(o, arg);
 
-
         Event.EventType eventType;
 
         if(o instanceof TownHall) {
@@ -338,18 +337,28 @@ public class NetworkController extends GameController {
     @Override
     public void shutDownNetwork() {
         super.shutDownNetwork();
-        Platform.runLater ( () -> {
-            Stage errorStage = new Stage();
-            Label labelError = new Label("Lost connection to other player! - shutdown network and set game to game over");
-            labelError.setStyle("-fx-font-size: 16");
-            VBox vBox = new VBox(10);
-            Scene scene = new Scene(vBox, 500, 200);
-            vBox.getChildren().add(labelError);
-            errorStage.setScene(scene);
-            errorStage.initModality(Modality.APPLICATION_MODAL);
-            game.setGameTime(0);
-            errorStage.show();
-        });
+
+        /**
+         * check if currently a connection is available otherwise shutdown without popup window
+         */
+        if( networkEngine instanceof ServerEngine ) {
+            if( ((ServerEngine)networkEngine).socket == null)
+                return;
+
+        }
+            Platform.runLater(() -> {
+                Stage errorStage = new Stage();
+                Label labelError = new Label("Lost connection to other player! - shutdown network and set game to game over");
+                labelError.setStyle("-fx-font-size: 16");
+                VBox vBox = new VBox(10);
+                Scene scene = new Scene(vBox, 500, 200);
+                vBox.getChildren().add(labelError);
+                errorStage.setScene(scene);
+                errorStage.initModality(Modality.APPLICATION_MODAL);
+                game.setGameTime(0);
+                errorStage.show();
+            });
+
 
     }
 

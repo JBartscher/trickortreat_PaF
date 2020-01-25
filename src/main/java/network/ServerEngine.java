@@ -38,6 +38,8 @@ public class ServerEngine extends Thread implements Network {
     // Warten auf Initalisierung der GUI
     public boolean ready = false;
 
+    public Socket socket;
+
     // Server GUI
     private Stage stageNetwork;
     VBox vBox;
@@ -45,6 +47,7 @@ public class ServerEngine extends Thread implements Network {
     private Game game;
 
     public static boolean restart;
+    public ServerSocket serverSocket;
 
     // Movement
     private MovementManager.MovementType movementType;
@@ -93,18 +96,18 @@ public class ServerEngine extends Thread implements Network {
     // Erstellt bereits ein Game-Objekt
     public void startServer() {
         try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
+            serverSocket = new ServerSocket(PORT);
+
             Platform.runLater( () -> {
 
                 labelRequests.setText("Server wurde gestartet - PORT " + PORT + " - warte auf Client");
                 initGameAndController();
-
             });
 
             /**
              * wait for requests and assign incoming request to instance object: "socket"
              */
-            Socket socket = serverSocket.accept();
+            socket = serverSocket.accept();
 
             /**
              * an object of the private class "RequestHandler" is responsible to handle further communcations
