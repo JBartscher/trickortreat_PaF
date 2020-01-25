@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -74,9 +76,9 @@ public class MainMenu {
     private List<Pair<String, Runnable>> localMenuData;
     private List<Pair<String, Runnable>> hostMenuData;
     private List<Pair<String, Runnable>> clientMenuData;
-
     private List<Pair<String, Runnable>> pausedMenu;
-
+    private Light.Distant light = new Light.Distant();
+    private Lighting lighting = new Lighting(light);
     private Scene gameScene;
     private static boolean soundOnBefore;
 
@@ -85,6 +87,8 @@ public class MainMenu {
         this.stage = stage;
         this.gameLauncher = gameLauncher;
 
+        light.setAzimuth(0);
+        lighting.setSurfaceScale(5.0);
         setDefaultControls();
     }
 
@@ -402,6 +406,11 @@ public class MainMenu {
             enabled.setSelected(true);
         }
 
+        enabled.setStyle("-fx-text-fill: white;");
+        disabled.setStyle("-fx-text-fill: white;");
+        controlsBox.setStyle("-fx-background-color: black;");
+        controlsBox.setEffect(lighting);
+
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
 
@@ -450,6 +459,7 @@ public class MainMenu {
     }
 
     public void showPausedMenu(Scene gameScene) {
+
         this.gameScene = gameScene;
         initMenu(pausedMenu, 95);
         //scene = new Scene(createContent());
@@ -459,18 +469,17 @@ public class MainMenu {
         addTitle("PAUSED");
 
         soundOnBefore = !((Boolean)config.getParam("muted")).booleanValue();
-        if(  soundOnBefore ) {
+        if(soundOnBefore) {
             Sound.muteSound();
             GameMenu.setRightButtons();
-
         }
-
 
         stage.setScene(scene);
         stage.show();
     }
 
     public void resumeGame(Game game) {
+
         game.paused = false;
         stage.setScene(gameScene);
 
