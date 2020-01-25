@@ -220,7 +220,6 @@ public class MainMenu {
 
             Platform.exit();
         }));
-
     }
 
     private void setDefaultControls() {

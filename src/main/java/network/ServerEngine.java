@@ -3,6 +3,7 @@ package main.java.network;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.effect.Light;
@@ -85,12 +86,29 @@ public class ServerEngine extends Thread implements Network {
             vBox.setStyle("-fx-background-color: black;");
             vBox.setAlignment(Pos.CENTER);
             this.labelRequests = new Label();
+            Button buttonClose = new Button("Cancel");
+            buttonClose.setStyle("-fx-text-fill: black; -fx-font-size: 1.25em; -fx-font-weight: bold;");
+
+            buttonClose.setOnAction( (e) -> {
+
+                if(serverSocket != null) {
+                    try {
+                        serverSocket.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+                stageNetwork.close();
+
+            });
+
             labelRequests.setStyle("-fx-text-fill: white; -fx-font-size: 1.25em; -fx-font-weight: bold;");
-            vBox.getChildren().addAll(labelRequests);
+            vBox.getChildren().addAll(labelRequests, buttonClose);
             stageNetwork = new Stage();
             stageNetwork.initStyle(StageStyle.UNDECORATED);
 
-            Scene scene = new Scene(vBox, 550, 60);
+            Scene scene = new Scene(vBox, 550, 150);
             stageNetwork.setScene(scene);
             stageNetwork.show();
 

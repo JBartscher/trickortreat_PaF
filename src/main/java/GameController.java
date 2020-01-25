@@ -64,7 +64,7 @@ public class GameController implements Observer {
         game.setPlayer(new Player(movementTypePlayer1));
         game.getPlayer().setxPos(game.getMap().getSize() * 0.5 * Tile.TILE_SIZE);
         game.getPlayer().setyPos((game.getMap().getSize() * 0.5 + 3) * Tile.TILE_SIZE);
-        game.getPlayer().setTarget( new Point( (int)game.getPlayer().getxPos(), (int)game.getPlayer().getyPos()) );
+        game.getPlayer().setTarget(new Point((int) game.getPlayer().getxPos(), (int) game.getPlayer().getyPos()));
 
         game.getListOfPlayers().add(game.getPlayer());
         // add Score-Observer which notifyes its Score text when this player visits a house
@@ -80,7 +80,7 @@ public class GameController implements Observer {
 
         game.getOtherPlayer().setxPos(game.getPlayer().getxPos() + Tile.TILE_SIZE);
         game.getOtherPlayer().setyPos(game.getPlayer().getyPos());
-        game.getOtherPlayer().setTarget( new Point( (int)game.getOtherPlayer().getxPos(), (int)game.getOtherPlayer().getyPos()) );
+        game.getOtherPlayer().setTarget(new Point((int) game.getOtherPlayer().getxPos(), (int) game.getOtherPlayer().getyPos()));
 
         game.setWitch(new Witch());
 
@@ -155,19 +155,20 @@ public class GameController implements Observer {
     private class GameLoop extends AnimationTimer {
         @Override
         public void handle(long now) {
-                long startTime = System.currentTimeMillis();
-                game.ticks++;
-                game.update();
-                game.getMapRenderer().render();
-                calculateGameTime(startTime);
+            long startTime = System.currentTimeMillis();
+            game.ticks++;
+            game.update();
+            game.getMapRenderer().render();
+            calculateGameTime(startTime);
         }
 
         /**
          * calculate and update current game time - sleep a few milliseconds when finished work before time goal
+         *
          * @param startTime
          */
         public void calculateGameTime(long startTime) {
-            if(!game.paused) {
+            if (!game.paused) {
                 long endTime = System.currentTimeMillis();
                 try {
                     int sleepTime = (int) (1000 / Game.FRAMES - (endTime - startTime));
@@ -199,15 +200,16 @@ public class GameController implements Observer {
             }
         }
     }
+
     public void shutDownNetwork() {
         if (game.gameMode == Game.GameMode.REMOTE) {
             if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
                 ServerEngine serverEngine = ((ServerEngine) ((NetworkController) game.gameController).getNetworkEngine());
                 serverEngine.stopHandler();
                 try {
-                    if(serverEngine.serverSocket != null)
+                    if (serverEngine.serverSocket != null)
                         serverEngine.serverSocket.close();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
 
                 }
