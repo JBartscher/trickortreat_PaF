@@ -5,7 +5,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import main.java.Menu.GameMenu;
+import main.java.menu.GameMenu;
 import main.java.network.Event;
 import main.java.network.NetworkController;
 import main.java.gameobjects.AliceCooper;

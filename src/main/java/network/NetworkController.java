@@ -2,7 +2,7 @@ package main.java.network;
 
 import javafx.application.Platform;
 import main.java.*;
-import main.java.Menu.GameOver;
+import main.java.menu.GameOver;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.Mansion;

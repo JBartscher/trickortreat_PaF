@@ -1,4 +1,4 @@
-package main.java.Menu;
+package main.java.menu;
 
 import javafx.beans.binding.Bindings;
 import javafx.scene.effect.BoxBlur;
