@@ -8,7 +8,6 @@ import main.java.gameobjects.Player;
  * concrete decorator
  */
 public class SoundDecorator extends HouseDecorator {
-
     /**
      * the constructor of the concrete Decorator Object
      *

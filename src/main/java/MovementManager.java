@@ -710,8 +710,7 @@ public class MovementManager implements EventHandler<InputEvent> {
             for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
                 try {
                     House h = (House) obj;
-                    SoundDecorator houseSoundDecorator = new SoundDecorator(h);
-                    CandyDecorator houseCandyDecorator = new CandyDecorator(h);
+
                     /**
                      * call the visit method on the house object
                      */
@@ -722,8 +721,17 @@ public class MovementManager implements EventHandler<InputEvent> {
                              * because the soundDecorator does not care if a house has already been visited,
                              * the CandyDecorator does.
                              */
-                            houseCandyDecorator.visit((Player) entity);
-                            houseSoundDecorator.visit((Player) entity);
+                            //houseCandyDecorator.visit((Player) entity);
+                            //houseSoundDecorator.visit((Player) entity);
+                            HouseDecorator houseDecorator = new SoundDecorator(h);
+
+                            if(houseDecorator.getDecoratedHouse() instanceof SmallHouse || houseDecorator.getDecoratedHouse() instanceof BigHouse)
+                                houseDecorator = new CandyDecorator(houseDecorator);
+
+                            houseDecorator.visit((Player) entity);
+
+
+
                         }
                     }
                     /**
