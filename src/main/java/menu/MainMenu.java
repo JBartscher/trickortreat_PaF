@@ -245,11 +245,15 @@ public class MainMenu {
         initStage();
 
         radioButtonWASD.setToggleGroup(group);
-        radioButtonARROW.setToggleGroup(group);
-        radioButtonMOUSE.setToggleGroup(group);
-
-        radioButtonARROW.setDisable(false);
+        radioButtonWASD.setStyle("-fx-text-fill: white;");
         radioButtonWASD.setDisable(false);
+
+        radioButtonARROW.setToggleGroup(group);
+        radioButtonARROW.setStyle("-fx-text-fill: white;");
+        radioButtonARROW.setDisable(false);
+
+        radioButtonMOUSE.setToggleGroup(group);
+        radioButtonMOUSE.setStyle("-fx-text-fill: white;");
         radioButtonMOUSE.setDisable(false);
 
         switch ((String) config.getParam("movementTypePlayer1")) {
@@ -269,6 +273,8 @@ public class MainMenu {
                 break;
         }
   
+        controlsBox.setStyle("-fx-background-color: black;");
+        controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
 
         if (gameMode == Game.GameMode.REMOTE) {
@@ -308,8 +314,14 @@ public class MainMenu {
             }); 
 
             radioButtonWASDtwo.setToggleGroup(groupTwo);
+            radioButtonWASDtwo.setStyle("-fx-text-fill: white;");
+
             radioButtonARROWtwo.setToggleGroup(groupTwo);
+            radioButtonARROWtwo.setStyle("-fx-text-fill: white;");
+
             radioButtonMOUSEtwo.setToggleGroup(groupTwo);
+            radioButtonMOUSEtwo.setStyle("-fx-text-fill: white;");
+
             
             switch ((String) config.getParam("movementTypePlayer2")) {
                 case "KEYBOARD_ARROW": 
@@ -356,6 +368,8 @@ public class MainMenu {
                 } 
             }); 
     
+            labelPlayerOne.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+            labelPlayerTwo.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
             controlsBox.getChildren().addAll(labelPlayerOne, radioButtonWASD, radioButtonARROW, radioButtonMOUSE, labelPlayerTwo, radioButtonWASDtwo, radioButtonARROWtwo, radioButtonMOUSEtwo, buttonOk);
 
             initScene(controlsBox, 200, 300);
@@ -397,7 +411,9 @@ public class MainMenu {
 
         initStage();
 
+        enabled.setStyle("-fx-text-fill: white;");
         enabled.setToggleGroup(group);
+        disabled.setStyle("-fx-text-fill: white;");
         disabled.setToggleGroup(group);
         
         if ((Boolean) config.getParam("muted")) {
@@ -406,11 +422,8 @@ public class MainMenu {
             enabled.setSelected(true);
         }
 
-        enabled.setStyle("-fx-text-fill: white;");
-        disabled.setStyle("-fx-text-fill: white;");
         controlsBox.setStyle("-fx-background-color: black;");
         controlsBox.setEffect(lighting);
-
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
 
@@ -433,6 +446,8 @@ public class MainMenu {
 
         initStage();
 
+        controlsBox.setStyle("-fx-background-color: black;");
+        controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(textFieldServer, buttonOk);
         
