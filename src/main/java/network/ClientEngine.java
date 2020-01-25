@@ -148,7 +148,6 @@ public class ClientEngine extends Thread implements Network {
     public void communicate() {
         System.out.println("Starte Kommunikation vom Client zum Server!");
         try{
-
             while(true) {
 
                 /**

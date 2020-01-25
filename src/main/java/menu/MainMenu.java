@@ -169,12 +169,9 @@ public class MainMenu {
 
         clientMenuData = Arrays.asList(new Pair<String, Runnable>("Start the Game", () -> {
 
-                if (ip != null) new ClientEngine(gameLauncher, stage, movementTypePlayer1, ip);
-
-            }), new Pair<String, Runnable>("Set Hostname*", () -> {
-
-                Sound.playMenu();
                 setHostname();
+                Sound.playMenu();
+
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
@@ -459,18 +456,23 @@ public class MainMenu {
     private void setHostname() {
 
         initStage();
-
         controlsBox.setStyle("-fx-background-color: black;");
         controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(textFieldServer, buttonOk);
+        buttonOk.setText("CONNECT TO SERVER");
         
         initScene(controlsBox, 200, 80);
 
         buttonOk.setOnAction((e) -> {
             ip = textFieldServer.getText();
-            Sound.playMenu();
-            controlsStage.close();
+            if(ip.length() > 0) {
+                Sound.playMenu();
+                controlsStage.close();
+                new ClientEngine(gameLauncher, stage, movementTypePlayer1, ip);
+            } else {
+                textFieldServer.setText("ERROR - Enter AN IP!");
+            }
         });
     }
 

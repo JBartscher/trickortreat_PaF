@@ -259,7 +259,6 @@ public class ServerEngine extends Thread implements Network {
         game = new Game(gameLauncher, stage, Game.GameMode.REMOTE, ServerEngine.this, movementType, null);
         networkController = (NetworkController)game.getGameController();
         networkController.updateGameState(new GameStateInit(game.getMap(), new PlayerData(game.getOtherPlayer()), new PlayerData(game.getPlayer()), new WitchData(game.getWitch()), new CooperData(game.getAliceCooper()), null, Game.TIME));
-
     }
 
     /**
@@ -304,7 +303,6 @@ public class ServerEngine extends Thread implements Network {
             }
 
         } catch(Exception e) {
-
             networkController.shutDownNetwork();
 
         }
