@@ -4,11 +4,12 @@ import main.java.gameobjects.mapobjects.BigHouse;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.SmallHouse;
+import main.java.pattern.Factory;
 
 /**
  * this class implements the factory pattern and allows a generic way to create new house objects
  */
-public class HouseFactory implements Factory<House>{
+public class HouseFactory implements Factory<House> {
     /**
      * factory method to create instances of houses
      *
