@@ -32,5 +32,15 @@ public class RichDistrict extends District {
         return TileCollection.getRichBigHouseVisitedTiles();
     }
 
+    @Override
+    public Tile[][] getGingerbreadHouseVisitedTileset(){
+        return TileCollection.getGingerbreadHouseVisitedTiles();
+    }
+
+    @Override
+    public Tile[][] getGingerbreadHouseUnvisitedTileset(){
+        return TileCollection.getGingerbreadHouseUnvisitedTiles();
+    }
+
 
 }

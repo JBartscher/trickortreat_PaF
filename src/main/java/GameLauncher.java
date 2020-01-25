@@ -1,27 +1,22 @@
 package main.java;
 
-import javafx.animation.AnimationTimer;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.java.Menu.GameOver;
 import main.java.Menu.MainMenu;
 import main.java.Network.Network;
+import main.java.sprites.GraphicsUtility;
+
 
 public class GameLauncher extends Application {
 
     private final static Configuration<Object> config = new Configuration<Object>();
     private Game game;
+    private GameController gameController;
     private Stage stage;
-    private GameLoop gameLoop;
     private MainMenu mainMenu;
     private MovementManager.MovementType movementTypePlayer1;
     private MovementManager.MovementType movementTypePlayer2;
-    public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
-
-
-    public int renderTime = 0;
-    public int updateTime = 0;
-    public int gesamtTime = 0;
 
     public void start(Stage stage) throws Exception {
         this.stage = stage;
@@ -29,75 +24,55 @@ public class GameLauncher extends Application {
         mainMenu.showMainMenu();
     }
 
-
+    /**
+     * used in locale mode or when server is launching a new game
+     * @param gameMode - locale or remote
+     * @param networkEngine - client or server - null if playing locale
+     * @param movementTypePlayer1 - movement type of player1
+     * @param movementTypePlayer2 - movement type of player2
+     */
     public void startGame(Game.GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
         this.movementTypePlayer1 = movementTypePlayer1;
         this.movementTypePlayer2 = movementTypePlayer2;
         this.game = new Game(this, stage, gameMode, networkEngine, movementTypePlayer1, movementTypePlayer2);
-        gameLoop = new GameLoop();
-        game.getWindow().showGameGUI();
-        gameLoop.start();
+        startGameLoop();
     }
 
-    // Remote - it is not necessary to create a new game object - server sends game object to client who uses this object
+    /** only used by client -> it is not necessary to create a new game object -
+     * server sends game object to client who uses this object to instantiate a game
+      */
     public void startGame(Game game) {
         this.game = game;
-        gameLoop = new GameLoop();
-        game.getWindow().showGameGUI();
-        gameLoop.start();
+        startGameLoop();
     }
 
-    private class GameLoop extends AnimationTimer{
-        @Override
-        public void handle(long now) {
-            long startTime = System.currentTimeMillis();
-            game.ticks++;
-            game.update();
-
-            updateTime += (System.currentTimeMillis() - startTime);
-            long middleTime = System.currentTimeMillis();
-            game.getMapRenderer().drawMap();
-            renderTime += (System.currentTimeMillis() - middleTime);
-            calculateGameTime(startTime);
-
-            gesamtTime += (System.currentTimeMillis() - startTime);
-
-            System.out.println("Gesamtzeit: " + gesamtTime + " ms - UpdateZeit: " + updateTime + " ms - Renderzeit: " + renderTime + " ms");
-        }
-
-        public void calculateGameTime(long startTime) {
-
-            if(!game.paused) {
-                long endTime = System.currentTimeMillis();
-
-                try {
-                    int sleepTime = (int) (1000 / FRAMES - (endTime - startTime));
-
-                    if (sleepTime < 0) sleepTime = 0;
-                    Thread.sleep(sleepTime);
-
-                    int gameTime = (int) (game.getGameTime() - (System.currentTimeMillis() - startTime));
-                    if (gameTime > 0)
-                        game.setGameTime((int) (game.getGameTime() - (System.currentTimeMillis() - startTime)));
-                    else {
-
-                        this.stop();
-                        new GameOver(game, GameLauncher.this, stage, mainMenu).showGameOver();
-                    }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
+    /**
+     * assign the gameController created by game class - show the GUI and start game Loop of super controller (Game-Controller)
+     */
+    private void startGameLoop() {
+        Sound.playMusic();
+        this.gameController = game.getGameController();
+        game.getWindow().showGameGUI();
+        gameController.startGameLoop();
     }
 
     public Game getGame() {
         return game;
     }
 
+    public MainMenu getMainMenu() {
+        return mainMenu;
+    }
+
+    /**
+     * start the JavaFX application
+     * @param args
+     */
     public static void main(String[] args){
+        /**
+         * make sure every sprite is loaded
+         */
+        GraphicsUtility.initGraphics();
         launch();
     }
 }

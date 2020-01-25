@@ -6,11 +6,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
+import main.java.Menu.GameMenu;
+import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.Tile;
-import main.java.ui.GameMenu;
+import main.java.sprites.GraphicsUtility;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +27,6 @@ public class MapRenderer {
         this.tileMap = map.getMap();
         this.window = window;
         this.game = game;
-        GraphicsUtility.initGraphics();
     }
 
     public static String calculateTime(Game game) {
@@ -42,128 +42,65 @@ public class MapRenderer {
         return minutes + ":" + secondsString;
     }
 
-    public void drawMap() {
+    public void render() {
 
         Group root = window.getRoot();
         root.getChildren().clear();
         GameCamera gameCamera = game.getGameCamera();
         Player player = game.getPlayer();
-        Player otherPlayer;
+        Player otherPlayer = game.getOtherPlayer();
 
         Canvas canvas = new Canvas(Window.WIDTH, Window.HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        // Erweiterungsmöglichkeit für lokalen Mehrspielermodus
-        // Liste enthält 1 Objekt, sofern REMOTE - 2 Objekte wenn LOKAL => rendert 2 Karten
-        // widthOffset verschiebt den Viewport für den zweiten Spieler
+        /**
+         * render the map for every player (one iteration on a network game, two iterations on a locale game)
+         */
         int widthOffset = 0;
-        for (Player obj : game.getListOfPlayers()) {
-
+        for (Player playerObj : game.getListOfPlayers()) {
             if (widthOffset > 0) {
-
                 // Lokale GameCamera austauschen (Rendern des zweiten Screens)
                 gameCamera = game.getGameCameraEnemy();
             }
 
-            // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
-            for (int z = 0; z < 3; z++) {
+            drawMap(gc, gameCamera, widthOffset, player, otherPlayer, playerObj);
 
-
-                for (int y = 0; y < tileMap.length; y++) {
-                    for (int x = 0; x < tileMap[y].length; x++) {
-                        int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
-                        int yPos = (int) (y * Tile.TILE_SIZE - gameCamera.getYOffset() + Window.HEIGHT * 0.1);
-                        // nur Zeichnen, wenn sichtbar - sonst verwerfen
-
-                        if (tileMap[y][x][z].getTileNr() == 0) continue;
-
-                        if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
-
-                            if(obj.getChildrenCount() == 0) {
-                                gc.setGlobalAlpha(0.7);
-                            } else {
-                                gc.setGlobalAlpha(1.0);
-                            }
-
-                            Image image = GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr());
-                            gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
-
-                        }
-                    }
-                }
-            }
-
-
-            // Eigenen Spieler und Anhang zeichnen
-            for (int i = 0; i < obj.getChildrenCount(); i++) {
-               Image imagePlayer = obj.getEntityImage();
-
-                double xPos = obj.getxPos() - gameCamera.getXOffset() + widthOffset;
-                double yPos = obj.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1;
-
-                // Kinder verschieben
-                if (i == 1) {
-                    xPos += 0.33 * Tile.TILE_SIZE;
-                }
-                if (i == 2) {
-                    yPos += 0.33 * Tile.TILE_SIZE;
-                }
-
-
-
-                gc.drawImage(imagePlayer, xPos, yPos, 32, 32);
-            }
-
-
+            /**
+             * draw a split screen when playing locale - otherwise render the whole screen
+             */
             Rectangle middleTile = null;
-            // zeichnet jeweils den anderen Spieler und seinen Anhang
             if (widthOffset == 0) {
                 otherPlayer = game.getOtherPlayer();
             } else {
                 otherPlayer = game.getPlayer();
                 middleTile = new Rectangle(Game.WIDTH, Window.HEIGHT * 0.1, 2 * Tile.TILE_SIZE, Window.HEIGHT);
-
-            }
-
-            for (int i = 0; i < otherPlayer.getChildrenCount(); i++) {
-                double xPosOffset = 0;
-                double yPosOffset = 0;
-                if (i == 1) {
-                    xPosOffset = 0.33 * Tile.TILE_SIZE;
-                }
-                if (i == 2) {
-                    yPosOffset = 0.33 * Tile.TILE_SIZE;
-                }
-                if (i == 3) {
-                    xPosOffset = 0.33 * Tile.TILE_SIZE;
-                    yPosOffset = 0.33 * Tile.TILE_SIZE;
-                }
-
-                drawEntity(gc, otherPlayer, gameCamera, widthOffset, xPosOffset, yPosOffset, 0.5);
-            }
-
-            drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1);
-            drawEntity(gc, game.getAliceCooper(), gameCamera, widthOffset, 0, 0, 1);
-
-            // Mittelstück wird hinzugefügt, sofern ein Splitscreen existiert
-            if (middleTile != null)
+                gc.setFill(Color.rgb(33, 33, 33));
                 gc.fillRect(Game.WIDTH, Window.HEIGHT * 0.1, 2 * Tile.TILE_SIZE, Window.HEIGHT);
-                //root.getChildren().add(middleTile);
+            }
 
-
+            /**
+             * draw a key icon when a player has a key in his / her inventory
+             */
+            if (playerObj.hasKey()) {
+                gc.drawImage(GraphicsUtility.getKeyImage(), widthOffset, Window.HEIGHT * 0.1, Tile.TILE_SIZE, Tile.TILE_SIZE);
+            }
             widthOffset += Game.WIDTH + 2 * Tile.TILE_SIZE;
         }
 
-
+        /**
+         * add message when game is currently paused
+         */
+        /*
         if (game.paused) {
             Text textPaused = new Text("PAUSED");
             Rectangle rect = new Rectangle(0, 0, Window.WIDTH, Window.HEIGHT);
             rect.setOpacity(0.3);
             GraphicsUtility.setTextProperties(textPaused, "-fx-font: 128 arial;", Color.DARKRED, Window.WIDTH / 2 - 250, 400.0);
             root.getChildren().addAll(textPaused, rect);
-
         }
+
+         */
         /**
          * Singleton GameMenu-JavaFx Group, welche alle InGameMenu Elemente hält, und so nicht in jeder draw() neu initialisiert werden muss
          */
@@ -172,19 +109,149 @@ public class MapRenderer {
         GameMenu.getInstance().addGameMenuToScene(root);
     }
 
-    public void drawEntity(GraphicsContext gc, Entity entity, GameCamera gameCamera, int widthOffset, double xPosOffset, double yPosOffset, double scaleFactor) {
+    /**
+     * draw the map for the current player - get called two times in locale mode (split screen) and once in a network game
+     *
+     * @param
+     * @param gameCamera  - get the position of the viewport
+     * @param widthOffset - in locale mode the second player is placed on the right screen side with this offset
+     * @param player      - player1
+     * @param otherPlayer - player2
+     * @param playerObj   - current player object that invoked this method
+     */
+    private void drawMap(GraphicsContext gc, GameCamera gameCamera, int widthOffset, Player player, Player otherPlayer, Player playerObj) {
+        // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
+        for (int z = 0; z < 3; z++) {
+
+            if (!game.DRAMATIC && z == 0) {
+                drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+            }
+
+            /**
+             * checks if current Layer is Layer 2 (overlapping objects
+             * draw player between Layer 1 and 2
+             */
+            if (z == 2 && !game.getPlayer().isInside() && !game.getOtherPlayer().isInside()) {
+                drawPlayer(gameCamera, player, widthOffset, gc);
+                drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
+                if (game.DRAMATIC) {
+                    drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+                }
+            }
+
+            /**
+             * draw every tile depending on tile nr
+             */
+            for (int y = 0; y < tileMap.length; y++) {
+                for (int x = 0; x < tileMap[y].length; x++) {
+                    int xPos = x * Tile.TILE_SIZE - gameCamera.getXOffset() + widthOffset;
+                    int yPos = (int) (y * Tile.TILE_SIZE - gameCamera.getYOffset() + Window.HEIGHT * 0.1);
+                    // nur Zeichnen, wenn sichtbar - sonst verwerfen
+
+                    if (tileMap[y][x][z].getTileNr() == 0) continue;
+
+                    /**
+                     * check if position is within the current viewport
+                     */
+                    if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE * 2 && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
+
+                        /**
+                         * set effect when player has no children
+                         */
+                        if (playerObj.getChildrenCount() == 0) {
+                            gc.setGlobalAlpha(0.7);
+                        } else {
+                            gc.setGlobalAlpha(1.0);
+                        }
+
+
+                        //TODO: Make it work in NetworkPlay:
+                        // Image image = (tileMap[y][x][z].getImage());
+
+                        Image image = GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr());
+                        gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
+                    }
+                }
+            }
+
+            if (game.getPlayer().isInside() || game.getOtherPlayer().isInside()) {
+                drawPlayer(gameCamera, player, widthOffset, gc);
+                drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
+                if (game.DRAMATIC)
+                    drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
+            }
+        }
+        gc.setGlobalAlpha(1.0);
+
+
+    }
+
+    /**
+     * draws the player (and his children) on the canvas
+     */
+    private void drawPlayer(GameCamera gameCamera, Player playerObj, int widthOffset, GraphicsContext gc) {
+        for (int i = 0; i < playerObj.getChildrenCount(); i++) {
+            Image imagePlayer = playerObj.getEntityImage();
+
+            double xPosOffset = 0;
+            double yPosOffset = 0;
+
+            /**
+             * change x/y coordinates depending on current child
+             */
+            if (i == 1) {
+                imagePlayer = playerObj.getEntityImage2();
+                xPosOffset = 0.33 * Tile.TILE_SIZE;
+            }
+            if (i == 2) {
+                imagePlayer = playerObj.getEntityImage3();
+                yPosOffset = 0.33 * Tile.TILE_SIZE;
+            }
+            if (i == 3) {
+                imagePlayer = playerObj.getEntityImage4();
+                xPosOffset = 0.33 * Tile.TILE_SIZE;
+                yPosOffset = 0.33 * Tile.TILE_SIZE;
+            }
+            if (i == 4) {
+                imagePlayer = playerObj.getEntityImage5();
+                yPosOffset = 0.66 * Tile.TILE_SIZE;
+            }
+            if (i == 5) {
+                imagePlayer = playerObj.getEntityImage6();
+                xPosOffset = 0.33 * Tile.TILE_SIZE;
+                yPosOffset = 0.66 * Tile.TILE_SIZE;
+            } else {
+                // throw new IndexOutOfBoundsException("there are to many child objects! You cant have more than 5 children.");
+            }
+
+            drawEntity(gc, playerObj, gameCamera, widthOffset, xPosOffset, yPosOffset, 0.5, imagePlayer);
+
+        }
+    }
+
+    /**
+     * draws an entity on canvas (npc like the with).
+     *
+     * @param gc          grapicsContext
+     * @param entity      the entity that will be drawn
+     * @param gameCamera  the current game camera
+     * @param widthOffset offset - width
+     * @param xPosOffset  offset - xPos
+     * @param yPosOffset  offset - yPos
+     * @param scaleFactor factor by which the image will be scaled
+     * @param image       the image that will be drawn
+     */
+    public void drawEntity(GraphicsContext gc, Entity entity, GameCamera gameCamera, int widthOffset, double xPosOffset, double yPosOffset, double scaleFactor, Image image) {
 
         double xPos = entity.getxPos() - gameCamera.getXOffset() + widthOffset + xPosOffset;
         double yPos = entity.getyPos() - gameCamera.getYOffset() + Window.HEIGHT * 0.1 + yPosOffset;
 
         if (yPos > -Tile.TILE_SIZE && yPos < Game.HEIGHT + Tile.TILE_SIZE && xPos > -Tile.TILE_SIZE + widthOffset && xPos < Game.WIDTH + widthOffset) {
 
-            Image image = entity.getEntityImage();
             int size = (int) (Tile.TILE_SIZE * scaleFactor);
             gc.drawImage(image, xPos, yPos, size, size);
 
         }
-
     }
-
 }

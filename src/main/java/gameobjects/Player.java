@@ -1,11 +1,16 @@
 package main.java.gameobjects;
 
-import main.java.Entity;
+import javafx.scene.image.Image;
 import main.java.MovementManager;
 import main.java.Network.PlayerData;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
+import main.java.sprites.SpriteSheet;
 
+/**
+ * this class encapsulates the attributes and behavior of the group of children
+ * also implements the opportunity to draw more than on sprite each player object (up to 6 children)
+ */
 public class Player extends Entity {
 
     // represents amount of children
@@ -15,13 +20,28 @@ public class Player extends Entity {
     // necessary to get  the right coordinates when playing with mouse
     private int xOffSet, yOffSet;
 
-
     private boolean inside;
     private boolean noCollision;
+
+    private boolean hasKey = false;
     private MapObject insideObject;
 
     // Nach einer Kollision mit einer Hexe ist ein Spieler eine Zeit lang geschützt, um Mehrfachkollisionen zu vermeiden
     private double protectedTicks;
+
+    /**
+     * each child has their own sprite sheet and sprite
+     */
+    transient private SpriteSheet spriteSheet2;
+    transient private Image sprite2;
+    transient private SpriteSheet spriteSheet3;
+    transient private Image sprite3;
+    transient private SpriteSheet spriteSheet4;
+    transient private Image sprite4;
+    transient private SpriteSheet spriteSheet5;
+    transient private Image sprite5;
+    transient private SpriteSheet spriteSheet6;
+    transient private Image sprite6;
 
     /**
      * constructor which creates a player Object with a specific MovementType
@@ -31,6 +51,11 @@ public class Player extends Entity {
     public Player(MovementManager.MovementType type) {
         super();
         this.movementType = type;
+        spriteSheet2 = new SpriteSheet("jacko.png", 4, 3);
+        spriteSheet3 = new SpriteSheet("player.png", 4, 3);
+        spriteSheet4 = new SpriteSheet("jacko.png", 4, 3);
+        spriteSheet5 = new SpriteSheet("player.png", 4, 3);
+        spriteSheet6 = new SpriteSheet("jacko.png", 4, 3);
     }
 
     public int getxOffSet() {
@@ -107,6 +132,7 @@ public class Player extends Entity {
         this.noCollision = playerData.isNoCollision();
         this.insideObject = playerData.getInsideObject();
         this.protectedTicks = playerData.getProtectedTicks();
+        this.hasKey = playerData.hasKey();
     }
 
     public boolean isInside() {
@@ -139,6 +165,47 @@ public class Player extends Entity {
 
     public void setProtectedTicks(double protectedTicks) {
         this.protectedTicks = protectedTicks;
+    }
+
+    public boolean hasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
+    }
+
+    public Image getEntityImage2() {
+        return sprite2;
+    }
+
+    public Image getEntityImage3() {
+        return sprite3;
+    }
+
+    public Image getEntityImage4() {
+        return sprite4;
+    }
+
+    public Image getEntityImage5() {
+        return sprite5;
+    }
+
+    public Image getEntityImage6() {
+        return sprite6;
+    }
+
+
+    public void setEntityImage(boolean calledByNetworkContext) {
+        super.setEntityImage(calledByNetworkContext);
+
+        this.sprite2 = spriteSheet2.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite3 = spriteSheet3.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite4 = spriteSheet4.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite5 = spriteSheet5.getSpriteImage(moveCounter, moveDirection.ordinal());
+        this.sprite6 = spriteSheet6.getSpriteImage(moveCounter, moveDirection.ordinal());
+
+
     }
 
 

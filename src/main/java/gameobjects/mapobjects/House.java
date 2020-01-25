@@ -1,6 +1,6 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Sound;
+import main.java.Observable;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.Map;
@@ -9,20 +9,18 @@ import main.java.map.Tile;
 
 import java.util.Random;
 
-public abstract class House extends MapObject {
-
-    /**
-     * Offset of Object to other Objects @see Placeble
-     */
-    final int OFFSET = 1;
+/**
+ * the super class of every specialized house object
+ */
+public abstract class House extends MapObject implements Visitable {
 
     protected Tile[][] tileset;
-
-    private Tile doorTile;
 
     protected boolean isUnvisited = true;
 
     protected District district = null;
+
+    protected Player insidePlayer = null;
 
 
     /**
@@ -41,6 +39,14 @@ public abstract class House extends MapObject {
     }
 
     /**
+     * this constructor is only here so the House decorator can have an own constructor, witch only accepts an house
+     * instance.
+     */
+    public House() {
+        super();
+    }
+
+    /**
      * gets an Tile of the House by its row and column index
      *
      * @param r row index
@@ -56,6 +62,11 @@ public abstract class House extends MapObject {
         }
     }
 
+    /**
+     * district setter
+     *
+     * @param district district
+     */
     public void setDistrict(District district) {
         this.district = district;
     }
@@ -69,18 +80,6 @@ public abstract class House extends MapObject {
      */
     public void visit(Player player) {
         if (isUnvisited) {
-
-            Sound.playRing();
-
-            // Berechne die Menge der Süßigkeiten
-            int candies = 0;
-            Random random = new Random();
-            for (int i = 0; i < player.getChildrenCount(); i++) {
-                int zahl = random.nextInt(2);
-                candies += (int) (this.district.getCandy_multiplikator() + zahl);
-            }
-
-            player.addCandy(candies);
             player.notifyObservers(player);
         }
         this.isUnvisited = false;
@@ -88,6 +87,14 @@ public abstract class House extends MapObject {
 
     }
 
+    /**
+     * after the visit of a house (which is observed by a Controller (Network- or GameController)) and the mandatory
+     * switch of tiles or an whole tileset (inside of houses), this method is called to ensure that the game map is
+     * on the cutting edge.
+     *
+     * @see main.java.GameController#update(Observable, Object)
+     * @see House#visit(Player)
+     */
     public void updateMap() {
 
         Tile[][][] map = Map.getInstance().getMap();
@@ -100,15 +107,32 @@ public abstract class House extends MapObject {
         Map.getInstance().setMap(map);
     }
 
-
+    /**
+     * returns if this house has not been visited yet or not.
+     *
+     * @return true/false
+     */
     public boolean isUnvisited() {
         return isUnvisited;
     }
 
+    /**
+     * setter unvisited
+     *
+     * @param unvisited unvisited
+     */
     public void setUnvisited(boolean unvisited) {
         isUnvisited = unvisited;
     }
 
+    /**
+     * method that is implemented in inheriting  classes.
+     * This makes it possible for the different types of houses to change tiles and tile positions when they are visited-
+     */
     public abstract void repaintAfterVisit();
+
+    public void decorateHouse() {
+
+    }
 
 }

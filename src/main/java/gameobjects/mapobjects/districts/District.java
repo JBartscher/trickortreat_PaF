@@ -27,19 +27,19 @@ public abstract class District implements Serializable {
     }
 
 
-    public enum BiomType {
+    public enum BiomeType {
         Gras, Sand, Desert, Snow;
     }
 
-    public BiomType getBiomType() {
-        return biomType;
+    public BiomeType getBiomeType() {
+        return biomeType;
     }
 
-    public void setBiomType(BiomType biomType) {
-        this.biomType = biomType;
+    public void setBiomeType(BiomeType biomeType) {
+        this.biomeType = biomeType;
     }
 
-    private BiomType biomType;
+    private BiomeType biomeType;
 
     public abstract Tile[][] getSmallHouseUnvisitedTileset();
 
@@ -48,4 +48,9 @@ public abstract class District implements Serializable {
     public abstract Tile[][] getBigHouseUnvisitedTileset();
 
     public abstract Tile[][] getBigHouseVisitedTileset();
+
+    public abstract Tile[][] getGingerbreadHouseUnvisitedTileset();
+
+    public abstract Tile[][] getGingerbreadHouseVisitedTileset();
+
 }

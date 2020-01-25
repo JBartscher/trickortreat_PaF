@@ -4,7 +4,13 @@ import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.TileCollection;
 
+/**
+ * a small house is a smaller version of a big house and represents a specialized object of the abstract class house
+ */
 public class SmallHouse extends House {
+    public static final int SMALL_HOUSE_WIDTH = 2;
+    public static final int SMALL_HOUSE_HEIGHT = 2;
+
     public SmallHouse(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
         this.tileset = TileCollection.getNormalSmallHouseUnvisitedTiles();
@@ -19,26 +25,6 @@ public class SmallHouse extends House {
 
     @Override
     public void visit(Player player) {
-        /*
-        if (isUnvisited) {
-
-            Sound.playRing();
-
-            // Berechne die Menge der Süßigkeiten
-            int candies = 0;
-            Random random = new Random();
-            int zahl = random.nextInt(2);
-            for(int i = 0; i < player.getChildrenCount(); i++) {
-                candies += (int)(this.district.getCandy_multiplikator() + zahl);
-            }
-            player.addCandy(candies);
-
-        }
-
-        this.isUnvisited = false;
-        notifyObservers(this);
-
-         */
 
         super.visit(player);
     }

@@ -25,7 +25,7 @@ public class AStar {
         targetPosition = new Point(0, 0);
         openNodes = new Heap<Node>();
         closedNodes = new HashSet<Node>();
-        fillMap(gameMap.getMap());
+        fillMap(gameMap.getMap(), false);
     }
 
     public Node getMapCell(Point coord){
@@ -76,6 +76,8 @@ public class AStar {
     }
 
     public Set<Node> getNeighbours(Node n){
+
+
         /*
         Set<Node> neighbours = new HashSet<Node>();
         for(int i=-1; i<=1; i++){
@@ -90,6 +92,8 @@ public class AStar {
         }
         return neighbours;
         */
+
+
         Set<Node> neighbours = new HashSet<>();
         for(int i=-1; i<=1; i++){
             if(i != 0)
@@ -111,6 +115,8 @@ public class AStar {
 
         return neighbours;
 
+
+
     }
 
     static double calculateDistance(Point from, Point to){
@@ -120,6 +126,7 @@ public class AStar {
     public ArrayList<Node> reconstructPath(Node target){
         ArrayList<Node> path = new ArrayList<Node>();
         Node current = target;
+        //path.add(current);
 
         while(current.getParent() != null){
             path.add(current.getParent());
@@ -163,23 +170,25 @@ public class AStar {
                             addToOpenNodes(neighbour);
                     }
                 }
-
             }
         }
 
         return null;
     }
 
+    /**
+     * create a node map to find a path between two doors
+     * @param tileMap
+     * @param ignoreObstacles
+     */
+    public void fillMapForStreetNetwork(Tile[][][] tileMap, boolean ignoreObstacles) {
 
-    public void fillMap(Tile[][][] tileMap) {
-
-        //System.out.println("Fill NodeMap");
         for(int y = 0; y < map.length; y++){
             for(int x = 0; x < map[y].length; x++){
 
                 Node.Type type;
 
-                if(tileMap[y][x][1].getTileNr() > 25 ) {
+                if( tileMap[y][x][1].getTileNr() > 25 || tileMap[y][x][2].getTileNr() > 25 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles) || tileMap[y][x][1].getTileNr() < -20   ) {
                     type = Node.Type.OBSTACLE;
                 } else {
                     type = Node.Type.NORMAL;
@@ -188,5 +197,39 @@ public class AStar {
                 map[y][x] = new Node(x, y, type);
             }
         }
+    }
+
+    /**
+     * create a node Map to determine a path for the npc to hunt player objects
+     * @param tileMap
+     * @param ignoreObstacles
+     */
+    public void fillMap(Tile[][][] tileMap, boolean ignoreObstacles) {
+
+        //System.out.println("Fill NodeMap");
+        for(int y = 0; y < map.length; y++){
+            for(int x = 0; x < map[y].length; x++){
+                Node.Type type;
+
+                if( tileMap[y][x][1].getTileNr() > 26 || tileMap[y][x][2].getTileNr() > 26 || tileMap[y][x][1].getTileNr() < 0 || (tileMap[y][x][1].getTileNr() < 0 && !ignoreObstacles)   ) {
+                    type = Node.Type.OBSTACLE;
+                    //System.out.print("X ");
+                } else {
+                    type = Node.Type.NORMAL;
+                    //System.out.print("O ");
+                }
+
+                map[y][x] = new Node(x, y, type);
+            }
+            //System.out.println("");
+        }
+    }
+
+    public Node[][] getMap() {
+        return map;
+    }
+
+    public void setMap(Node[][] map) {
+        this.map = map;
     }
 }

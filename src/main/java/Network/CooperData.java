@@ -1,24 +1,13 @@
 package main.java.Network;
 
-import main.java.AliceCooper;
+import main.java.gameobjects.AliceCooper;
 
+/**
+ * this class contains all cooper data and is used in network games
+ */
 public class CooperData extends EntityData {
-
-
-    private boolean isPlaying;
 
     public CooperData(AliceCooper cooperData) {
         super(cooperData);
-
-        this.isPlaying = cooperData.isPlaying();
     }
-
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
-        isPlaying = playing;
-    }
-
 }

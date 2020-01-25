@@ -2,15 +2,17 @@ package main.java.Network;
 
 import java.io.*;
 
+/**
+ * encapsulates every type of event like visiting a house or pause the game
+ */
 public class Event implements Serializable, Cloneable {
-
 
     private static final long serialVersionUID = 744265289056445070L;
     private Object object;
     private EventType type;
 
     public enum EventType implements Serializable {
-       VISITED, COLLISION, PAUSED, UNPAUSED
+       VISITED, COLLISION, TOWNHALL, KIDNAPPING, PAUSED, UNPAUSED, REPLAY
     }
 
     public Event(Object o, EventType type) {

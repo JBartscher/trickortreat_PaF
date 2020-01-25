@@ -1,8 +1,11 @@
 package main.java.Network;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
+/**
+ * a Gamestate is a snapshot of the current game data and is used to synchronize between two network games
+ * also the class needs to implement the Interface Serializable and Cloneable to ensure deep copies of the current game data
+ */
 public class GameState implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1287629170864898744L;
@@ -19,6 +22,9 @@ public class GameState implements Serializable, Cloneable {
 
     protected int gameTime;
 
+    /**
+     * set the gamestate depending on current game data (positions, move directions ...
+     */
     public GameState(PlayerData playerData, PlayerData otherPlayerData,WitchData witchData, CooperData cooperData, Event event, int gameTime) {
         this.playerData  = playerData;
         this.otherPlayerData = otherPlayerData;
@@ -49,16 +55,8 @@ public class GameState implements Serializable, Cloneable {
         return witchData;
     }
 
-    public void setWitchData(WitchData witchData) {
-        this.witchData = witchData;
-    }
-
     public int getGameTime() {
         return gameTime;
-    }
-
-    public void setGameTime(int gameTime) {
-        this.gameTime = gameTime;
     }
 
     public boolean isEventTransmitted() {
@@ -73,16 +71,6 @@ public class GameState implements Serializable, Cloneable {
         return cooperData;
     }
 
-    public void setCooperData(CooperData cooperData) {
-        this.cooperData = cooperData;
-    }
-
-    public void addEvent(Object o, Event.EventType type) {
-        //this.eventQueue.add(new Event(o, type));
-        eventTransmitted = false;
-        this.event = new Event(o, type);
-    }
-
     public void setEvent(Event event) {
         this.event = event;
     }
@@ -90,23 +78,4 @@ public class GameState implements Serializable, Cloneable {
     public Event getEvent() {
         return this.event;
     }
-
-    //public ArrayList<Event> getEventQueue() {
-     //   return eventQueue;
-    //}
-
-    public void setEventQueue(ArrayList<Event> eventQueue) {
-
-        //this.eventQueue.clear();
-        //this.eventQueue.addAll(eventQueue);
-
-        //this.eventQueue = eventQueue;
-    }
-
-    public void clearEventQueue() {
-        //eventQueue.clear();
-        eventTransmitted = true;
-    }
-
-
 }

@@ -1,26 +1,35 @@
 package main.java;
 
 import javafx.stage.Stage;
+import main.java.Menu.GameMenu;
 import main.java.Network.GameStateInit;
 import main.java.Network.Network;
 import main.java.Network.NetworkController;
+import main.java.gameobjects.AliceCooper;
+import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
+import main.java.gameobjects.Witch;
+import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.map.Map;
 import main.java.map.MapGenerator;
-import main.java.ui.GameMenu;
+import main.java.map.MapObject;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * this class represents the game and get called by the super controller "gameLoop" within the GameLauncher-Class
+ * all model, view and controllers are encapsulated within the Game-Class
+ */
 public class Game {
 
     private final static Configuration<Object> config = new Configuration<Object>();
-
     public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
     public final static int TIME = ((Number) config.getParam("time")).intValue();
     public int gameTime = TIME;
     public static int WIDTH = Window.WIDTH;
     public static int HEIGHT = (int)(Window.HEIGHT * 0.9);
+    public static boolean DRAMATIC = false;
 
     private Map map;
     private MapGenerator generator;
@@ -28,24 +37,21 @@ public class Game {
     public Player player;
     public Player otherPlayer;
 
-
-
     /**
-     * repräsentiert alle Objekte, die von EINER Spielinstanz verwaltet werde
-     * LOKAL = Ein Spiel verwaltet 2 Spieler => Liste enthält Spieler 1 und Spieler 2
-     * REMOTE = Jedes Spiel kümmert sich nur um seine EIGENEN Spieler - Liste enthält 1 Objekt
-     *
+     * contains a list of player which get rendered on this computer
+     * in remote games there is only 1 player in the list - in locale : 2
      */
 
     private CopyOnWriteArrayList<Player> listOfPlayers = new CopyOnWriteArrayList<>();
-
     private Witch witch;
     private AliceCooper aliceCooper;
 
-    // enthält die Liste ALLER Entitäten : Spieler 1 + Spieler 2 + Hexe , zukünftig noch Alice Cooper
-    // wichtig zur Kollisionserkennung
+    /**
+     * contains a list of all entities: player1, player2 and the NPC
+     * is used to determine if collisions between entities occurred
+     */
     private CopyOnWriteArrayList<Entity> listOfAllEntities = new CopyOnWriteArrayList<>();
-
+    private Stage stage;
     private Window window;
 
     private GameCamera gameCamera;
@@ -56,25 +62,28 @@ public class Game {
 
     private GameLauncher launcher;
 
-    // Eine Iteration der GameLoop
+    /**
+     * each iteration of the gameLoop is one tick (currently 20 ms)
+     * a tick is used to give effects or events a certain amount of time
+     */
     public int ticks = 0;
     public boolean paused;
 
-    // Network and Multiplayer
-
-    // decide between LOCAL and REMOTE
+    /**
+     * network and multiplayer
+     */
     public enum GameMode {
         LOCAL, REMOTE
     }
 
     public GameMode gameMode;
-
-    //public NetworkController networkController;
     public GameController gameController;
 
-    // constructor with test map size
-    // networkEngine is only used in gameMode Remote otherwise the reference is null and not used
+    /** main constructor when playing locale or host a game
+     *  networkEngine is only used in gameMode Remote otherwise the reference is null and not used
+      */
     public Game(GameLauncher launcher, Stage stage, GameMode gameMode, Network networkEngine, MovementManager.MovementType movementTypePlayer1, MovementManager.MovementType movementTypePlayer2) {
+        Game.DRAMATIC = false;
         this.launcher = launcher;
         map = new Map(60);
         generator = new MapGenerator(map);
@@ -82,22 +91,28 @@ public class Game {
         this.gameMode = gameMode;
 
         if(gameMode == GameMode.REMOTE) {
-            gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.SERVER);
+            gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.SERVER, launcher);
         } else {
-            gameController = new GameController(this);
+            gameController = new GameController(this, launcher);
         }
 
-        // instanziert die Entitäten, setzt die Steuerung und ggf. Netzwerk
-        //initPlayerAndNetwork(networkEngine, movementTypePlayer1, movementTypePlayer2);
+        /**
+         * initialize the data of entitites, graphics and sound
+         * also add observers to observables
+         */
         gameController.initEntities(movementTypePlayer1, movementTypePlayer2);
         gameController.initGUIandSound(stage);
         gameController.initObservers();
     }
 
-    // get GameState from Server - get only called by CLIENT
-    public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType) {
-
-        this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT);
+    /**
+     * this constructor is used when playing in a network game as a client
+     * the client gets a gamestate from the server and use this to create their own game
+     */
+    public Game(Network networkEngine, GameStateInit gameState, Stage stage, MovementManager.MovementType movementType, GameLauncher gameLauncher) {
+        Game.DRAMATIC = false;
+        this.gameController = new NetworkController(this, networkEngine, NetworkController.NetworkRole.CLIENT, gameLauncher);
+        this.launcher = gameLauncher;
         ((NetworkController)gameController).updateGameState(gameState);
         this.gameMode = GameMode.REMOTE;
 
@@ -107,6 +122,9 @@ public class Game {
         this.player.setGameStateData(gameState.getPlayerData());
         this.otherPlayer.setGameStateData(gameState.getOtherPlayerData());
 
+        /**
+         * add observers
+         */
         player.addObserver(GameMenu.getInstance().getSecondPlayerObserver());
         otherPlayer.addObserver(GameMenu.getInstance().getFirstPlayerObserver());
 
@@ -117,24 +135,32 @@ public class Game {
 
         this.listOfPlayers.add(player);
 
-        this.listOfAllEntities.addAll(Arrays.asList(player, otherPlayer, /*aliceCooper, */witch));
-
+        this.listOfAllEntities.addAll(Arrays.asList(player, otherPlayer, witch));
         this.map = gameState.getMap();
+
+        for(MapObject o : map.getMapSector().getAllContainingMapObjects()) {
+            if(o instanceof GingerbreadHouse) {
+                GingerbreadHouse.setInstance((GingerbreadHouse)o);
+            }
+        }
 
         gameController.initGUIandSound(stage);
         gameController.initObservers();
     }
 
+    /**
+     * update game data like game camera and animation images
+     */
     public void update() {
-
         if(paused) return;
-
         checkGameOver();
         updateProtection();
-        movementManager.moveAllEntites(gameController, listOfPlayers, witch);
-        if(gameMode == GameMode.REMOTE) {
+        movementManager.moveAllEntities(gameController, listOfPlayers, witch);
 
-            // Das Animationsbild der anderen Entität wird gesetzt - true setzt für den Aufruf aus einem Netzwerk-Kontext
+        /**
+         * show animation image of other entity
+         */
+        if(gameMode == GameMode.REMOTE) {
             otherPlayer.setEntityImage(true);
         }
 
@@ -144,6 +170,9 @@ public class Game {
         }
     }
 
+    /**
+     * check if both player have no children left -> show GameOver if that is the case
+     */
     public void checkGameOver() {
 
         if(player.getChildrenCount() == 0 && otherPlayer.getChildrenCount() == 0) {
@@ -151,15 +180,17 @@ public class Game {
         }
     }
 
+    /**
+     * after a collision with the witch or when entering buildings, the player is protected for a certain amount of time
+     * in this time period no collisions or enterings are possible
+     */
     public void updateProtection() {
 
         if(player.getChildrenCount() <= 0) {
-            //listOfPlayers.remove(player);
             listOfAllEntities.remove(player);
         }
 
         if(otherPlayer.getChildrenCount() <= 0) {
-            //listOfPlayers.remove(otherPlayer);
             listOfAllEntities.remove(otherPlayer);
         }
 
@@ -170,6 +201,10 @@ public class Game {
         }
     }
 
+    /**
+     * Getter and Setter-methods
+     * @return
+     */
     public Player getPlayer() { return player; }
 
     public Player getOtherPlayer() { return otherPlayer; }
@@ -203,7 +238,6 @@ public class Game {
     public Map getMap() { return map; }
 
     public void setMap(Map map) { this.map = map; }
-
 
     public Window getWindow() {
         return window;
@@ -243,7 +277,6 @@ public class Game {
         this.otherPlayer = otherPlayer;
     }
 
-
     public void setAliceCooper(AliceCooper aliceCooper) {
         this.aliceCooper = aliceCooper;
     }
@@ -252,9 +285,20 @@ public class Game {
         this.gameCameraEnemy = gameCameraEnemy;
     }
 
-
     public GameController getGameController() {
         return gameController;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public GameLauncher getLauncher() {
+        return launcher;
     }
 
 }

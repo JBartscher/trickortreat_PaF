@@ -5,11 +5,14 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import main.java.Menu.GameMenu;
 import main.java.Network.Event;
 import main.java.Network.NetworkController;
+import main.java.gameobjects.AliceCooper;
+import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
-import main.java.gameobjects.mapobjects.House;
-import main.java.gameobjects.mapobjects.Mansion;
+import main.java.gameobjects.Witch;
+import main.java.gameobjects.mapobjects.*;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Placeable;
@@ -34,289 +37,504 @@ public class MovementManager implements EventHandler<InputEvent> {
     Player inputARROW;
     Player inputMOUSE;
 
+    Player witchTarget;
+
     private Map map;
     private Game game;
     private AStar aStar;
 
+    private PathWorker pathWorker;
 
-    // There are three different kinds of movement types
-    public enum MovementType {
-        KEYBOARD_AWSD, KEYBOARD_ARROW, MOUSE;
+    private final static Configuration<Object> config = new Configuration<Object>();
+
+    /**
+     * define the 3 types of movement in a enumeration
+     */
+    public enum MovementType implements Serializable {
+        KEYBOARD_AWSD, KEYBOARD_ARROW, MOUSE
     }
 
     // represents the move directions to animate the entities
-    public enum MoveDirection {
+    public enum MoveDirection implements Serializable {
         DOWN, LEFT, RIGHT, UP
     }
 
-    // Lokaler Multiplayer
-    public MovementManager(Game game, Player player1, Player player2)
-    {
+    /**
+     * constructor of MovementManager class
+     * register the player for a selected movement type
+     *
+     * @param game
+     * @param player1
+     * @param player2
+     */
+    public MovementManager(Game game, Player player1, Player player2) {
         this.game = game;
         this.map = game.getMap();
         this.player1 = player1;
         this.player2 = player2;
 
-        // register the player to movement strategies
+        // register the player to movement type
         registerPlayerInputs(player1);
         registerPlayerInputs(player2);
 
         // init Pathfinding
         this.aStar = new AStar(game.getMap());
+        this.pathWorker = new PathWorker(game, this);
 
     }
 
-
-    public void registerPlayerInputs(Player player)
-    {
-        if(player.movementType == MovementType.KEYBOARD_AWSD){
+    /**
+     * register the movement of a player object
+     *
+     * @param player
+     */
+    public void registerPlayerInputs(Player player) {
+        if (player.movementType == MovementType.KEYBOARD_AWSD) {
             inputAWSD = player;
 
-        } else if(player.movementType == MovementType.KEYBOARD_ARROW) {
+        } else if (player.movementType == MovementType.KEYBOARD_ARROW) {
             inputARROW = player;
 
-        } else if(player.movementType == MovementType.MOUSE) {
+        } else if (player.movementType == MovementType.MOUSE) {
             inputMOUSE = player;
+        }
+    }
+
+    /**
+     * check if the witch reached a interim goal. If that is the case then set next intermin goal as her main target
+     *
+     * @param entity
+     * @param movementSize
+     */
+    public void checkTarget(Entity entity, double movementSize) {
+
+        //if(game.getWitch().getTargets().size() < 5)
+        //   System.out.println(game.getWitch().isOnReturn() + " Hexe-Ziel: " + game.getWitch().getFinalTargetPos() + " - Pos: " + game.getWitch().getEntityPos() + " -  Ziele: " + game.getWitch().getTargets());
+
+        /**
+         * check if the witch reached the door of her home - set return to false if that is the case
+         */
+        if (entity instanceof Witch) {
+            Witch witch = (Witch) entity;
+            if (Math.abs(witch.getxPos() - witch.getHomeX()) < 0.2 * Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) < 0.2 * Tile.TILE_SIZE && witch.isOnReturn()) {
+                //if ( witch.getFinalTargetPos().x == witch.getEntityPos().x && witch.getFinalTargetPos().y == witch.getEntityPos().y && witch.isOnReturn() ) {
+                witch.setOnReturn(false);
+                return;
+            }
+        }
+
+        CopyOnWriteArrayList<Point> targets = entity.getTargets();
+        if (targets.size() > 0) {
+            Point transformedPoint = new Point(round(entity.getTarget().x / Tile.TILE_SIZE), round(entity.getTarget().y / Tile.TILE_SIZE));
+            //if( Math.abs(entity.getxPos() - entity.getTarget().x) < movementSize * 0.1 && Math.abs(entity.getyPos() - entity.getTarget().y) < movementSize * 0.1 ) {
+            if (entity.getEntityPos().x == transformedPoint.x && entity.getEntityPos().y == transformedPoint.y) {
+
+                /** remove interim goal from target list and set new interim goal
+                 *
+                 */
+                if (targets.size() > 1) {
+                    targets.remove(0);
+                    if (targets.size() > 0) {
+                        int transformedX = (int) (targets.get(0).x * Tile.TILE_SIZE);
+                        int transformedY = (int) (targets.get(0).y * Tile.TILE_SIZE);
+                        entity.setTarget(new Point(transformedX, transformedY));
+                    }
+                }
+            }
         }
     }
 
     @Override
     public void handle(InputEvent event) {
-
-        if(event.getClass() == MouseEvent.class) {
-            handleMouse((MouseEvent)event);
+        if (event.getClass() == MouseEvent.class) {
+            handleMouse((MouseEvent) event);
         } else if (event.getClass() == KeyEvent.class) {
-            handleKeyboard((KeyEvent)event);
+            handleKeyboard((KeyEvent) event);
         }
     }
 
-    public void handleMouse(MouseEvent event)
-    {
-        if(inputMOUSE == null) return;
-        if(event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-            if(inputMOUSE != null) {
+    private void checkButtonClicked(MouseEvent event) {
+        if (event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getSceneX() < 70 && event.getSceneY() < 70) {
+            String pausedEvent = "";
+            boolean paused = game.paused;
+            Event.EventType eventType;
+            if (paused) {
+                game.paused = false;
+                paused = false;
+                eventType = Event.EventType.UNPAUSED;
+                pausedEvent = "UNPAUSED";
+            } else {
+                game.paused = true;
+                paused = true;
+                eventType = Event.EventType.PAUSED;
+                pausedEvent = "PAUSED";
+            }
+
+            game.paused = paused;
+            if (game.gameMode == Game.GameMode.REMOTE) {
+                System.out.println("EVENT VERSCHICKEN!");
+                ((NetworkController) game.getGameController()).changeGameStateObject(pausedEvent, eventType);
+            }
+            game.getLauncher().getMainMenu().showPausedMenu(game.getWindow().getScene());
+
+            config.setParam("paused", game.paused);
+            //if (!(Boolean)config.getParam("muted")) Sound.muteSound();
+            GameMenu.setRightButtons();
+
+            return;
+        } else if (event.getEventType() == MouseEvent.MOUSE_CLICKED && event.getSceneX() >= 70 && event.getSceneX() < 140 && event.getSceneY() < 70) {
+            Sound.muteSound();
+            GameMenu.setRightButtons();
+            return;
+        }
+    }
+
+    /**
+     * process inputs via mouse and delegates the mouse event to the right object
+     *
+     * @param event
+     */
+    public void handleMouse(MouseEvent event) {
+
+        checkButtonClicked(event);
+
+        if (inputMOUSE == null) return;
+        if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+            if (inputMOUSE != null) {
 
                 double currentRenderX = inputMOUSE.xPos - inputMOUSE.getxOffSet() + Tile.TILE_SIZE / 2;
                 double currentRenderY = inputMOUSE.yPos - inputMOUSE.getyOffSet() + Window.HEIGHT * 0.1 + Tile.TILE_SIZE / 2;
-                if(inputMOUSE == game.getOtherPlayer()) currentRenderX += Game.WIDTH + 2 * Tile.TILE_SIZE;
+                if (inputMOUSE == game.getOtherPlayer()) currentRenderX += Game.WIDTH + 2 * Tile.TILE_SIZE;
 
                 inputMOUSE.setTarget(inputMOUSE.getxPos() + (event.getSceneX() - currentRenderX), inputMOUSE.getyPos() + (event.getSceneY() - currentRenderY));
             }
         }
     }
 
-    public void handleKeyboard(KeyEvent event)
-    {
-        if(event.getEventType() == KeyEvent.KEY_PRESSED) {
-            if(event.getCode() == KeyCode.M) {
+    public void handleKeyboard(KeyEvent event) {
+        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+            if (event.getCode() == KeyCode.M) {
                 Sound.muteSound();
             }
 
-            if(event.getCode() == KeyCode.P) {
-                if(game.getGameController() != null) {
-                if(game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                    ((NetworkController)game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
-                    game.paused = true;
-                }
+            if (event.getCode() == KeyCode.P) {
+                if (game.gameMode == Game.GameMode.REMOTE) {
+                    if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                        ((NetworkController) game.getGameController()).changeGameStateObject("PAUSED", Event.EventType.PAUSED);
+                        game.paused = true;
+                    }
                 } else if (game.getGameMode() == Game.GameMode.LOCAL) {
                     game.paused = true;
-                }
 
+                }
+                if (!(Boolean) config.getParam("muted")) Sound.muteSound();
             }
 
-            if(event.getCode() == KeyCode.A) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x - inputAWSD.speed * 100, inputAWSD.target.y );
-                }
-            }
-
-            if(event.getCode() == KeyCode.W) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x, inputAWSD.target.y - inputAWSD.speed * 100 );
+            if (event.getCode() == KeyCode.A) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x - inputAWSD.speed * 100, inputAWSD.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.S) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x, inputAWSD.target.y + inputAWSD.speed * 100 );
+            if (event.getCode() == KeyCode.W) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x, inputAWSD.target.y - inputAWSD.speed * 100);
                 }
             }
 
-            if(event.getCode() == KeyCode.D) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.target.x + inputAWSD.speed * 100, inputAWSD.target.y);
+            if (event.getCode() == KeyCode.S) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x, inputAWSD.target.y + inputAWSD.speed * 100);
+                }
+            }
+
+            if (event.getCode() == KeyCode.D) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.target.x + inputAWSD.speed * 100, inputAWSD.target.y);
                 }
             }
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
 
-            if(event.getCode() == KeyCode.R) {
-                if(game.getGameController() != null) {
+            if (event.getCode() == KeyCode.R) {
+                if (game.gameMode == Game.GameMode.REMOTE) {
                     if (game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                        ((NetworkController)game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
+                        ((NetworkController) game.getGameController()).changeGameStateObject("UNPAUSED", Event.EventType.UNPAUSED);
                         game.paused = false;
                     }
-                } else if(game.getGameMode() == Game.GameMode.LOCAL) {
+                } else if (game.getGameMode() == Game.GameMode.LOCAL) {
                     game.paused = false;
                 }
+                if ((Boolean) config.getParam("muted")) Sound.muteSound();
             }
 
-            if(event.getCode() == KeyCode.A) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.target.y );
+            if (event.getCode() == KeyCode.A) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.W) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.yPos );
+            if (event.getCode() == KeyCode.W) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.S) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.yPos );
+            if (event.getCode() == KeyCode.S) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.D) {
-                if(inputAWSD != null) {
-                    inputAWSD.setTarget( inputAWSD.xPos, inputAWSD.target.y );
+            if (event.getCode() == KeyCode.D) {
+                if (inputAWSD != null) {
+                    inputAWSD.setTarget(inputAWSD.xPos, inputAWSD.target.y);
                 }
             }
         }
 
 
-        if(event.getEventType() == KeyEvent.KEY_PRESSED) {
-            if(event.getCode() == KeyCode.LEFT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x - inputARROW.speed * 100, inputARROW.target.y );
+        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+            if (event.getCode() == KeyCode.LEFT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x - inputARROW.speed * 100, inputARROW.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.UP) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x, inputARROW.target.y - inputARROW.speed * 100 );
+            if (event.getCode() == KeyCode.UP) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x, inputARROW.target.y - inputARROW.speed * 100);
                 }
             }
 
-            if(event.getCode() == KeyCode.DOWN) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x, inputARROW.target.y + inputARROW.speed * 100 );
+            if (event.getCode() == KeyCode.DOWN) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x, inputARROW.target.y + inputARROW.speed * 100);
                 }
             }
 
-            if(event.getCode() == KeyCode.RIGHT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.target.x + inputARROW.speed * 100, inputARROW.target.y);
+            if (event.getCode() == KeyCode.RIGHT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.target.x + inputARROW.speed * 100, inputARROW.target.y);
                 }
             }
-
 
         } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
-            if(event.getCode() == KeyCode.LEFT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.target.y );
+            if (event.getCode() == KeyCode.LEFT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.target.y);
                 }
             }
 
-            if(event.getCode() == KeyCode.UP) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.yPos );
+            if (event.getCode() == KeyCode.UP) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.DOWN) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.yPos );
+            if (event.getCode() == KeyCode.DOWN) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.yPos);
                 }
             }
 
-            if(event.getCode() == KeyCode.RIGHT) {
-                if(inputARROW != null) {
-                    inputARROW.setTarget( inputARROW.xPos, inputARROW.target.y );
+            if (event.getCode() == KeyCode.RIGHT) {
+                if (inputARROW != null) {
+                    inputARROW.setTarget(inputARROW.xPos, inputARROW.target.y);
                 }
             }
         }
     }
 
+    /**
+     * find the path for the nearest player for npc
+     */
     public void findPath(Entity entity, Point start, Point target) {
 
+        /**
+         * set start and target position and find path
+         */
         aStar.setStartPosition(start);
         aStar.setTargetPosition(target);
-        aStar.fillMap(game.getMap().getMap());
+        aStar.fillMap(game.getMap().getMap(), false);
 
+        ArrayList<Node> nodes = aStar.executeAStar();
         CopyOnWriteArrayList<Point> targets = entity.getTargets();
         targets.clear();
-        ArrayList<Node> nodes = aStar.executeAStar();
 
-        if(nodes == null) {
+        if (nodes == null) {
             System.out.println("KEIN PFAD GEFUNDEN");
-            return; } else {
+            return;
         }
 
-        for(Node node : nodes) {
+        /**
+         * add all nodes to the list of targets
+         */
+        for (Node node : nodes) {
             targets.add(node.getPosition());
         }
 
+        Node[][] nodeMap = aStar.getMap();
+        for (Point t : targets) {
+
+            if (nodeMap[t.y][t.x].isObstacle()) {
+                System.out.println("VERKEHRT!");
+            }
+        }
+
+        /**
+         * result of Astar algorithm does not contain the current position of the player
+         * have to add manually to list of targets
+         */
+        if (witchTarget != null && !game.getWitch().isOnReturn()) {
+            targets.add(witchTarget.getEntityPos());
+        } else if (witchTarget != null && game.getWitch().isOnReturn()) {
+            targets.add(new Point((int) (game.getWitch().getHomeX() / Tile.TILE_SIZE), (int) game.getWitch().getHomeY() / Tile.TILE_SIZE));
+        }
 
         // Terminieren, wenn kein Ziel existiert
-        if(targets.size() < 1) return;
+        if (targets.size() < 1) return;
 
-        // Setze erstes und letztes Ziel
-        // Das letzte Ziel wird genutzt, um zu entscheiden, ob pathfinding erneut berechnet werden muss oder nicht
+        /**
+         * transform X/Y to pixel based cooridnates and set first and last target of npc
+         */
         int transformedX = targets.get(0).x * Tile.TILE_SIZE;
         int transformedY = targets.get(0).y * Tile.TILE_SIZE;
         entity.setTarget(new Point(transformedX, transformedY));
 
         int transformedLastX = targets.get(targets.size() - 1).x * Tile.TILE_SIZE;
         int transformedLastY = targets.get(targets.size() - 1).y * Tile.TILE_SIZE;
-        if(entity instanceof Witch) {
-            Witch witch = (Witch)entity;
+        if (entity instanceof Witch) {
+            Witch witch = (Witch) entity;
             witch.setFinalTargetPos(new Point(transformedLastX, transformedLastY));
         }
     }
 
-    public void checkTarget(Entity entity, double movementSize) {
-        if(entity instanceof Witch) {
-            Witch witch = (Witch)entity;
-            if(Math.abs(witch.getxPos() - witch.getHomeX()) <= Tile.TILE_SIZE && Math.abs(witch.getyPos() - witch.getHomeY()) <= Tile.TILE_SIZE ) {
-                witch.setOnReturn(false);
+    /**
+     * find a target for npc
+     */
+    public Point chooseTarget(Witch witch, Player player, Player otherPlayer) {
+
+        if (witch.isOnReturn()) {
+            return new Point((int) (witch.getHomeX() / Tile.TILE_SIZE), (int) (witch.getHomeY() / Tile.TILE_SIZE));
+        }
+
+        if (player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
+            witchTarget = null;
+            return new Point((int) witch.getHomeX() / Tile.TILE_SIZE, (int) witch.getHomeY() / Tile.TILE_SIZE);
+        }
+
+        /**
+         * if one player is inside a building or have no children then select the other player as a target
+         */
+        if (player.isInside() || player.getChildrenCount() <= 0) {
+
+            if (otherPlayer.getChildrenCount() > 0) {
+                witchTarget = otherPlayer;
+                return otherPlayer.getEntityPos();
+            } else {
+                witchTarget = null;
+                return new Point((int) witch.getHomeX() / Tile.TILE_SIZE, (int) witch.getHomeY() / Tile.TILE_SIZE);
+            }
+
+        } else if (otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
+            if (player.getChildrenCount() > 0) {
+                witchTarget = player;
+                return player.getEntityPos();
+            } else {
+                witchTarget = null;
+                return new Point((int) witch.getHomeX() / Tile.TILE_SIZE, (int) witch.getHomeY() / Tile.TILE_SIZE);
             }
         }
 
-        CopyOnWriteArrayList<Point> targets = entity.getTargets();
-        if(targets.size() > 0 ) {
-            Point transformedPoint =  new Point((int) round(entity.getTarget().x / Tile.TILE_SIZE), (int) round(entity.getTarget().y / Tile.TILE_SIZE));
-                //if( Math.abs(entity.getxPos() - entity.getTarget().x) < movementSize * 0.1 && Math.abs(entity.getyPos() - entity.getTarget().y) < movementSize * 0.1 ) {
-                    if(entity.getEntityPos().x == transformedPoint.x && entity.getEntityPos().y == transformedPoint.y) {
-                    if (targets.size() > 1) {
-                        targets.remove(0);
-                        if(targets.size() > 0) {
-                            int transformedX = targets.get(0).x * Tile.TILE_SIZE;
-                            int transformedY = targets.get(0).y * Tile.TILE_SIZE;
-                            entity.setTarget(new Point(transformedX, transformedY));
-                        }
-                }
-            }
+        /**
+         * find the nearest player and set entity position as target
+         */
+        double distancePlayer = Math.sqrt((player.getxPos() - witch.getxPos()) * (player.getxPos() - witch.getxPos()) + (player.getyPos() - witch.getyPos()) * (player.getyPos() - witch.getyPos()));
+        double distanceOtherPlayer = Math.sqrt((otherPlayer.getxPos() - witch.getxPos()) * (otherPlayer.getxPos() - witch.getxPos()) + (otherPlayer.getyPos() - witch.getyPos()) * (otherPlayer.getyPos() - witch.getyPos()));
+        if (distancePlayer < distanceOtherPlayer) {
+            witchTarget = player;
+            return player.getEntityPos();
+        } else {
+            witchTarget = otherPlayer;
+            return otherPlayer.getEntityPos();
         }
     }
 
-    // move-method - uses speed from entity class and Game FRAMES
+    /**
+     * move the npc
+     *
+     * @param gameController
+     * @param witch
+     */
+    private void moveWitch(GameController gameController, Witch witch) {
+
+        Point start = witch.getEntityPos();
+
+        //move NPC
+        if ((game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && Game.DRAMATIC) {
+            if (game.DRAMATIC) {
+                moveObject(witch);
+            }
+
+            /**
+             * call pathfinding algorithm for npc
+             */
+            if (game.ticks % 5 == 0 /*|| game.ticks == 1 */) {
+
+                Point target = chooseTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
+
+                boolean doPathfinding = true;
+                double deltaTargetX = Math.abs(target.x - witch.getFinalTargetPos().x / Tile.TILE_SIZE);
+                double deltaTargetY = Math.abs(target.y - witch.getFinalTargetPos().y / Tile.TILE_SIZE);
+
+                double deltaPosTargetX = Math.abs(witch.getxPos() - witch.getFinalTargetPos().x);
+                double deltaPosTargetY = Math.abs(witch.getxPos() - witch.getFinalTargetPos().y);
+
+                if (witch.getTargets().size() > 0 && deltaTargetX < 2 && deltaTargetY < 2 &&
+                        deltaPosTargetX > 200 && deltaPosTargetY > 200 &&
+                        game.ticks % 20 != 0) {
+                    doPathfinding = false;
+                }
+
+
+                if (doPathfinding) {
+
+                    if (!witch.isOnReturn()) {
+                        if (witch.getFinalTargetPos() != target) {
+                            pathWorker.execute(witch, start, target);
+                        }
+                    } else {
+                        if (witch.getFinalTargetPos() != witch.getHomePos()) {
+                            pathWorker.execute(witch, start, witch.getHomePos());
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
+     * move an entity depending on move direction, entity speed and their current target(s)
+     *
+     * @param entity
+     */
     public void moveObject(Entity entity) {
         double movementSize = entity.getSpeed() / Game.FRAMES;
 
-        if(entity == game.getWitch()) checkTarget(entity, movementSize);
-
-        // TODO: FUNKTIONIERT ÜBER NETZWERK WEGEN NULLPOINTER NICHT
-            //int tileNr = game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][0].getTileNr();
-            // if (tileNr >= 20 && tileNr <= 25) movementSize *= 1.3;
-
+        /**
+         * if entity is the npc -> check for targets
+         */
+        if (entity == game.getWitch()) checkTarget(entity, movementSize);
         double moveX = 0.0;
         double moveY = 0.0;
 
-        if(entity.target.x > entity.getxPos()) {
-            if(entity.target.x - entity.getxPos() < movementSize) {
+        /**
+         * move into X-direction
+         */
+        if (entity.target.x > entity.getxPos()) {
+            if (entity.target.x - entity.getxPos() < movementSize) {
                 moveX = entity.target.x - entity.getxPos();
             } else {
                 moveX = movementSize;
@@ -324,17 +542,19 @@ public class MovementManager implements EventHandler<InputEvent> {
             entity.setMoveDirection(MoveDirection.RIGHT);
 
         } else if (entity.target.x < entity.getxPos()) {
-            if(Math.abs(entity.target.x - entity.getxPos()) < movementSize) {
-                moveX = - Math.abs(entity.target.x - entity.getxPos());
+            if (Math.abs(entity.target.x - entity.getxPos()) < movementSize) {
+                moveX = -Math.abs(entity.target.x - entity.getxPos());
             } else {
-                moveX = - movementSize;
+                moveX = -movementSize;
                 entity.setMoveDirection(MoveDirection.LEFT);
             }
-
         }
 
-        if(entity.target.y > entity.getyPos()) {
-            if(entity.target.y - entity.getyPos() < movementSize) {
+        /**
+         * move into Y-direction
+         */
+        if (entity.target.y > entity.getyPos()) {
+            if (entity.target.y - entity.getyPos() < movementSize) {
                 moveY = entity.target.y - entity.getyPos();
             } else {
                 moveY = movementSize;
@@ -342,23 +562,25 @@ public class MovementManager implements EventHandler<InputEvent> {
             entity.setMoveDirection(MoveDirection.DOWN);
 
         } else if (entity.target.y < entity.getyPos()) {
-            if(Math.abs(entity.target.y - entity.getyPos()) < movementSize) {
-                moveY = - Math.abs(entity.target.y - entity.getyPos());
+            if (Math.abs(entity.target.y - entity.getyPos()) < movementSize) {
+                moveY = -Math.abs(entity.target.y - entity.getyPos());
             } else {
-                moveY = - movementSize;
+                moveY = -movementSize;
                 entity.setMoveDirection(MoveDirection.UP);
             }
         }
 
 
-        // check out of bounds and change entity position
+        /**
+         * check for out of bounds or collisions
+         */
         entity.setxPos(entity.getxPos() + moveX);
-        if(outOfBounds(entity)) {
+        if (outOfBounds(entity)) {
             entity.setxPos(entity.getxPos() - moveX);
         }
 
         entity.setyPos(entity.getyPos() + moveY);
-        if(outOfBounds(entity)) {
+        if (outOfBounds(entity)) {
             entity.setyPos(entity.getyPos() - moveY);
         }
 
@@ -366,208 +588,224 @@ public class MovementManager implements EventHandler<InputEvent> {
         moveHorizontal(moveX, entity);
         moveVertical(moveY, entity);
 
+        /**
+         * update the entity animation image
+         */
         entity.setEntityImage(false);
     }
 
-    public void moveAllEntites(GameController gameController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
-        for(Player player : listOPlayers)
-        {
-            if(player.getChildrenCount() > 0)
+    /**
+     * moves all entities and calculate costs for pathfinding
+     *
+     * @param gameController
+     * @param listOPlayers
+     * @param witch
+     */
+    public void moveAllEntities(GameController gameController, CopyOnWriteArrayList<Player> listOPlayers, Witch witch) {
+        for (Player player : listOPlayers) {
+            if (player.getChildrenCount() > 0)
                 moveObject(player);
         }
-
-        //move NPC
-        if( (game.getGameMode() == Game.GameMode.LOCAL || gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) && game.getGameTime() <= 30000) {
-            if (game.ticks % 10 == 0 /*|| game.ticks == 1 */) {
-
-                Point target = findTarget(game.getWitch(), game.getPlayer(), game.getOtherPlayer());
-                Point start = witch.getEntityPos();
-
-                boolean doPathfinding = true;
-                double deltaTargetX = Math.abs(target.x - witch.getFinalTargetPos().x);
-                double deltaTargetY = Math.abs(target.y - witch.getFinalTargetPos().y);
-
-                double deltaPosTargetX = Math.abs(witch.getxPos() - witch.getFinalTargetPos().x);
-                double deltaPosTargetY = Math.abs(witch.getxPos() - witch.getFinalTargetPos().y);
-
-                /*
-                if(game.ticks == 2) {
-                    doPathfinding = true;
-                }
-                else if (deltaTargetX <= 0.5 * Tile.TILE_SIZE && deltaTargetY <= 0.5 * Tile.TILE_SIZE) {
-                    doPathfinding = false;
-                } else if(  (deltaPosTargetX > game.getMap().getSize() * 0.2 && game.ticks % 20 != 0) || (deltaPosTargetY > game.getMap().getSize() * 0.2 && game.ticks % 20 != 0)   ) {
-                    doPathfinding = false;
-                }
-
-                 */
-
-
-                if ( doPathfinding ) {
-
-                    if (!witch.isOnReturn()) {
-                        if (witch.getFinalTargetPos() != target) {
-                            new PathWorker(witch, start, target, this).start();
-                        }
-                    } else {
-                        if (witch.getFinalTargetPos() != witch.getHomePos()) {
-                            new PathWorker(witch, start, witch.getHomePos(), this).start();
-                        }
-                    }
-                }
-            }
-        }
-
-        if(game.getGameTime() < 30000) {
-            moveObject(witch);
-
-            Sound.playCountdown();
-        }
-    }
-
-    // find a target for the witch
-    public Point findTarget(Witch witch, Player player, Player otherPlayer) {
-
-        if(player.getChildrenCount() <= 0 && otherPlayer.getChildrenCount() <= 0) {
-            return new Point(0, 0);
-        }
-
-        if(player.isInside() || player.getChildrenCount() <= 0) {
-
-            if(otherPlayer.getChildrenCount() > 0) {
-                return otherPlayer.getEntityPos();
-            } else return new Point(0, 0);
-        }  else if(otherPlayer.isInside() || otherPlayer.getChildrenCount() <= 0) {
-            if(player.getChildrenCount() > 0) {
-                return player.getEntityPos();
-            } else return new Point(0, 0);
-        }
-
-        double distancePlayer = Math.sqrt( (player.getxPos() - witch.getxPos()) * (player.getxPos() - witch.getxPos()) + (player.getyPos() - witch.getyPos()) * (player.getyPos() - witch.getyPos()) );
-        double distanceOtherPlayer = Math.sqrt( (otherPlayer.getxPos() - witch.getxPos()) * (otherPlayer.getxPos() - witch.getxPos()) + (otherPlayer.getyPos() - witch.getyPos()) * (otherPlayer.getyPos() - witch.getyPos()) );
-
-        if(distancePlayer < distanceOtherPlayer) {
-            return player.getEntityPos();
-        } else {
-            return otherPlayer.getEntityPos();
-        }
-
+        moveWitch(gameController, witch);
 
     }
-
 
     /**
-     *
      * move entity objects in vertical direction
      * checks for collisions with houses and doors
      */
     public void moveVertical(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
 
-        // check collisions in vertical direction
-        if (map.getMapSector().intersectsWithContainingItems(p)) {
-            // collision with door
-            if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
+        if ((map.getMapSector().entityIntersectsWithContainingItems(entity) ||
+                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0 ||
+                collideWithKey(entity)
+        )) {
 
+            if (collideWithKey(entity)) collectKey(entity);
 
-                for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
-                    try {
-                        House h = (House) obj;
-                        if (h.intersects(p)) {
-                            if ( (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion)h).insidePlayer))) {
-                                h.visit((Player) entity);
-
-                                //if(game.getGameMode() == Game.GameMode.REMOTE) {
-                                //    ((NetworkController)game.getGameController()).changeGameStateObject(h, Event.EventType.VISITED);
-                                //}
-                            }
-                        }
-                    } catch (ClassCastException ex) {
-                        // the Object is not a House
-                        continue;
-                    }
-                }
-            }
+            checkCollisionWithDoor(p, entity);
 
             // revert movement when entity is not a player and has a collision detection
-            if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
-
+            if (entity instanceof Player && entity.isNoCollision() && !collideWithKey(entity) && !collideWithAliceCooper(entity)) {
+                // pass
             } else {
                 //System.out.println("COLLIDE!");
                 entity.setyPos(entity.getyPos() - size);
             }
 
-
-            // TODO: LÖST die Kollision zwischen Entitäten
         } else {
             checkCollisionsBetweenEntities(entity, size, false);
         }
     }
 
     /**
+     * check if the player collided with the sprite of Alice Cooper
      *
+     * @param entity
+     * @return
+     */
+    public boolean collideWithAliceCooper(Entity entity) {
+        return (entity.getEntityPos().x == 5 && entity.getEntityPos().y == 5);
+    }
+
+    /**
      * move entity objects in horizontal direction
      * checks for collisions with houses and doors
      */
     public void moveHorizontal(double size, Entity entity) {
         Placeable p = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
-        if (map.getMapSector().intersectsWithContainingItems(p) && !entity.isNoCollision()) {
 
-
+        if ((map.getMapSector().entityIntersectsWithContainingItems(entity) && !entity.isNoCollision() ||
+                game.getMap().getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].getTileNr() < 0)
+                || collideWithKey(entity)
+        ) {
             // revert movement when entity is not a player and has a collision detection
-            if  (entity instanceof Player && ((Player) entity).isNoCollision()) {
+            if (entity instanceof Player && entity.isNoCollision() && !collideWithKey(entity)) {
 
             } else {
                 //System.out.println("COLLIDE!");
                 entity.setxPos(entity.getxPos() - size);
             }
 
-
             // TODO: LÖST die Kollision zwischen zwei Spielern
         } else {
 
             // überprüft die Kollision zwischen Entitäten
             checkCollisionsBetweenEntities(entity, size, true);
-
         }
     }
 
-    public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
-        for(Entity e : game.getListOfAllEntities()) {
-            if(e == entity) continue;
+    /**
+     * check if the player collect the key within the town hall
+     *
+     * @param entity
+     * @return
+     */
+    public boolean collideWithKey(Entity entity) {
+        return (entity.getEntityPos().x == 31 && entity.getEntityPos().y == 29);
+    }
 
+    /**
+     * collect the key within the town hall if key is available
+     *
+     * @param entity
+     */
+    public void collectKey(Entity entity) {
+        for (MapObject o : game.getMap().getMapSector().getAllContainingMapObjects()) {
+            if (o instanceof TownHall) {
+                TownHall t = (TownHall) o;
+                t.takeKey((Player) entity);
+                game.getMap().getMap()[29][31][1].setTileNr(133);
+                break;
+            }
+        }
+    }
+
+    /**
+     * check if the player collided with a door tile
+     */
+    public void checkCollisionWithDoor(Placeable p, Entity entity) {
+        if (map.getMap()[entity.getEntityPos().y][entity.getEntityPos().x][1].isDoorTile()) {
+            for (MapObject obj : map.getMapSector().getAllContainingMapObjects()) {
+                try {
+                    House h = (House) obj;
+                    SoundDecorator houseSoundDecorator = new SoundDecorator(h);
+                    CandyDecorator houseCandyDecorator = new CandyDecorator(h);
+                    /**
+                     * call the visit method on the house object
+                     */
+                    if (h.intersects(p)) {
+                        if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
+                            /**
+                             * the order of the call is not trivial and should be followed,
+                             * because the soundDecorator does not care if a house has already been visited,
+                             * the CandyDecorator does.
+                             */
+                            houseCandyDecorator.visit((Player) entity);
+                            houseSoundDecorator.visit((Player) entity);
+                        }
+                    }
+                    /**
+                     * show a error message when the object is not a house
+                     */
+                } catch (ClassCastException ex) {
+                    ex.printStackTrace();
+                    continue;
+                }
+            }
+        }
+    }
+
+    /**
+     * check collisions between the players and between players and the npc
+     *
+     * @param entity
+     * @param size
+     * @param directionX
+     */
+    public void checkCollisionsBetweenEntities(Entity entity, double size, boolean directionX) {
+        for (Entity e : game.getListOfAllEntities()) {
+            if (e == entity) continue;
+
+            /**
+             * the collision with the witch occurred a little bit early
+             */
             double offset = 0.5;
-            if(e instanceof Witch) {
-                offset = 1.2;
+            if (e instanceof Witch) {
+                offset = 0.7;
             } else {
                 offset = 0.5;
             }
 
-            if (Math.abs(entity.getxPos() - e.getxPos()) < offset * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * offset ) {
+            /**
+             * when the distance in x and y direction between entities is lower than the product of offset and Tile size
+             * a collision occurred!
+             */
+            if (Math.abs(entity.getxPos() - e.getxPos()) < offset * Tile.TILE_SIZE && Math.abs(entity.getyPos() - e.getyPos()) < Tile.TILE_SIZE * offset) {
+                if (e instanceof AliceCooper && entity instanceof Player) {
+                    ((AliceCooper) e).playSong((Player) entity);
 
-                if(e instanceof AliceCooper && entity instanceof Player) {
-                    ((AliceCooper)e).playSong((Player)entity);
-                } else if(e instanceof Witch && entity instanceof Player) {
-                    Witch witch = (Witch)e;
-                    Player player = (Player)entity;
-                    if(player.getChildrenCount() <= 0) return;
+                    /** When one entity is the npc then reduce childrencount of the other object (player) by 1
+                     * set witch on return and calculate a new path to her home position
+                     */
+                } else if (e instanceof Witch && entity instanceof Player && game.DRAMATIC) {
+                    Witch witch = (Witch) e;
+                    Player player = (Player) entity;
+                    if (player.getChildrenCount() <= 0) return;
 
-                    if(player.getProtectedTicks() > 0 ) {
-                        System.out.println("NO COLLISION WEGEN PROTECTION!!"); return;
+                    if (player.getProtectedTicks() > 0) {
+                        System.out.println("NO COLLISION WEGEN PROTECTION!!");
+                        return;
                     }
 
                     Sound.playChild();
-                    
-                    witch.setOnReturn(true);
-                    player.setChildrenCount(player.getChildrenCount() - 1);
-                    player.setProtectedTicks(100);
 
-                    if(game.getGameMode() == Game.GameMode.REMOTE) {
-                        ((NetworkController)game.getGameController()).changeGameStateObject(witch, Event.EventType.COLLISION);
+                    witch.setOnReturn(true);
+                    //new PathWorker(witch, witch.getEntityPos(), new Point((int)(witch.getHomeX() / Tile.TILE_SIZE), (int)(witch.getHomeY() / Tile.TILE_SIZE)), this).start();
+
+                    /**
+                     * set a protection against further collisions for 50 ticks ( currently 1 s) to avoid multiple collisions at once
+                     */
+                    player.setChildrenCount(player.getChildrenCount() - 1);
+                    player.setProtectedTicks(50);
+
+                    /**
+                     * if the gameMode is currently a network game then transmit the collision to the other player
+                     */
+                    if (game.getGameMode() == Game.GameMode.REMOTE) {
+                        ((NetworkController) game.getGameController()).changeGameStateObject(witch, Event.EventType.COLLISION);
                     }
                 }
 
-                if(directionX) {
+                if (e instanceof Witch && !game.DRAMATIC) {
+                    size = 0;
+                }
+
+                /**
+                 * undo the last movement step in X or Y- direction if collision(s) occurred
+                 */
+                if (directionX) {
                     entity.setxPos(entity.getxPos() - size);
                 } else {
                     entity.setyPos(entity.getyPos() - size);
@@ -585,9 +823,9 @@ public class MovementManager implements EventHandler<InputEvent> {
      */
     private boolean outOfBounds(Entity entity) {
 
-        if(entity instanceof Player && ((Player)entity).isInside()) {
-            Player player = (Player)entity;
-            return outOfBoundsInside((Player)entity, player.getInsideObject());
+        if (entity instanceof Player && ((Player) entity).isInside()) {
+            Player player = (Player) entity;
+            return outOfBoundsInside((Player) entity, player.getInsideObject());
 
         } else {
 
@@ -599,7 +837,15 @@ public class MovementManager implements EventHandler<InputEvent> {
         }
     }
 
+    /**
+     * check if the given player object collide with the inside walls of an house
+     *
+     * @param player
+     * @param o
+     * @return true = the player collided - false = no collision occurred
+     */
     private boolean outOfBoundsInside(Player player, MapObject o) {
+
         int e_x = player.getEntityPos().x;
         int e_y = player.getEntityPos().y;
         int o_x = o.getY();
@@ -608,15 +854,13 @@ public class MovementManager implements EventHandler<InputEvent> {
         int o_height = o.getWidth();
 
         return (
-                (e_x >= o_x && e_x <= o_x + o_width && e_y == o_y - 1) ||
+                (e_x >= o_x && e_x <= o_x + o_width && e_y == o_y) ||
                         (e_x >= o_x && e_x <= o_x + o_width && player.getEntityPosWithCurrency(+0.5).y == o_y + o_height) ||
 
-                        (player.getEntityPosWithCurrency( -.1).x == o_x - 1 && e_y >= o_y && e_y <= o_y + o_height) ||
+                        (player.getEntityPosWithCurrency(-.33).x == o_x - 1 && e_y >= o_y && e_y <= o_y + o_height) ||
                         (player.getEntityPosWithCurrency(+.33).x == o_x + o_width && e_y >= o_y && e_y <= o_y + o_height)
 
         );
     }
-
-
 }
 
