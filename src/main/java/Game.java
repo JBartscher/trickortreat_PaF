@@ -1,6 +1,7 @@
 package main.java;
 
 import javafx.stage.Stage;
+import main.java.configuration.Configuration;
 import main.java.menu.GameMenu;
 import main.java.network.GameStateInit;
 import main.java.network.Network;

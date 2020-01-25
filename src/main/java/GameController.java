@@ -16,9 +16,10 @@ import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.MapObject;
 import main.java.map.Tile;
 import main.java.network.ServerEngine;
+import main.java.pattern.Observable;
+import main.java.pattern.Observer;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
