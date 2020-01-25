@@ -95,7 +95,6 @@ public class GameOver extends Observable {
         imageViewPlayer1.setScaleY(2);
         GraphicsUtility.setImageProperties(imageViewPlayer1, Window.WIDTH / 4 - 50, Window.HEIGHT - 350);
 
-
         imageViewPlayer2.setScaleX(2);
         imageViewPlayer2.setScaleY(2);
         GraphicsUtility.setImageProperties(imageViewPlayer2, Window.WIDTH / 4 * 3, Window.HEIGHT - 350);
@@ -110,7 +109,6 @@ public class GameOver extends Observable {
         GraphicsUtility.setImageProperties(imageViewCandy1, Window.WIDTH / 4 - 50, Window.HEIGHT - 200);
         imageViewCandy1.setScaleX(3);
         imageViewCandy1.setScaleY(3);
-
 
         ImageView imageViewCandy2 = new ImageView(GraphicsUtility.getCandyImage());
         GraphicsUtility.setImageProperties(imageViewCandy2, Window.WIDTH / 4 * 3 + 10, Window.HEIGHT - 200);

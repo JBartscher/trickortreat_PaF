@@ -42,6 +42,9 @@ public class GameController implements Observer {
         game.setGameCamera(new GameCamera(game.getMap().getSize(), game.getMap().getSize(), game.getPlayer()));
         game.setMovementManager(new MovementManager(game, game.getPlayer(), game.getOtherPlayer()));
 
+        game.getPlayer().notifyObservers(game.getPlayer());
+        game.getOtherPlayer().notifyObservers(game.getOtherPlayer());
+
         // Movement - Weiterleiten an Controller-Klasse
         game.getWindow().getScene().addEventHandler(InputEvent.ANY, game.getMovementManager());
 
