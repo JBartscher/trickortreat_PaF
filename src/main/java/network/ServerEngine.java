@@ -13,7 +13,7 @@ import javafx.stage.StageStyle;
 import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
-import main.java.Sound;
+import main.java.sounds.Sound;
 import main.java.MovementManager.MovementType;
 
 import java.io.*;

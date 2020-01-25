@@ -1,6 +1,6 @@
 package main.java.map;
 
-import main.java.Observable;
+import main.java.pattern.Observable;
 
 import java.io.Serializable;
 

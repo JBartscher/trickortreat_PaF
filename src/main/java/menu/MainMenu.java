@@ -22,15 +22,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import main.java.*;
 import main.java.Game.GameMode;
+import main.java.configuration.Configuration;
 import main.java.network.ClientEngine;
 import main.java.network.Event;
 import main.java.network.NetworkController;
 import main.java.network.ServerEngine;
+import main.java.sounds.Sound;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +55,7 @@ public class MainMenu {
     private Line line;
     private MenuTitle title;
 
-    private String ip;
+    private String ip = ((String)config.getParam("ip"));
     private Stage controlsStage;
     private VBox controlsBox;
     private Label labelPlayerOne = new Label("CONTROLS PLAYER ONE");

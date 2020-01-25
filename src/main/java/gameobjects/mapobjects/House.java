@@ -1,6 +1,6 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Observable;
+import main.java.pattern.Observable;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.Map;

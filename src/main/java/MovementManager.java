@@ -5,6 +5,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import main.java.configuration.Configuration;
 import main.java.menu.GameMenu;
 import main.java.network.Event;
 import main.java.network.NetworkController;
@@ -20,6 +21,7 @@ import main.java.map.Tile;
 import main.java.pathfinding.AStar;
 import main.java.pathfinding.Node;
 import main.java.pathfinding.PathWorker;
+import main.java.sounds.Sound;
 
 import java.awt.*;
 import java.io.Serializable;

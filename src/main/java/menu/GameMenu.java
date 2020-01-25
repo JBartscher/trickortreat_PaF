@@ -6,7 +6,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.java.*;
+import main.java.configuration.Configuration;
 import main.java.gameobjects.Player;
+import main.java.pattern.Observable;
+import main.java.pattern.Observer;
+import main.java.pattern.Singleton;
 import main.java.sprites.GraphicsUtility;
 
 public class GameMenu implements Singleton {

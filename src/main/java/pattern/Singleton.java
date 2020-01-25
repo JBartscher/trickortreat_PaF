@@ -1,4 +1,4 @@
-package main.java;
+package main.java.pattern;
 
 /**
  * an singleton interface to ensure that singletons have an accessor to they're static "instance" attribute.

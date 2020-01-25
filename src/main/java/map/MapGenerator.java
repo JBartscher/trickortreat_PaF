@@ -1,6 +1,6 @@
 package main.java.map;
 
-import main.java.Configuration;
+import main.java.configuration.Configuration;
 import main.java.exceptions.PlaceableBelongsToNoSectorException;
 import main.java.exceptions.SectorOverlappingException;
 import main.java.gameobjects.mapobjects.*;
@@ -23,6 +23,7 @@ public class MapGenerator {
     private static final Configuration<Object> config = new Configuration<Object>();
 
     DistrictManager districtManager;
+    HouseFactory houseFactory = new HouseFactory();
 
     final private Map gameMap;
     private AStar aStar;
@@ -241,7 +242,7 @@ public class MapGenerator {
          * find free location and assign house to a district
          */
         for (String type : amountOfHouses) {
-            House house = HouseFactory.createNewInstance(type);
+            House house = houseFactory.createNewInstance(type);
             findObjectSpot(house);
 
             // put the right district to the house object
@@ -361,7 +362,7 @@ public class MapGenerator {
         // 2x2
         for (int i = 0; i < numberOfHouses; i++) {
             // stub Object, the placeable will be overridden in the findObjectSpot method
-            House smallHouse = HouseFactory.createNewInstance("small");
+            House smallHouse = houseFactory.createNewInstance("small");
 
             int x = (int) (gameMap.getSize() * 0.42) + i * 3;
             int y = (int) (gameMap.getSize() * 0.38);
@@ -379,7 +380,7 @@ public class MapGenerator {
         for(int j = 0; j < 2; j++) {
             for (int i = 0; i < numberOfHouses / 2; i++) {
                 // stub Object, the placeable will be overridden in the findObjectSpot method
-                House bigHouse = HouseFactory.createNewInstance("big");
+                House bigHouse = houseFactory.createNewInstance("big");
 
                 int x = (int) (gameMap.getSize() * 0.39) + i * 4;
                 int y = (int) (gameMap.getSize() * 0.42);
@@ -400,14 +401,14 @@ public class MapGenerator {
      */
     private void createCentreHouses() {
 
-        House house = HouseFactory.createNewInstance("big");
+        House house = houseFactory.createNewInstance("big");
         int x = 23;
         int y = 30;
         addAndSetHouse(house, x, y);
 
         x = 36;
         y = 30;
-        house = HouseFactory.createNewInstance("big");
+        house = houseFactory.createNewInstance("big");
         addAndSetHouse(house, x, y);
 
 

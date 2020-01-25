@@ -18,7 +18,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import main.java.Sound;
+import main.java.sounds.Sound;
 
 import java.io.*;
 import java.util.ArrayList;
