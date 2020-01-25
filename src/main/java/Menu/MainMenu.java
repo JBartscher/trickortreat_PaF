@@ -78,6 +78,7 @@ public class MainMenu {
     private List<Pair<String, Runnable>> pausedMenu;
 
     private Scene gameScene;
+    private static boolean soundOnBefore;
 
     public MainMenu(Stage stage, GameLauncher gameLauncher) {
 
@@ -456,6 +457,15 @@ public class MainMenu {
         root.setOpacity(0.7);
 
         addTitle("PAUSED");
+
+        soundOnBefore = !((Boolean)config.getParam("muted")).booleanValue();
+        if(  soundOnBefore ) {
+            Sound.muteSound();
+            GameMenu.setRightButtons();
+
+        }
+
+
         stage.setScene(scene);
         stage.show();
     }
@@ -464,6 +474,11 @@ public class MainMenu {
         game.paused = false;
         stage.setScene(gameScene);
 
+        if(soundOnBefore) {
+            Sound.unmuteSound();
+            GameMenu.setRightButtons();
+
+        }
     }
 
     private void initStage() {

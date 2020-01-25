@@ -633,8 +633,10 @@ public class MovementManager implements EventHandler<InputEvent> {
                 entity.setyPos(entity.getyPos() - size);
                 if(entity instanceof Witch) {
                     //entity.setxPos(entity.getxPos() - 0.25 * Tile.TILE_SIZE);
-                    Point target = chooseTarget((Witch)entity, game.getPlayer(), game.getOtherPlayer());
-                    findPath(entity, entity.getEntityPos(), target);
+                    if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER || game.gameMode == Game.GameMode.LOCAL) {
+                        Point target = chooseTarget((Witch) entity, game.getPlayer(), game.getOtherPlayer());
+                        findPath(entity, entity.getEntityPos(), target);
+                    }
                 }
             }
 
@@ -671,8 +673,10 @@ public class MovementManager implements EventHandler<InputEvent> {
                 //System.out.println("COLLIDE!");
                 entity.setxPos(entity.getxPos() - size);
                 if(entity instanceof Witch) {
-                    Point target = chooseTarget((Witch)entity, game.getPlayer(), game.getOtherPlayer());
-                    findPath(entity, entity.getEntityPos(), target);
+                    if(game.gameMode == Game.GameMode.REMOTE && game.getGameController().getNetworkRole() == NetworkController.NetworkRole.SERVER || game.gameMode == Game.GameMode.LOCAL) {
+                        Point target = chooseTarget((Witch) entity, game.getPlayer(), game.getOtherPlayer());
+                        findPath(entity, entity.getEntityPos(), target);
+                    }
                 }
             }
 

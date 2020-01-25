@@ -237,6 +237,25 @@ public class Sound {
     /**
      * controls
      */
+
+
+    public static void unmuteSound() {
+        try {
+
+                musicPlayer.setMute(false);
+                ringPlayer.setMute(false);
+                countdownPlayer.setMute(false);
+                cooperPlayer.setMute(false);
+                childPlayer.setMute(false);
+                gameoverPlayer.setMute(false);
+
+                config.setParam("muted", false);
+
+        } catch (NoClassDefFoundError ex) {
+            ex.printStackTrace();
+        }
+
+    }
     
     // mutes all sounds
     public static void muteSound() {

@@ -185,8 +185,13 @@ public class NetworkController extends GameController {
 
             case COLLISION:
                 game.getWitch().setGameStateData(gameStateReceived.getWitchData());
-                break;
+                System.out.println("EVENT KIND GEFANGEN " + game.getWitch().isOnReturn());
+                if(networkRole == NetworkRole.SERVER) {
+                    game.getWitch().setOnReturn(true);
+                }
 
+
+                break;
 
             case PAUSED:
                 game.paused = true;
@@ -294,7 +299,6 @@ public class NetworkController extends GameController {
                 if(t.getNumberOfPlayerInside() > 0 ) {
                     game.getMap().getMap()[29][31][1].setTileNr(120);
                 }
-
 
                 break;
 

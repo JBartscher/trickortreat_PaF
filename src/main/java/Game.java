@@ -161,7 +161,6 @@ public class Game {
          */
         if(gameMode == GameMode.REMOTE) {
             otherPlayer.setEntityImage(true);
-            //TODO: TESTEN!
             witch.setEntityImage(true);
         }
 
