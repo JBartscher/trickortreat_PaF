@@ -3,8 +3,8 @@ package main.java;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.java.Menu.MainMenu;
-import main.java.Network.Network;
+import main.java.menu.MainMenu;
+import main.java.network.Network;
 import main.java.sprites.GraphicsUtility;
 
 

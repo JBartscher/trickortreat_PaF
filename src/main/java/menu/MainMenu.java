@@ -1,4 +1,4 @@
-package main.java.Menu;
+package main.java.menu;
 
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -24,10 +26,10 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 import main.java.*;
 import main.java.Game.GameMode;
-import main.java.Network.ClientEngine;
-import main.java.Network.Event;
-import main.java.Network.NetworkController;
-import main.java.Network.ServerEngine;
+import main.java.network.ClientEngine;
+import main.java.network.Event;
+import main.java.network.NetworkController;
+import main.java.network.ServerEngine;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,16 +76,22 @@ public class MainMenu {
     private List<Pair<String, Runnable>> localMenuData;
     private List<Pair<String, Runnable>> hostMenuData;
     private List<Pair<String, Runnable>> clientMenuData;
-
     private List<Pair<String, Runnable>> pausedMenu;
-
+    private Light.Distant light = new Light.Distant();
+    private Lighting lighting = new Lighting(light);
     private Scene gameScene;
+    private Separator separator = new Separator();
     private static boolean soundOnBefore;
 
     public MainMenu(Stage stage, GameLauncher gameLauncher) {
 
         this.stage = stage;
         this.gameLauncher = gameLauncher;
+
+        light.setAzimuth(0);
+        lighting.setSurfaceScale(5.0);
+        buttonOk.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0;" +
+        "-fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
 
         setDefaultControls();
     }
@@ -241,11 +249,15 @@ public class MainMenu {
         initStage();
 
         radioButtonWASD.setToggleGroup(group);
-        radioButtonARROW.setToggleGroup(group);
-        radioButtonMOUSE.setToggleGroup(group);
-
-        radioButtonARROW.setDisable(false);
+        radioButtonWASD.setStyle("-fx-text-fill: white;");
         radioButtonWASD.setDisable(false);
+
+        radioButtonARROW.setToggleGroup(group);
+        radioButtonARROW.setStyle("-fx-text-fill: white;");
+        radioButtonARROW.setDisable(false);
+
+        radioButtonMOUSE.setToggleGroup(group);
+        radioButtonMOUSE.setStyle("-fx-text-fill: white;");
         radioButtonMOUSE.setDisable(false);
 
         switch ((String) config.getParam("movementTypePlayer1")) {
@@ -265,6 +277,8 @@ public class MainMenu {
                 break;
         }
   
+        controlsBox.setStyle("-fx-background-color: black;");
+        controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
 
         if (gameMode == Game.GameMode.REMOTE) {
@@ -304,8 +318,14 @@ public class MainMenu {
             }); 
 
             radioButtonWASDtwo.setToggleGroup(groupTwo);
+            radioButtonWASDtwo.setStyle("-fx-text-fill: white;");
+
             radioButtonARROWtwo.setToggleGroup(groupTwo);
+            radioButtonARROWtwo.setStyle("-fx-text-fill: white;");
+
             radioButtonMOUSEtwo.setToggleGroup(groupTwo);
+            radioButtonMOUSEtwo.setStyle("-fx-text-fill: white;");
+
             
             switch ((String) config.getParam("movementTypePlayer2")) {
                 case "KEYBOARD_ARROW": 
@@ -352,7 +372,9 @@ public class MainMenu {
                 } 
             }); 
     
-            controlsBox.getChildren().addAll(labelPlayerOne, radioButtonWASD, radioButtonARROW, radioButtonMOUSE, labelPlayerTwo, radioButtonWASDtwo, radioButtonARROWtwo, radioButtonMOUSEtwo, buttonOk);
+            labelPlayerOne.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+            labelPlayerTwo.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+            controlsBox.getChildren().addAll(labelPlayerOne, radioButtonWASD, radioButtonARROW, radioButtonMOUSE, separator, labelPlayerTwo, radioButtonWASDtwo, radioButtonARROWtwo, radioButtonMOUSEtwo, buttonOk);
 
             initScene(controlsBox, 200, 300);
 
@@ -393,7 +415,9 @@ public class MainMenu {
 
         initStage();
 
+        enabled.setStyle("-fx-text-fill: white;");
         enabled.setToggleGroup(group);
+        disabled.setStyle("-fx-text-fill: white;");
         disabled.setToggleGroup(group);
         
         if ((Boolean) config.getParam("muted")) {
@@ -402,6 +426,8 @@ public class MainMenu {
             enabled.setSelected(true);
         }
 
+        controlsBox.setStyle("-fx-background-color: black;");
+        controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(enabled, disabled, buttonOk);
 
@@ -424,6 +450,8 @@ public class MainMenu {
 
         initStage();
 
+        controlsBox.setStyle("-fx-background-color: black;");
+        controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
         controlsBox.getChildren().addAll(textFieldServer, buttonOk);
         
@@ -450,6 +478,7 @@ public class MainMenu {
     }
 
     public void showPausedMenu(Scene gameScene) {
+
         this.gameScene = gameScene;
         initMenu(pausedMenu, 95);
         //scene = new Scene(createContent());
@@ -459,18 +488,17 @@ public class MainMenu {
         addTitle("PAUSED");
 
         soundOnBefore = !((Boolean)config.getParam("muted")).booleanValue();
-        if(  soundOnBefore ) {
+        if(soundOnBefore) {
             Sound.muteSound();
             GameMenu.setRightButtons();
-
         }
-
 
         stage.setScene(scene);
         stage.show();
     }
 
     public void resumeGame(Game game) {
+
         game.paused = false;
         stage.setScene(gameScene);
 

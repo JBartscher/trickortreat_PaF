@@ -3,9 +3,9 @@ package main.java;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import main.java.Network.ClientEngine;
-import main.java.Network.NetworkController;
-import main.java.Network.ServerEngine;
+import main.java.network.ClientEngine;
+import main.java.network.NetworkController;
+import main.java.network.ServerEngine;
 
 public class Window {
 

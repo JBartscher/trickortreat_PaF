@@ -1,4 +1,4 @@
-package main.java.Network;
+package main.java.network;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;

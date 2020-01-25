@@ -1,4 +1,4 @@
-package main.java.Menu;
+package main.java.menu;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -11,10 +11,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import main.java.*;
-import main.java.Network.ClientEngine;
-import main.java.Network.Event;
-import main.java.Network.NetworkController;
-import main.java.Network.ServerEngine;
+import main.java.network.ClientEngine;
+import main.java.network.Event;
+import main.java.network.NetworkController;
+import main.java.network.ServerEngine;
 import main.java.gameobjects.Player;
 import main.java.sprites.GraphicsUtility;
 
