@@ -2,6 +2,7 @@ package main.java;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.java.network.ClientEngine;
 import main.java.network.NetworkController;
@@ -25,8 +26,6 @@ public class Window {
 
         closeEvent();
 
-
-
     }
 
     private void closeEvent() {
@@ -43,7 +42,6 @@ public class Window {
                     clientEngine.interrupt();
                     clientEngine = null;
                 }
-
             }
 
 
@@ -54,6 +52,7 @@ public class Window {
     public void createGUI() {
         this.root = new Group();
         this.scene = new Scene(root, WIDTH, HEIGHT);
+
 
 
     }
