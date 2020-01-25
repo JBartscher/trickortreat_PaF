@@ -84,6 +84,7 @@ public abstract class House extends MapObject implements Visitable {
         }
         this.isUnvisited = false;
         notifyObservers(observers);
+        player.notifyObservers(player);
 
     }
 

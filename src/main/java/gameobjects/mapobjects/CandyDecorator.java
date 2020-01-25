@@ -25,24 +25,8 @@ public class CandyDecorator extends HouseDecorator {
      */
     @Override
     public void visit(Player player) {
-
-        if (house instanceof Mansion || house instanceof TownHall || house instanceof GingerbreadHouse) {
-            System.out.println("no Candy distributed!");
-        }
-        else if (house instanceof BigHouse && house.isUnvisited()) {
-            System.out.println("BigHouse - 2x the Candy!");
-            player.addCandy(calculateCandyAmount(player.childrenCount, 1.25));
-            //house.isUnvisited = false;
-            //notify observers
-
-        } else if (house instanceof SmallHouse && house.isUnvisited()) {
-            System.out.println("BigHouse - 1x the Candy!");
-            player.addCandy(calculateCandyAmount(player.childrenCount, 1));
-            //house.isUnvisited = false;
-            //notify observers
-
-        } else throw new IllegalAccessError("The Object is not of any known House type! It cannot be decorated/called by the CandyDecorator");
-
+        System.out.println(house);
+        player.addCandy(calculateCandyAmount(player.childrenCount));
         super.visit(player);
     }
 
@@ -50,19 +34,16 @@ public class CandyDecorator extends HouseDecorator {
      * calculate the amount of candy a player gets when he visits a (regular) house.
      *
      * @param childrenCount number of children that the player controls
-     * @param houseTypemultiplikator an factor that increases the amount of candy when visiting a bighouse instead of
-     *                               a small one
      * @return an Integer that represents the amount of candy that the player gets
      */
-    private int calculateCandyAmount(int childrenCount, double houseTypemultiplikator){
+    private int calculateCandyAmount(int childrenCount) {
         // calculate the amount of candy the player gets
         int candies = 0;
         Random random = new Random();
         for (int i = 0; i < childrenCount; i++) {
             int zahl = random.nextInt(2);
-            candies += (int) (house.district.getCandy_multiplikator() + zahl);
+            candies += (int) (((HouseDecorator)this.getDecoratedHouse()).getDecoratedHouse().district.getCandy_multiplikator() + zahl);
         }
-        candies = (int) (candies * houseTypemultiplikator);
         System.out.println("CANDY:" + candies);
         return candies;
     }
