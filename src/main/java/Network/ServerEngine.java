@@ -13,10 +13,7 @@ import main.java.Game;
 import main.java.GameLauncher;
 import main.java.MovementManager;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -163,8 +160,9 @@ public class ServerEngine extends Thread implements Network {
         public void run() {
             System.out.println("VERBINDUNG EINGEGANGEN!");
             try {
-                output = new ObjectOutputStream(socket.getOutputStream());
-                input = new ObjectInputStream(socket.getInputStream());
+                output = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                output.flush();
+                input = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
