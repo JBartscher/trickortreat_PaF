@@ -131,7 +131,6 @@ public class NetworkController extends GameController {
 
         if(!gameState.isEventTransmitted()) {
             type = Message.Type.EVENT;
-            System.out.println("Inner: OBJEKT:" + gameState.getEvent().getObject());
         } else {
             type = Message.Type.GAMESTATE;
         }
