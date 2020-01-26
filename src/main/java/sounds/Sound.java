@@ -274,10 +274,8 @@ public class Sound {
         try {
 
                 music.setMute(false);
-                // ring.setMute(false);
                 countdown.setMute(false);
                 cooper.setMute(false);
-                // child.setMute(false);
                 gameover.setMute(false);
 
                 config.setParam("muted", false);
@@ -297,10 +295,8 @@ public class Sound {
             if (!(Boolean) config.getParam("muted")) {
 
                 music.setMute(true);
-                // ring.setMute(true);
                 countdown.setMute(true);
                 cooper.setMute(true);
-                // child.setMute(true);
                 gameover.setMute(true);
 
                 // set muted to true in config
@@ -309,10 +305,8 @@ public class Sound {
             } else {
 
                 music.setMute(false);
-                // ring.setMute(false);
                 countdown.setMute(false);
                 cooper.setMute(false);
-                // child.setMute(false);
                 gameover.setMute(false);
 
                 // set muted to false in config

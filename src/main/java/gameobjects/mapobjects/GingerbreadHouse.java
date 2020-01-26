@@ -81,7 +81,6 @@ public class GingerbreadHouse extends House implements Singleton {
             Sound.playRing();
             Sound.playChild();
             player.setChildrenCount(player.getChildrenCount() - 1);
-            Sound.playChild();
             hasChild = true;
         }
 
