@@ -3,6 +3,9 @@ package main.java.sounds;
 import main.java.configuration.Configuration;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -48,26 +51,42 @@ public class Sound {
      * https://freesound.org/people/baujahr66/sounds/157250/
      */
 
-    private final static Media music = new Media(new File("src/main/java/sounds/music.wav").toURI().toString());
-    private final static Media ring = new Media(new File("src/main/java/sounds/ring.mp3").toURI().toString());
-    private final static Media child = new Media(new File("src/main/java/sounds/child.wav").toURI().toString());
-    private final static Media cooper = new Media(new File("src/main/java/sounds/poison.mp3").toURI().toString());
-    private final static Media countdown = new Media(new File("src/main/java/sounds/countdown.mp3").toURI().toString());
-    private final static Media gameover = new Media(new File("src/main/java/sounds/gameover.mp3").toURI().toString());
-    private final static Media menu = new Media(new File("src/main/java/sounds/menu.wav").toURI().toString());
+    private final static MediaPlayer music = new MediaPlayer(new Media(new File("src/main/java/sounds/music.wav").toURI().toString()));
+    private final static MediaPlayer ring1 = new MediaPlayer(new Media(new File("src/main/java/sounds/ring.mp3").toURI().toString()));
+    private final static MediaPlayer ring2 = new MediaPlayer(new Media(new File("src/main/java/sounds/ring2.mp3").toURI().toString()));
+    private final static MediaPlayer ring3 = new MediaPlayer(new Media(new File("src/main/java/sounds/ring3.mp3").toURI().toString()));
+    private final static MediaPlayer ring4 = new MediaPlayer(new Media(new File("src/main/java/sounds/ring4.wav").toURI().toString()));
+    private final static MediaPlayer ring5 = new MediaPlayer(new Media(new File("src/main/java/sounds/ring5.wav").toURI().toString()));
+    private final static MediaPlayer child1 = new MediaPlayer(new Media(new File("src/main/java/sounds/child.wav").toURI().toString()));
+    private final static MediaPlayer child2 = new MediaPlayer(new Media(new File("src/main/java/sounds/child2.wav").toURI().toString()));
+    private final static MediaPlayer cooper = new MediaPlayer(new Media(new File("src/main/java/sounds/poison.mp3").toURI().toString()));
+    private final static MediaPlayer countdown = new MediaPlayer(new Media(new File("src/main/java/sounds/countdown.mp3").toURI().toString()));
+    private final static MediaPlayer gameover = new MediaPlayer(new Media(new File("src/main/java/sounds/gameover.mp3").toURI().toString()));
+    private final static MediaPlayer menu = new MediaPlayer(new Media(new File("src/main/java/sounds/menu.wav").toURI().toString()));
 
-    private final static MediaPlayer musicPlayer = new MediaPlayer(music);
-    private final static MediaPlayer ringPlayer = new MediaPlayer(ring);
-    private final static MediaPlayer childPlayer = new MediaPlayer(child);
-    private final static MediaPlayer cooperPlayer = new MediaPlayer(cooper);
-    private final static MediaPlayer countdownPlayer = new MediaPlayer(countdown);
-    private final static MediaPlayer gameoverPlayer = new MediaPlayer(gameover);
-    private final static MediaPlayer menuPlayer = new MediaPlayer(menu);
+    private final static Random random = new Random();
+    private final static List<MediaPlayer> ringList = Arrays.asList(ring1,ring2,ring3,ring4,ring5);
+    private final static List<MediaPlayer> childList = Arrays.asList(child1,child2);
 
     /**
      * private constructor to prevent initiation
      */
     private Sound() {
+    }
+
+    /**
+     * choose random sound file
+     * @param <T>
+     * @param list
+     * @return
+     */
+    private static <T> T getRandomItem(List<T> list) {
+
+        if(list.isEmpty()) throw new IllegalArgumentException("Die Liste darf nicht leer sein!");
+
+        T item = list.get(random.nextInt(list.size()));
+
+        return item;
     }
 
     /**
@@ -80,19 +99,19 @@ public class Sound {
             stopMusic();
 
             // play again on end of media (loop)
-            musicPlayer.setOnEndOfMedia(() -> {
-                musicPlayer.seek(Duration.ZERO);
-                musicPlayer.play();
+            music.setOnEndOfMedia(() -> {
+                music.seek(Duration.ZERO);
+                music.play();
             });
 
             // play background music
-            musicPlayer.play();
+            music.play();
 
             // mute background music if muted is true in config
             if ((Boolean) config.getParam("muted")) {
-                musicPlayer.setMute(true);
+                music.setMute(true);
             } else {
-                musicPlayer.setMute(false);
+                music.setMute(false);
             }
 
         } catch (NoClassDefFoundError ex) {
@@ -110,13 +129,13 @@ public class Sound {
             stopMusic();
 
             // play countdown music
-            countdownPlayer.play();
+            countdown.play();
 
             // mute coundown music if muted is true in config
             if ((Boolean) config.getParam("muted")) {
-                countdownPlayer.setMute(true);
+                countdown.setMute(true);
             } else {
-                countdownPlayer.setMute(false);
+                countdown.setMute(false);
             }
 
         } catch (NoClassDefFoundError ex) {
@@ -134,13 +153,13 @@ public class Sound {
             stopMusic();
 
             // play cooper music
-            cooperPlayer.play();
+            cooper.play();
 
             // mute cooper music if muted is true in config
             if ((Boolean) config.getParam("muted")) {
-                cooperPlayer.setMute(true);
+                cooper.setMute(true);
             } else {
-                cooperPlayer.setMute(false);
+                cooper.setMute(false);
             }     
 
         } catch (NoClassDefFoundError ex) {
@@ -154,15 +173,18 @@ public class Sound {
     public static void playRing() {
 
         try {
+            // choose random door bell
+            MediaPlayer ring = getRandomItem(ringList);
+
             // play door bell
-            ringPlayer.seek(Duration.ZERO);
-            ringPlayer.play();
+            ring.seek(Duration.ZERO);
+            ring.play();
 
             // mute door bell sound if muted is true in config
             if ((Boolean) config.getParam("muted")) {
-                ringPlayer.setMute(true);
+                ring.setMute(true);
             } else {
-                ringPlayer.setMute(false);
+                ring.setMute(false);
             }
 
         } catch (NoClassDefFoundError ex) {
@@ -176,15 +198,18 @@ public class Sound {
     public static void playChild() {
 
         try {
+            // choose random child sound
+            MediaPlayer child = getRandomItem(childList);
+
             // play child sound
-            childPlayer.seek(Duration.ZERO);
-            childPlayer.play();
+            child.seek(Duration.ZERO);
+            child.play();
 
             // mute child sound if muted is true in config
             if ((Boolean) config.getParam("muted")) {
-                childPlayer.setMute(true);
+                child.setMute(true);
             } else {
-                childPlayer.setMute(false);
+                child.setMute(false);
             }
 
         } catch (NoClassDefFoundError ex) {
@@ -202,14 +227,14 @@ public class Sound {
             stopMusic();
 
             // play gameover sound
-            gameoverPlayer.seek(Duration.ZERO);
-            gameoverPlayer.play();
+            gameover.seek(Duration.ZERO);
+            gameover.play();
 
             // mute game over sound if muted is true in config
             if ((Boolean) config.getParam("muted")) {
-                gameoverPlayer.setMute(true);
+                gameover.setMute(true);
             } else {
-                gameoverPlayer.setMute(false);
+                gameover.setMute(false);
             }
 
         } catch (NoClassDefFoundError ex) {
@@ -227,14 +252,14 @@ public class Sound {
             stopMusic();
 
             // play menu sound
-            menuPlayer.seek(Duration.ZERO);
-            menuPlayer.play();
+            menu.seek(Duration.ZERO);
+            menu.play();
 
             // mute menu sound if muted is true in config
             if ((Boolean) config.getParam("muted")) {
-                menuPlayer.setMute(true);
+                menu.setMute(true);
             } else {
-                menuPlayer.setMute(false);
+                menu.setMute(false);
             }
             
         } catch (NoClassDefFoundError ex) {
@@ -248,12 +273,12 @@ public class Sound {
     public static void unmuteSound() {
         try {
 
-                musicPlayer.setMute(false);
-                ringPlayer.setMute(false);
-                countdownPlayer.setMute(false);
-                cooperPlayer.setMute(false);
-                childPlayer.setMute(false);
-                gameoverPlayer.setMute(false);
+                music.setMute(false);
+                // ring.setMute(false);
+                countdown.setMute(false);
+                cooper.setMute(false);
+                // child.setMute(false);
+                gameover.setMute(false);
 
                 config.setParam("muted", false);
 
@@ -271,24 +296,24 @@ public class Sound {
         try {
             if (!(Boolean) config.getParam("muted")) {
 
-                musicPlayer.setMute(true);
-                ringPlayer.setMute(true);
-                countdownPlayer.setMute(true);
-                cooperPlayer.setMute(true);
-                childPlayer.setMute(true);
-                gameoverPlayer.setMute(true);
+                music.setMute(true);
+                // ring.setMute(true);
+                countdown.setMute(true);
+                cooper.setMute(true);
+                // child.setMute(true);
+                gameover.setMute(true);
 
                 // set muted to true in config
                 config.setParam("muted", true);
 
             } else {
 
-                musicPlayer.setMute(false);
-                ringPlayer.setMute(false);
-                countdownPlayer.setMute(false);
-                cooperPlayer.setMute(false);
-                childPlayer.setMute(false);
-                gameoverPlayer.setMute(false);
+                music.setMute(false);
+                // ring.setMute(false);
+                countdown.setMute(false);
+                cooper.setMute(false);
+                // child.setMute(false);
+                gameover.setMute(false);
 
                 // set muted to false in config
                 config.setParam("muted", false);
@@ -304,8 +329,8 @@ public class Sound {
      */
     public static void stopMusic() {
 
-        musicPlayer.stop();
-        countdownPlayer.stop();
-        cooperPlayer.stop();
+        music.stop();
+        countdown.stop();
+        cooper.stop();
     }
 }
