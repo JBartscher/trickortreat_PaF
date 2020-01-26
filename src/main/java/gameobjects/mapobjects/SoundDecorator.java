@@ -49,8 +49,13 @@ public class SoundDecorator extends HouseDecorator {
             }
             Sound.playCooper();
         } else if (house instanceof GingerbreadHouse) {
-            System.out.println("play kids scream Sound!");
-            Sound.playChild();
+
+            if(((GingerbreadHouse) house).isHasChild()) {
+                System.out.println("play kids scream Sound!");
+                Sound.playChild();
+            } else {
+
+            }
             Sound.playRing();
 
 

@@ -86,19 +86,8 @@ public class MapRenderer {
             widthOffset += Game.WIDTH + 2 * Tile.TILE_SIZE;
         }
 
-        /**
-         * add message when game is currently paused
-         */
-        /*
-        if (game.paused) {
-            Text textPaused = new Text("PAUSED");
-            Rectangle rect = new Rectangle(0, 0, Window.WIDTH, Window.HEIGHT);
-            rect.setOpacity(0.3);
-            GraphicsUtility.setTextProperties(textPaused, "-fx-font: 128 arial;", Color.DARKRED, Window.WIDTH / 2 - 250, 400.0);
-            root.getChildren().addAll(textPaused, rect);
-        }
 
-         */
+
         /**
          * Singleton GameMenu-JavaFx Group, welche alle InGameMenu Elemente hält, und so nicht in jeder draw() neu initialisiert werden muss
          */
@@ -121,9 +110,6 @@ public class MapRenderer {
         // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
         for (int z = 0; z < 3; z++) {
 
-            if (!Game.DRAMATIC && z == 0) {
-                drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
-            }
 
             /**
              * checks if current Layer is Layer 2 (overlapping objects
