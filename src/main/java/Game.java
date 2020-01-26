@@ -1,10 +1,11 @@
 package main.java;
 
 import javafx.stage.Stage;
-import main.java.Menu.GameMenu;
-import main.java.Network.GameStateInit;
-import main.java.Network.Network;
-import main.java.Network.NetworkController;
+import main.java.configuration.Configuration;
+import main.java.menu.GameMenu;
+import main.java.network.GameStateInit;
+import main.java.network.Network;
+import main.java.network.NetworkController;
 import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
@@ -22,7 +23,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * all model, view and controllers are encapsulated within the Game-Class
  */
 public class Game {
-
     private final static Configuration<Object> config = new Configuration<Object>();
     public final static int FRAMES = ((Number) config.getParam("frames")).intValue();
     public final static int TIME = ((Number) config.getParam("time")).intValue();
@@ -32,7 +32,6 @@ public class Game {
     public static boolean DRAMATIC = false;
 
     private Map map;
-    private MapGenerator generator;
 
     public Player player;
     public Player otherPlayer;
@@ -86,7 +85,7 @@ public class Game {
         Game.DRAMATIC = false;
         this.launcher = launcher;
         map = new Map(60);
-        generator = new MapGenerator(map);
+        MapGenerator generator = new MapGenerator(map);
         generator.createMap();
         this.gameMode = gameMode;
 
@@ -162,6 +161,7 @@ public class Game {
          */
         if(gameMode == GameMode.REMOTE) {
             otherPlayer.setEntityImage(true);
+            witch.setEntityImage(true);
         }
 
         gameCamera.centerOnPlayer();

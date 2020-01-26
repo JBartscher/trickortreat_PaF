@@ -1,6 +1,6 @@
 package main.java.gameobjects;
 
-import main.java.Sound;
+import main.java.sounds.Sound;
 
 public class AliceCooper extends Entity {
 

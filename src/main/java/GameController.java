@@ -3,9 +3,10 @@ package main.java;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.InputEvent;
 import javafx.stage.Stage;
-import main.java.Menu.GameMenu;
-import main.java.Menu.GameOver;
-import main.java.Network.NetworkController;
+import main.java.menu.GameMenu;
+import main.java.menu.GameOver;
+import main.java.network.ClientEngine;
+import main.java.network.NetworkController;
 import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.Witch;
@@ -14,6 +15,10 @@ import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.TownHall;
 import main.java.map.MapObject;
 import main.java.map.Tile;
+import main.java.network.ServerEngine;
+import main.java.pattern.Observable;
+import main.java.pattern.Observer;
+import main.java.sounds.Sound;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -26,6 +31,7 @@ public class GameController implements Observer {
 
     protected Game game;
     protected GameLauncher gameLauncher;
+
     protected GameLoop gameLoop = new GameLoop();
 
     public GameController(Game game, GameLauncher gameLauncher) {
@@ -41,6 +47,9 @@ public class GameController implements Observer {
         game.setMapRenderer(new MapRenderer(game.getMap(), game.getWindow(), game));
         game.setGameCamera(new GameCamera(game.getMap().getSize(), game.getMap().getSize(), game.getPlayer()));
         game.setMovementManager(new MovementManager(game, game.getPlayer(), game.getOtherPlayer()));
+
+        game.getPlayer().notifyObservers(game.getPlayer());
+        game.getOtherPlayer().notifyObservers(game.getOtherPlayer());
 
         // Movement - Weiterleiten an Controller-Klasse
         game.getWindow().getScene().addEventHandler(InputEvent.ANY, game.getMovementManager());
@@ -58,7 +67,7 @@ public class GameController implements Observer {
         game.setPlayer(new Player(movementTypePlayer1));
         game.getPlayer().setxPos(game.getMap().getSize() * 0.5 * Tile.TILE_SIZE);
         game.getPlayer().setyPos((game.getMap().getSize() * 0.5 + 3) * Tile.TILE_SIZE);
-        game.getPlayer().setTarget( new Point( (int)game.getPlayer().getxPos(), (int)game.getPlayer().getyPos()) );
+        game.getPlayer().setTarget(new Point((int) game.getPlayer().getxPos(), (int) game.getPlayer().getyPos()));
 
         game.getListOfPlayers().add(game.getPlayer());
         // add Score-Observer which notifyes its Score text when this player visits a house
@@ -74,7 +83,7 @@ public class GameController implements Observer {
 
         game.getOtherPlayer().setxPos(game.getPlayer().getxPos() + Tile.TILE_SIZE);
         game.getOtherPlayer().setyPos(game.getPlayer().getyPos());
-        game.getOtherPlayer().setTarget( new Point( (int)game.getOtherPlayer().getxPos(), (int)game.getOtherPlayer().getyPos()) );
+        game.getOtherPlayer().setTarget(new Point((int) game.getOtherPlayer().getxPos(), (int) game.getOtherPlayer().getyPos()));
 
         game.setWitch(new Witch());
 
@@ -115,7 +124,6 @@ public class GameController implements Observer {
     @Override
     public void update(Observable o, Object arg) {
 
-
         if (o instanceof GingerbreadHouse) {
             for (MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
                 if (obj instanceof TownHall) {
@@ -145,23 +153,27 @@ public class GameController implements Observer {
     public void startGameLoop() {
         this.gameLoop.start();
     }
+    protected void stopGameLoop() {
+        this.gameLoop.stop();
+    }
 
     private class GameLoop extends AnimationTimer {
         @Override
         public void handle(long now) {
-                long startTime = System.currentTimeMillis();
-                game.ticks++;
-                game.update();
-                game.getMapRenderer().render();
-                calculateGameTime(startTime);
+            long startTime = System.currentTimeMillis();
+            game.ticks++;
+            game.update();
+            game.getMapRenderer().render();
+            calculateGameTime(startTime);
         }
 
         /**
          * calculate and update current game time - sleep a few milliseconds when finished work before time goal
+         *
          * @param startTime
          */
         public void calculateGameTime(long startTime) {
-            if(!game.paused) {
+            if (!game.paused) {
                 long endTime = System.currentTimeMillis();
                 try {
                     int sleepTime = (int) (1000 / Game.FRAMES - (endTime - startTime));
@@ -174,8 +186,8 @@ public class GameController implements Observer {
 
                         /** set game as DRAMATIC (enables dramatic music and witch movement)
                          */
-                        if (game.getGameTime() < 30000 && !game.DRAMATIC) {
-                            game.DRAMATIC = true;
+                        if (game.getGameTime() < 30000 && !Game.DRAMATIC) {
+                            Game.DRAMATIC = true;
                             Sound.playCountdown();
                         }
                     }
@@ -193,4 +205,29 @@ public class GameController implements Observer {
             }
         }
     }
+
+    public void shutDownNetwork() {
+        if (game.gameMode == Game.GameMode.REMOTE) {
+            if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
+                ServerEngine serverEngine = ((ServerEngine) ((NetworkController) game.gameController).getNetworkEngine());
+                serverEngine.stopHandler();
+                try {
+                    if (serverEngine.serverSocket != null)
+                        serverEngine.serverSocket.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+                serverEngine = null;
+
+
+            } else if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
+                ClientEngine clientEngine = ((ClientEngine) ((NetworkController) game.gameController).getNetworkEngine());
+                clientEngine.interrupt();
+                clientEngine = null;
+            }
+        }
+    }
+
+
 }

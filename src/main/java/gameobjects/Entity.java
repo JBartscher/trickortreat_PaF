@@ -2,10 +2,10 @@ package main.java.gameobjects;
 
 import javafx.scene.image.Image;
 import main.java.Game;
-import main.java.Menu.GameMenu;
+import main.java.menu.GameMenu;
 import main.java.MovementManager;
-import main.java.Network.EntityData;
-import main.java.Observable;
+import main.java.network.EntityData;
+import main.java.pattern.Observable;
 import main.java.map.Tile;
 import main.java.sprites.SpriteSheet;
 
@@ -224,10 +224,10 @@ public abstract class Entity extends Observable implements Serializable {
             this.xPos = entityData.getxPos();
             this.yPos = entityData.getyPos();
         } else {
-            this.xPos = entityData.getxPos();
-            this.yPos = entityData.getyPos();
-            //this.xPos = (entityData.getxPos() + xPos) / 2;
-            //this.yPos = (entityData.getyPos() + yPos) / 2;
+            //this.xPos = entityData.getxPos();
+            //this.yPos = entityData.getyPos();
+            this.xPos = (entityData.getxPos() + xPos) / 2;
+            this.yPos = (entityData.getyPos() + yPos) / 2;
         }
 
         this.size = entityData.getSize();

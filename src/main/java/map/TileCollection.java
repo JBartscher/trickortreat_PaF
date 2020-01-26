@@ -36,7 +36,7 @@ public class TileCollection {
      *
      * @return tiles for a visited POOR SMALL House
      */
-    public final static Tile[][] getPoorSmallHouseVisitedTiles() {
+    public static Tile[][] getPoorSmallHouseVisitedTiles() {
         Tile[][] smallHouse = getPoorSmallHouseUnvisitedTiles();
         smallHouse[1][0] = new Tile(35);
         return smallHouse;
@@ -65,7 +65,7 @@ public class TileCollection {
      *
      * @return tiles for a visited POOR BIG House
      */
-    public final static Tile[][] getPoorBigHouseVisitedTiles() {
+    public static Tile[][] getPoorBigHouseVisitedTiles() {
         Tile[][] bigHouse = getPoorBigHouseUnvisitedTiles();
         bigHouse[1][0] = new Tile(47);
         bigHouse[1][2] = new Tile(48);
@@ -94,7 +94,7 @@ public class TileCollection {
      *
      * @return tiles for a visited NORMAL SMALL House
      */
-    public final static Tile[][] getNormalSmallHouseVisitedTiles() {
+    public static Tile[][] getNormalSmallHouseVisitedTiles() {
         Tile[][] smallHouse = getNormalSmallHouseUnvisitedTiles();
         smallHouse[1][0] = new Tile(55);
         return smallHouse;
@@ -123,7 +123,7 @@ public class TileCollection {
      *
      * @return tiles for a visited NORMAL BIG House
      */
-    public final static Tile[][] getNormalBigHouseVisitedTiles() {
+    public static Tile[][] getNormalBigHouseVisitedTiles() {
         Tile[][] bigHouse = getNormalBigHouseUnvisitedTiles();
         bigHouse[1][0] = new Tile(67);
         bigHouse[1][2] = new Tile(68);
@@ -152,7 +152,7 @@ public class TileCollection {
      *
      * @return tiles for a visited RICH SMALL House
      */
-    public final static Tile[][] getRichSmallHouseVisitedTiles() {
+    public static Tile[][] getRichSmallHouseVisitedTiles() {
         Tile[][] smallHouse = getRichSmallHouseUnvisitedTiles();
         smallHouse[1][0] = new Tile(75);
         return smallHouse;
@@ -181,7 +181,7 @@ public class TileCollection {
      *
      * @return tiles for a visited RICH BIG House
      */
-    public final static Tile[][] getRichBigHouseVisitedTiles() {
+    public static Tile[][] getRichBigHouseVisitedTiles() {
         Tile[][] bigHouse = getRichBigHouseUnvisitedTiles();
         bigHouse[1][0] = new Tile(87);
         bigHouse[1][2] = new Tile(88);
@@ -222,7 +222,7 @@ public class TileCollection {
      *
      * @return outside townhall tiles
      */
-    public final static Tile[][] getTownHallTiles() {
+    public static Tile[][] getTownHallTiles() {
         Tile[][] townHall = new Tile[TownHall.TOWN_HALL_HEIGHT][TownHall.TOWN_HALL_WIDTH];
         townHall[0][0] = new Tile(90);
         townHall[0][1] = new Tile(91);
@@ -260,7 +260,7 @@ public class TileCollection {
      *
      * @return inside townhall tiles
      */
-    public final static Tile[][] getTownHallInsideTiles() {
+    public static Tile[][] getTownHallInsideTiles() {
         Tile[][] townHallInside = new Tile[TownHall.TOWN_HALL_HEIGHT][TownHall.TOWN_HALL_WIDTH];
         townHallInside[0][0] = new Tile(113);
         townHallInside[0][1] = new Tile(114);
@@ -302,7 +302,7 @@ public class TileCollection {
     // MANISON - HOUSE
 
     // Mansion
-    public final static Tile[][] getMansionOutsideTiles() {
+    public static Tile[][] getMansionOutsideTiles() {
         Tile[][] mansion = new Tile[Mansion.MANSION_HEIGHT][Mansion.MANSION_WIDTH];
 
         mansion[0][0] = new Tile(212);
@@ -334,7 +334,7 @@ public class TileCollection {
         return mansion;
     }
 
-    public final static Tile[][] getMansionInsideTiles() {
+    public static Tile[][] getMansionInsideTiles() {
         Tile[][] mansion = new Tile[Mansion.MANSION_HEIGHT][Mansion.MANSION_WIDTH];
 
         mansion[0][0] = new Tile(232);

@@ -1,14 +1,11 @@
 package main.java.gameobjects.mapobjects;
 
-import main.java.Observable;
-import main.java.Sound;
+import main.java.pattern.Observable;
 import main.java.gameobjects.Player;
 import main.java.gameobjects.mapobjects.districts.District;
 import main.java.map.Map;
 import main.java.map.MapObject;
 import main.java.map.Tile;
-
-import java.util.Random;
 
 /**
  * the super class of every specialized house object
@@ -20,6 +17,9 @@ public abstract class House extends MapObject implements Visitable {
     protected boolean isUnvisited = true;
 
     protected District district = null;
+
+    protected Player insidePlayer = null;
+
 
     /**
      * House constructor.
@@ -34,6 +34,14 @@ public abstract class House extends MapObject implements Visitable {
     public House(int x, int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
         this.tileset = new Tile[tileWidth][tileHeight];
+    }
+
+    /**
+     * this constructor is only here so the House decorator can have an own constructor, witch only accepts an house
+     * instance.
+     */
+    public House() {
+        super();
     }
 
     /**
@@ -70,22 +78,11 @@ public abstract class House extends MapObject implements Visitable {
      */
     public void visit(Player player) {
         if (isUnvisited) {
-
-            Sound.playRing();
-
-            // calculate the amount of candy the player gets
-            int candies = 0;
-            Random random = new Random();
-            for (int i = 0; i < player.getChildrenCount(); i++) {
-                int zahl = random.nextInt(2);
-                candies += (int) (this.district.getCandy_multiplikator() + zahl);
-            }
-
-            player.addCandy(candies);
             player.notifyObservers(player);
         }
         this.isUnvisited = false;
         notifyObservers(observers);
+        player.notifyObservers(player);
 
     }
 
@@ -132,5 +129,9 @@ public abstract class House extends MapObject implements Visitable {
      * This makes it possible for the different types of houses to change tiles and tile positions when they are visited-
      */
     public abstract void repaintAfterVisit();
+
+    public void decorateHouse() {
+
+    }
 
 }

@@ -3,14 +3,11 @@ package main.java;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import main.java.Network.ClientEngine;
-import main.java.Network.NetworkController;
-import main.java.Network.ServerEngine;
+import main.java.network.NetworkController;
 
 public class Window {
 
     private Game game;
-
     private Stage stage;
     private Group root;
     private Scene scene;
@@ -18,44 +15,22 @@ public class Window {
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 768;
 
-
     public Window(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
-
         closeEvent();
-
-
-
     }
 
     private void closeEvent() {
-
         stage.setOnHiding( event -> {
-
-            if(game.gameMode == Game.GameMode.REMOTE) {
-                if(game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
-                    ServerEngine serverEngine = ((ServerEngine)((NetworkController)game.gameController).getNetworkEngine());
-                    serverEngine.stopHandler();
-                    serverEngine = null;
-                } else if(game.gameController.getNetworkRole() == NetworkController.NetworkRole.CLIENT) {
-                    ClientEngine clientEngine = ((ClientEngine)((NetworkController)game.gameController).getNetworkEngine());
-                    clientEngine.interrupt();
-                    clientEngine = null;
-                }
-
-            }
-
-
-        } );
+            game.getGameController().shutDownNetwork();
+            //Platform.exit();
+        });
     }
-
 
     public void createGUI() {
         this.root = new Group();
         this.scene = new Scene(root, WIDTH, HEIGHT);
-
-
     }
 
     /**

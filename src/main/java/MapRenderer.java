@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import main.java.Menu.GameMenu;
+import main.java.menu.GameMenu;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
@@ -17,17 +17,14 @@ import java.util.concurrent.TimeUnit;
 
 public class MapRenderer {
 
-    private Map map;
     private Window window;
     private Tile[][][] tileMap;
     private Game game;
 
     public MapRenderer(Map map, Window window, Game game) {
-        this.map = map;
         this.tileMap = map.getMap();
         this.window = window;
         this.game = game;
-        GraphicsUtility.initGraphics();
     }
 
     public static String calculateTime(Game game) {
@@ -112,18 +109,19 @@ public class MapRenderer {
 
     /**
      * draw the map for the current player - get called two times in locale mode (split screen) and once in a network game
+     *
      * @param
-     * @param gameCamera - get the position of the viewport
+     * @param gameCamera  - get the position of the viewport
      * @param widthOffset - in locale mode the second player is placed on the right screen side with this offset
-     * @param player - player1
+     * @param player      - player1
      * @param otherPlayer - player2
-     * @param playerObj - current player object that invoked this method
+     * @param playerObj   - current player object that invoked this method
      */
     private void drawMap(GraphicsContext gc, GameCamera gameCamera, int widthOffset, Player player, Player otherPlayer, Player playerObj) {
         // Karte rendern - verschieben in x Richtung, sofern Spieler 2 (LOKAL)
         for (int z = 0; z < 3; z++) {
 
-            if(!game.DRAMATIC && z == 0) {
+            if (!Game.DRAMATIC && z == 0) {
                 drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
             }
 
@@ -134,7 +132,7 @@ public class MapRenderer {
             if (z == 2 && !game.getPlayer().isInside() && !game.getOtherPlayer().isInside()) {
                 drawPlayer(gameCamera, player, widthOffset, gc);
                 drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                if(game.DRAMATIC) {
+                if (Game.DRAMATIC) {
                     drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
                 }
             }
@@ -163,8 +161,14 @@ public class MapRenderer {
                         } else {
                             gc.setGlobalAlpha(1.0);
                         }
+
+
+                        //TODO: Make it work in NetworkPlay:
+                        // Image image = (tileMap[y][x][z].getImage());
+
                         Image image = GraphicsUtility.getTileImage(tileMap[y][x][z].getTileNr());
                         gc.drawImage(image, xPos, yPos, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
                     }
                 }
             }
@@ -172,7 +176,7 @@ public class MapRenderer {
             if (game.getPlayer().isInside() || game.getOtherPlayer().isInside()) {
                 drawPlayer(gameCamera, player, widthOffset, gc);
                 drawPlayer(gameCamera, otherPlayer, widthOffset, gc);
-                if(game.DRAMATIC)
+                if (Game.DRAMATIC)
                     drawEntity(gc, game.getWitch(), gameCamera, widthOffset, 0, 0, 1, game.getWitch().getEntityImage());
             }
         }

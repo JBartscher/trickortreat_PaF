@@ -3,6 +3,7 @@ package main.java.map;
 import main.java.MovementManager;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Witch;
+import main.java.pattern.Composite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +12,61 @@ import java.util.List;
  * A Sector is a bigger chunk of the map which holds placed Objects.
  * Its purpose is to prevent a loop through all placed objects if one
  * tries to place a new  object.
+ * Sector implements the Composite Pattern.
  */
-public class Sector extends Placeable {
+public class Sector extends MapObject implements Composite<Sector> {
 
-    //private ArrayList<Placeable> containingPlacebles;
+    /**
+     * mapObjects that are contained by this sector
+     */
     private final List<MapObject> sectorObjects;
+    /**
+     * collection of all child sectors of this sector
+     */
+    private final List<Sector> childSectors = new ArrayList<Sector>();
+    /**
+     * reference to the parent sector of this sector
+     */
+    private Sector parent = null;
 
-
+    /**
+     * sector constructor
+     *
+     * @param x x position
+     * @param y y position
+     * @param width width of sector
+     * @param height height of sector
+     */
     public Sector(int x, int y, int width, int height) {
         super(x, y, width, height, 0);
         sectorObjects = new ArrayList<>();
+
+    }
+
+    @Override
+    public Tile getTileByTileIndex(int x, int y) {
+        return null;
+    }
+
+    /**
+     * sector constructor with parent reference
+     *
+     * @param x x position
+     * @param y y position
+     * @param width width of sector
+     * @param height height of sector
+     * @param parent parent sector
+     */
+    public Sector(int x, int y, int width, int height, Sector parent) {
+        super(x, y, width, height, 0);
+        sectorObjects = new ArrayList<>();
+        this.parent = parent;
     }
 
     /**
      * checks every item in containingPlacebles if it intersects with the given placeble.
      *
-     * @param placeable the placeble that is checked wherater it intersects with any item in the sector
+     * @param placeable the placeble that is checked if it intersects with any item in the sector
      * @return true if the object intersects with other objects
      */
     public boolean intersectsWithContainingItems(Placeable placeable) {
@@ -49,8 +89,8 @@ public class Sector extends Placeable {
      */
     public boolean entityIntersectsWithContainingItems(Entity entity) {
 
-        /**
-         * when the entity is the witch then do not use collision detection with more currency
+        /*
+          when the entity is the witch then do not use collision detection with more currency
          */
         if(entity instanceof Witch) {
             Placeable pWitch = new Placeable(entity.getEntityPos().y, entity.getEntityPos().x, 1, 1, 0);
@@ -61,8 +101,8 @@ public class Sector extends Placeable {
         double yOffset = 0;
 
 
-        /** improve collision with obstacles when moving in left direction
-         *
+        /* improve collision with obstacles when moving in left direction
+
          */
         if(entity.getMoveDirection() == MovementManager.MoveDirection.LEFT) {
             xOffset = -0.33;
@@ -92,6 +132,12 @@ public class Sector extends Placeable {
      */
     public void addMapObject(MapObject mapObject) {
         sectorObjects.add(mapObject);
+        /*
+          if this sector is a child of another sector, the mapObject is also added to his list of mapObjects.
+         */
+        if(this.parent != null){
+            parent.addMapObject(mapObject);
+        }
     }
 
     /**
@@ -112,5 +158,50 @@ public class Sector extends Placeable {
      */
     public void removeMapObject(MapObject mapObject) {
         sectorObjects.remove(mapObject);
+    }
+
+
+    /**
+     * remove a childSector from this Sector and all its MapObjects.
+     *
+     * @param child the childSector that shall be removed
+     */
+    @Override
+    public void removeChild(Sector child) {
+        this.childSectors.remove(child);
+        child.getAllContainingMapObjects().forEach(mapObject -> this.removeMapObject(mapObject));
+    }
+    /**
+     * add a Sector to this Sectors child list.
+     *
+     * Sets the parent reference of the child to this Sector.
+     *
+     * @param child the sector that gets added to this sector
+     */
+    @Override
+    public void addChild(Sector child) {
+        this.childSectors.add(child);
+        this.sectorObjects.addAll(child.sectorObjects);
+        child.setParent(this);
+    }
+
+    /**
+     * set the parentReference of this Sector.
+     *
+     * @param parent the new parentSector
+     */
+    @Override
+    public void setParent(Sector parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * get the entire list of child objects of this sector.
+     *
+     * @return a list of all child sectors of this sector
+     */
+    @Override
+    public List<Sector> getChildren() {
+        return this.childSectors;
     }
 }

@@ -1,6 +1,6 @@
 package main.java.map;
 
-import main.java.Observable;
+import main.java.pattern.Observable;
 
 import java.io.Serializable;
 
@@ -10,8 +10,8 @@ public class Placeable extends Observable implements Serializable {
     private int x;
     private int y;
     // in tiles
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
     // in tiles
     private int offset = 1;
 
@@ -31,18 +31,46 @@ public class Placeable extends Observable implements Serializable {
         // offset is already set to one
     }
 
+    /**
+     * this constructor is only here so the House decorator can have an own constructor, witch only accepts an house
+     * instance.
+     */
+    public Placeable() {
+
+    }
+
+    /**
+     * return x position of Placeble
+     *
+     * @return x of Placeble
+     */
     public int getX() {
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
+    /**
+     * sets the x position of Placeble
+     *
+     * @param x x position
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+    /**
+     * return y position of Placeble
+     *
+     * @return y of Placeble
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * sets the y position of Placeble
+     *
+     * @param y y position
+     */
     public void setY(int y) {
         this.y = y;
     }
@@ -66,10 +94,6 @@ public class Placeable extends Observable implements Serializable {
 
     public int getHeight() {
         return height;
-    }
-
-    public int getOffset() {
-        return offset;
     }
 
     /**

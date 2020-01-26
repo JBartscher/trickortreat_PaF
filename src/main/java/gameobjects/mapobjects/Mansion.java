@@ -1,11 +1,13 @@
 package main.java.gameobjects.mapobjects;
 
 import main.java.Game;
-import main.java.Sound;
+import main.java.sounds.Sound;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
 import main.java.map.Tile;
 import main.java.map.TileCollection;
+
+import java.awt.*;
 
 /**
  * the house of alice cooper
@@ -78,7 +80,7 @@ public class Mansion extends House implements Accessible {
     @Override
     public void repaintAfterVisit() {
 
-        if(insidePlayer == null) {
+        if (insidePlayer == null) {
             this.tileset = TileCollection.getMansionOutsideTiles();
         } else {
             this.tileset = TileCollection.getMansionInsideTiles();
@@ -97,7 +99,8 @@ public class Mansion extends House implements Accessible {
             isUnvisited = false;
             player.setNoCollision(true);
             player.setInside(true);
-            player.setyPos(player.getyPos() + -Tile.TILE_SIZE * 1);
+            player.setyPos(player.getyPos() - Tile.TILE_SIZE * 1);
+            player.setTarget(new Point((int) player.getxPos(), (int) player.getyPos()));
             player.setInsideObject(this);
             player.setProtectedTicks(25);
             this.tileset = TileCollection.getMansionInsideTiles();
