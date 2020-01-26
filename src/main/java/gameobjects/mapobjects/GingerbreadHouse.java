@@ -21,6 +21,8 @@ public class GingerbreadHouse extends House implements Singleton {
      */
     private boolean hasChild;
 
+    private int children = 0;
+
     /**
      * private constructor to ensure the Singleton is not instantiated in any other places.
      *
@@ -75,9 +77,13 @@ public class GingerbreadHouse extends House implements Singleton {
         if (player.hasKey() && isHasChild()) {
             player.setChildrenCount(player.getChildrenCount() + 1);
             player.setHasKey(false);
-            hasChild = false;
+
+            children--;
+            if(children == 0) hasChild = false;
+
         } else if (!player.hasKey()) {
             player.setChildrenCount(player.getChildrenCount() - 1);
+            children++;
             hasChild = true;
         }
 
@@ -117,6 +123,14 @@ public class GingerbreadHouse extends House implements Singleton {
 
     public static void setInstance(GingerbreadHouse instance) {
         GingerbreadHouse.instance = instance;
+    }
+
+    public int getChildren() {
+        return children;
+    }
+
+    public void setChildren(int children) {
+        this.children = children;
     }
 
 }

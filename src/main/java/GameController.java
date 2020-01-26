@@ -128,11 +128,14 @@ public class GameController implements Observer {
             for (MapObject obj : game.getMap().getMapSector().getAllContainingMapObjects()) {
                 if (obj instanceof TownHall) {
                     TownHall t = (TownHall) obj;
-                    t.setHasKey(true);
-                    t.repaintAfterVisit();
-                    t.updateMap();
-                    if (t.getNumberOfPlayerInside() > 0) {
-                        game.getMap().getMap()[29][31][1].setTileNr(120);
+
+                    if(((GingerbreadHouse) o).isHasChild()) {
+                        t.setHasKey(true);
+                        t.repaintAfterVisit();
+                        t.updateMap();
+                        if (t.getNumberOfPlayerInside() > 0) {
+                            game.getMap().getMap()[29][31][1].setTileNr(120);
+                        }
                     }
                     break; // found townhall no further looping necessary
                 }
