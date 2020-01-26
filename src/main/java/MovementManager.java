@@ -617,7 +617,10 @@ public class MovementManager implements EventHandler<InputEvent> {
                 collideWithKey(entity)
         )) {
 
-            if (collideWithKey(entity)) collectKey(entity);
+            if (collideWithKey(entity)) {
+                collectKey(entity);
+                Sound.playKey();
+            }
 
             checkCollisionWithDoor(p, entity);
 

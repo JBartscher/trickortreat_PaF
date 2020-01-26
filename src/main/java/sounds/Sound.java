@@ -3,6 +3,7 @@ package main.java.sounds;
 import main.java.configuration.Configuration;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -49,6 +50,11 @@ public class Sound {
      * https://freesound.org/people/jwheeler91/sounds/442280/
      * ring5.wav
      * https://freesound.org/people/baujahr66/sounds/157250/
+     * keys.wav
+     * https://freesound.org/people/jrssandoval/sounds/68139/
+     * free.wav
+     * http://www.orangefreesounds.com/wooden-door-opening-sound-effect/
+     * https://freesound.org/people/UncleSigmund/sounds/30995/
      */
 
     private final static MediaPlayer music = new MediaPlayer(new Media(new File("src/main/java/sounds/music.wav").toURI().toString()));
@@ -63,6 +69,8 @@ public class Sound {
     private final static MediaPlayer countdown = new MediaPlayer(new Media(new File("src/main/java/sounds/countdown.mp3").toURI().toString()));
     private final static MediaPlayer gameover = new MediaPlayer(new Media(new File("src/main/java/sounds/gameover.mp3").toURI().toString()));
     private final static MediaPlayer menu = new MediaPlayer(new Media(new File("src/main/java/sounds/menu.wav").toURI().toString()));
+    private final static MediaPlayer key = new MediaPlayer(new Media(new File("src/main/java/sounds/keys.wav").toURI().toString()));
+    private final static MediaPlayer free = new MediaPlayer(new Media(new File("src/main/java/sounds/free.mp3").toURI().toString()));
 
     private final static Random random = new Random();
     private final static List<MediaPlayer> ringList = Arrays.asList(ring1,ring2,ring3,ring4,ring5);
@@ -217,6 +225,50 @@ public class Sound {
         }
     }
 
+    /**
+     * free child with key
+     */
+    public static void playFree() {
+
+        try {
+            // play free sound
+            free.seek(Duration.ZERO);
+            free.play();
+
+            // mute child sound if muted is true in config
+            if ((Boolean) config.getParam("muted")) {
+                free.setMute(true);
+            } else {
+                free.setMute(false);
+            }
+
+        } catch (NoClassDefFoundError ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * get key
+     */
+    public static void playKey() {
+
+        try {
+            // play free sound
+            key.seek(Duration.ZERO);
+            key.play();
+
+            // mute child sound if muted is true in config
+            if ((Boolean) config.getParam("muted")) {
+                key.setMute(true);
+            } else {
+                key.setMute(false);
+            }
+
+        } catch (NoClassDefFoundError ex) {
+            ex.printStackTrace();
+        }
+    }
+
     /** 
      * gameover sound
      */
@@ -284,6 +336,8 @@ public class Sound {
             ring5.setMute(false);
             child1.setMute(false);
             child2.setMute(false);
+            key.setMute(false);
+            free.setMute(false);
 
             config.setParam("muted", false);
 
@@ -312,6 +366,8 @@ public class Sound {
                 ring5.setMute(true);
                 child1.setMute(true);
                 child2.setMute(true);
+                key.setMute(true);
+                free.setMute(true);
 
                 // set muted to true in config
                 config.setParam("muted", true);
@@ -329,6 +385,8 @@ public class Sound {
                 ring5.setMute(false);
                 child1.setMute(false);
                 child2.setMute(false);
+                key.setMute(false);
+                free.setMute(false);
 
                 // set muted to false in config
                 config.setParam("muted", false);

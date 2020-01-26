@@ -54,7 +54,7 @@ public class SoundDecorator extends HouseDecorator {
                 System.out.println("play kids scream Sound!");
                 Sound.playChild();
             } else {
-
+                Sound.playFree();
             }
             Sound.playRing();
 
