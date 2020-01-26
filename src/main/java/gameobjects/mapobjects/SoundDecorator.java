@@ -49,6 +49,7 @@ public class SoundDecorator extends HouseDecorator {
         } else if (house instanceof GingerbreadHouse) {
             System.out.println("play kids scream Sound!");
             Sound.playChild();
+            Sound.playRing();
         } else if (house instanceof TownHall) {
             System.out.println("Townhall - play no Sound!");
         } else {

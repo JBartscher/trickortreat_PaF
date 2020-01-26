@@ -73,13 +73,10 @@ public class GingerbreadHouse extends House implements Singleton {
         if (player.getProtectedTicks() > 0) return;
 
         if (player.hasKey() && isHasChild()) {
-            Sound.playRing();
             player.setChildrenCount(player.getChildrenCount() + 1);
             player.setHasKey(false);
             hasChild = false;
         } else if (!player.hasKey()) {
-            Sound.playRing();
-            Sound.playChild();
             player.setChildrenCount(player.getChildrenCount() - 1);
             hasChild = true;
         }
