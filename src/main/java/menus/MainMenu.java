@@ -1,4 +1,4 @@
-package main.java.menu;
+package main.java.menus;
 
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
@@ -27,10 +27,10 @@ import javafx.util.Pair;
 import main.java.*;
 import main.java.Game.GameMode;
 import main.java.configuration.Configuration;
-import main.java.network.ClientEngine;
-import main.java.network.Event;
-import main.java.network.NetworkController;
-import main.java.network.ServerEngine;
+import main.java.net.ClientEngine;
+import main.java.net.Event;
+import main.java.net.NetworkController;
+import main.java.net.ServerEngine;
 import main.java.sounds.Sound;
 
 import java.util.Arrays;

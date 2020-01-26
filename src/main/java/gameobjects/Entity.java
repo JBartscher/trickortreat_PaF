@@ -2,9 +2,9 @@ package main.java.gameobjects;
 
 import javafx.scene.image.Image;
 import main.java.Game;
-import main.java.menu.GameMenu;
+import main.java.menus.GameMenu;
 import main.java.MovementManager;
-import main.java.network.EntityData;
+import main.java.net.EntityData;
 import main.java.pattern.Observable;
 import main.java.map.Tile;
 import main.java.sprites.SpriteSheet;

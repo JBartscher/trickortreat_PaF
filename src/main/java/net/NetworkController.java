@@ -1,4 +1,4 @@
-package main.java.network;
+package main.java.net;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -13,7 +13,7 @@ import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import main.java.*;
 import main.java.configuration.Configuration;
-import main.java.menu.GameOver;
+import main.java.menus.GameOver;
 import main.java.gameobjects.mapobjects.GingerbreadHouse;
 import main.java.gameobjects.mapobjects.House;
 import main.java.gameobjects.mapobjects.Mansion;

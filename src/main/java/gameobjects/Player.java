@@ -2,7 +2,7 @@ package main.java.gameobjects;
 
 import javafx.scene.image.Image;
 import main.java.MovementManager;
-import main.java.network.PlayerData;
+import main.java.net.PlayerData;
 import main.java.gameobjects.mapobjects.House;
 import main.java.map.MapObject;
 import main.java.sprites.SpriteSheet;

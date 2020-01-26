@@ -1,4 +1,4 @@
-package main.java.menu;
+package main.java.menus;
 
 import java.io.Serializable;
 

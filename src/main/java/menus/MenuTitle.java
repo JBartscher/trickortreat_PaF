@@ -1,4 +1,4 @@
-package main.java.menu;
+package main.java.menus;
 
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;

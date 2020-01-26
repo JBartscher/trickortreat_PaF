@@ -12,7 +12,8 @@ import java.io.PrintWriter;
  */
 public class Configuration<P> {
 
-    private final static String configPath = "src/main/java/configuration/config.json";
+//    private final static String configPath = "src/main/java/configuration/config.json";
+    private final static String configPath = "res/config.json";
 
     /**
      * get parameters

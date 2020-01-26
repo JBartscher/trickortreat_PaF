@@ -1,6 +1,6 @@
 package main.java.gameobjects;
 
-import main.java.network.WitchData;
+import main.java.net.WitchData;
 import main.java.map.Tile;
 import main.java.sprites.SpriteSheet;
 

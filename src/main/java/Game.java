@@ -2,10 +2,10 @@ package main.java;
 
 import javafx.stage.Stage;
 import main.java.configuration.Configuration;
-import main.java.menu.GameMenu;
-import main.java.network.GameStateInit;
-import main.java.network.Network;
-import main.java.network.NetworkController;
+import main.java.menus.GameMenu;
+import main.java.net.GameStateInit;
+import main.java.net.Network;
+import main.java.net.NetworkController;
 import main.java.gameobjects.AliceCooper;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;

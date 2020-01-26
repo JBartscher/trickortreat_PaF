@@ -1,4 +1,4 @@
-package main.java.network;
+package main.java.net;
 
 import main.java.gameobjects.Player;
 import main.java.map.MapObject;

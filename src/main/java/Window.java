@@ -3,7 +3,7 @@ package main.java;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import main.java.network.NetworkController;
+import main.java.net.NetworkController;
 
 public class Window {
 

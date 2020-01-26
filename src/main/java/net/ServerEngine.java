@@ -1,4 +1,4 @@
-package main.java.network;
+package main.java.net;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;

@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import main.java.menu.GameMenu;
+import main.java.menus.GameMenu;
 import main.java.gameobjects.Entity;
 import main.java.gameobjects.Player;
 import main.java.map.Map;
