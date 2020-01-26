@@ -367,7 +367,6 @@ public class MovementManager implements EventHandler<InputEvent> {
         targets.clear();
 
         if (nodes == null) {
-            System.out.println("KEIN PFAD GEFUNDEN");
             return;
         }
 
@@ -376,14 +375,6 @@ public class MovementManager implements EventHandler<InputEvent> {
          */
         for (Node node : nodes) {
             targets.add(node.getPosition());
-        }
-
-        Node[][] nodeMap = aStar.getMap();
-        for (Point t : targets) {
-
-            if (nodeMap[t.y][t.x].isObstacle()) {
-                System.out.println("VERKEHRT!");
-            }
         }
 
         /**
