@@ -139,7 +139,7 @@ public class MainMenu {
                 Sound.playMenu();
                 setAudio();
 
-            }), new Pair<String, Runnable>("Back to Main Menu", () -> {
+            }), new Pair<String, Runnable>("Back to Main menu", () -> {
 
                 Sound.playMenu();
                 initMenu(menuData, 0);
@@ -160,7 +160,7 @@ public class MainMenu {
                 Sound.playMenu();
                 setAudio();
 
-            }), new Pair<String, Runnable>("Back to Main Menu", () -> {
+            }), new Pair<String, Runnable>("Back to Main menu", () -> {
 
                 Sound.playMenu();
                 initMenu(menuData, 0);
@@ -183,7 +183,7 @@ public class MainMenu {
                 Sound.playMenu();
                 setAudio();
 
-            }), new Pair<String, Runnable>("Back to Main Menu", () -> {
+            }), new Pair<String, Runnable>("Back to Main menu", () -> {
 
                 Sound.playMenu();
                 initMenu(menuData, 0);
@@ -200,11 +200,11 @@ public class MainMenu {
 
             }
 
-        }), new Pair<String, Runnable>("Back to Main Menu", () -> {
+        }), new Pair<String, Runnable>("Back to Main menu", () -> {
 
                     Sound.playMenu();
                     root.setOpacity(1.0);
-                    title.getText().setText("Game Menu");
+                    title.getText().setText("Game menu");
                     initMenu(menuData, 0);
 
                     if(gameMode == GameMode.REMOTE) {

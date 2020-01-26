@@ -87,7 +87,7 @@ public abstract class House extends MapObject implements Visitable {
     }
 
     /**
-     * after the visit of a house (which is observed by a Controller (Network- or GameController)) and the mandatory
+     * after the visit of a house (which is observed by a Controller (network- or GameController)) and the mandatory
      * switch of tiles or an whole tileset (inside of houses), this method is called to ensure that the game map is
      * on the cutting edge.
      *

@@ -15,7 +15,7 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * this class implements the Network interface and has the ability to communicate with a server
+ * this class implements the network interface and has the ability to communicate with a server
  */
 public class ClientEngine extends Thread implements Network {
 

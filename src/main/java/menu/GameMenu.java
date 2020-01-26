@@ -18,7 +18,7 @@ public class GameMenu implements Singleton {
     private final static Configuration<Object> config = new Configuration<Object>();
 
     /**
-     * Menu components
+     * menu components
      */
     private static final Image backgroundImage = new Image(GameMenu.class.getResourceAsStream("headline.png"));
     private static final Image imageCandy = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));

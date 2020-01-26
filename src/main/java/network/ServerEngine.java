@@ -24,7 +24,7 @@ import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * this class implements the Network interface and has the ability to
+ * this class implements the network interface and has the ability to
  * communicate with a client
  */
 public class ServerEngine extends Thread implements Network {

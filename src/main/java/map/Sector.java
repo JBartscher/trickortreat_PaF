@@ -89,7 +89,7 @@ public class Sector extends MapObject implements Composite<Sector> {
      */
     public boolean entityIntersectsWithContainingItems(Entity entity) {
 
-        /*
+        /**
           when the entity is the witch then do not use collision detection with more currency
          */
         if(entity instanceof Witch) {
@@ -97,27 +97,44 @@ public class Sector extends MapObject implements Composite<Sector> {
             return intersectsWithContainingItems(pWitch);
         }
 
+        /**
+         * use an offset to create collision detection with more currency in when necessary
+         */
         double xOffset = 0;
         double yOffset = 0;
 
+        /**
+         * this local variable represents a building that gets a little offset in few situations to ensure better collisions
+         */
+        Placeable placeableLeft = null;
 
-        /* improve collision with obstacles when moving in left direction
 
+        /**
+         * improve collision detection with buildings when moving left
          */
         if(entity.getMoveDirection() == MovementManager.MoveDirection.LEFT) {
             xOffset = -0.33;
         }
 
-        if( (entity.getMoveDirection() == MovementManager.MoveDirection.DOWN) ) {
-                //yOffset = -1;
+
+        /**
+         * improve collision detection with buildings when moving up or down
+         * also uses a second variable (placeableLeft) to invert the offset (to ensure also a better collision detection when walking from left to right
+         */
+        if( (entity.getMoveDirection() == MovementManager.MoveDirection.DOWN || entity.getMoveDirection() == MovementManager.MoveDirection.UP ) ) {
+                xOffset = -0.33;
+                placeableLeft = new Placeable(entity.getEntityPosWithCurrency(yOffset).y, entity.getEntityPosWithCurrency(+0.15).x, 1, 1, 0);
         }
 
         Placeable placeable = new Placeable(entity.getEntityPosWithCurrency(yOffset).y, entity.getEntityPosWithCurrency(xOffset).x, 1, 1, 0);
 
 
+        /**
+         * check if the entity collided with a building
+         */
         for (Placeable p : sectorObjects) {
 
-            if (p.intersects(placeable)) {
+            if (p.intersects(placeable) || (placeableLeft != null && p.intersects(placeableLeft) )) {
 
                 return true;
             }

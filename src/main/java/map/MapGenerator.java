@@ -300,9 +300,9 @@ public class MapGenerator {
             if (x > gameMap.getSize() * 0.36 && x < gameMap.getSize() * 0.64 && y > gameMap.getSize() * 0.36 && y < gameMap.getSize() * 0.64)
                 continue;
 
-            if ((x > gameMap.getSize() * 0.27 && x < gameMap.getSize() * 0.37) || (x >= gameMap.getSize() * 0.62 && x < gameMap.getSize() * 0.75))
+            if ((x > gameMap.getSize() * 0.27 && x < gameMap.getSize() * 0.37) || (x >= gameMap.getSize() * 0.61 && x < gameMap.getSize() * 0.71))
                 continue;
-            if ((y > gameMap.getSize() * 0.27 && y < gameMap.getSize() * 0.37) || (y >= gameMap.getSize() * 0.62 && y < gameMap.getSize() * 0.75))
+            if ((y > gameMap.getSize() * 0.27 && y < gameMap.getSize() * 0.37) || (y >= gameMap.getSize() * 0.61 && y < gameMap.getSize() * 0.71))
                 continue;
 
             Placeable placeable = new Placeable(y, x, width, height);
