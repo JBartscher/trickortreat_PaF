@@ -206,7 +206,11 @@ public class GameController implements Observer {
         }
     }
 
-    public void shutDownNetwork() {
+    protected void shutDownNetwork() {
+
+    }
+
+   public void shutdownConnections() {
         if (game.gameMode == Game.GameMode.REMOTE) {
             if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
                 ServerEngine serverEngine = ((ServerEngine) ((NetworkController) game.gameController).getNetworkEngine());

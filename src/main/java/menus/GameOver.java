@@ -156,12 +156,16 @@ public class GameOver extends Observable {
                         networkController.changeGameStateObject("", Event.EventType.REPLAY);
 
                 }
-
             }
             Sound.playMusic();
         });
 
         buttonMainMenu.setOnAction( (e) -> {
+
+            if(game.gameMode == Game.GameMode.REMOTE) {
+                game.getGameController().shutdownConnections();
+
+            }
             Sound.playMenu();
             mainMenu.showMainMenu();
         });

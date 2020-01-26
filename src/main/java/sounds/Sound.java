@@ -298,6 +298,13 @@ public class Sound {
                 countdown.setMute(true);
                 cooper.setMute(true);
                 gameover.setMute(true);
+                ring1.setMute(true);
+                ring2.setMute(true);
+                ring3.setMute(true);
+                ring4.setMute(true);
+                ring5.setMute(true);
+
+
 
                 // set muted to true in config
                 config.setParam("muted", true);
@@ -308,6 +315,11 @@ public class Sound {
                 countdown.setMute(false);
                 cooper.setMute(false);
                 gameover.setMute(false);
+                ring1.setMute(false);
+                ring2.setMute(false);
+                ring3.setMute(false);
+                ring4.setMute(false);
+                ring5.setMute(false);
 
                 // set muted to false in config
                 config.setParam("muted", false);

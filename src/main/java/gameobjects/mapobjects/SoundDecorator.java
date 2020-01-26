@@ -27,6 +27,8 @@ public class SoundDecorator extends HouseDecorator {
     public void visit(Player player) {
 
         super.visit(player);
+        //if(player.getProtectedTicks() > 0) return;
+
 
         if (house instanceof Mansion) {
             System.out.println("play Alice Cooper Music!");
@@ -50,6 +52,8 @@ public class SoundDecorator extends HouseDecorator {
             System.out.println("play kids scream Sound!");
             Sound.playChild();
             Sound.playRing();
+
+
         } else if (house instanceof TownHall) {
             System.out.println("Townhall - play no Sound!");
         } else {

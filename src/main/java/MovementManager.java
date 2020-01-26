@@ -728,6 +728,7 @@ public class MovementManager implements EventHandler<InputEvent> {
                             if (houseDecorator.getDecoratedHouse() instanceof SmallHouse || houseDecorator.getDecoratedHouse() instanceof BigHouse)
                                 houseDecorator = new CandyDecorator(houseDecorator);
 
+                            if(entity instanceof Player && ((Player) entity).getProtectedTicks() > 0 ) return;
                             houseDecorator.visit((Player) entity);
                         }
                     }

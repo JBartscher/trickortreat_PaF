@@ -341,7 +341,7 @@ public class NetworkController extends GameController {
 
     @Override
     public void shutDownNetwork() {
-        super.shutDownNetwork();
+        super.shutdownConnections();
 
         /**
          * check if currently a connection is available otherwise shutdown without popup window
@@ -364,7 +364,7 @@ public class NetworkController extends GameController {
                 vBox.setStyle("-fx-background-color: black;");
                 vBox.setAlignment(Pos.CENTER);
                 Scene scene = new Scene(vBox, 550, 120);
-                Button buttonClose = new Button("EXIT TO DESKTOP");
+                Button buttonClose = new Button("OKAY");
                 buttonClose.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0;" +
                 "-fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
                 vBox.getChildren().addAll(labelError, buttonClose);
@@ -378,7 +378,7 @@ public class NetworkController extends GameController {
 
                     errorStage.close();
                     stopGameLoop();
-                    Platform.exit();
+                    //Platform.exit();
                     //gameLauncher.getMainMenu().showMainMenu();
 
     

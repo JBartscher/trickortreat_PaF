@@ -110,7 +110,7 @@ public class Mansion extends House implements Accessible {
             isUnvisited = true;
             player.setNoCollision(false);
             player.setInside(false);
-            player.setyPos(player.getyPos() + Tile.TILE_SIZE * 1);
+            player.setyPos(player.getyPos() + Tile.TILE_SIZE * 1.5);
             player.setInsideObject(null);
             player.setProtectedTicks(25);
             this.tileset = TileCollection.getMansionOutsideTiles();

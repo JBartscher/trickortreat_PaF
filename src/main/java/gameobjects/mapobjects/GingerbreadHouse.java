@@ -81,7 +81,7 @@ public class GingerbreadHouse extends House implements Singleton {
             hasChild = true;
         }
 
-        player.setProtectedTicks(50);
+        player.setProtectedTicks(25);
         notifyObservers(observers);
     }
 
