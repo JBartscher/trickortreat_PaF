@@ -273,12 +273,19 @@ public class Sound {
     public static void unmuteSound() {
         try {
 
-                music.setMute(false);
-                countdown.setMute(false);
-                cooper.setMute(false);
-                gameover.setMute(false);
+            music.setMute(false);
+            countdown.setMute(false);
+            cooper.setMute(false);
+            gameover.setMute(false);
+            ring1.setMute(false);
+            ring2.setMute(false);
+            ring3.setMute(false);
+            ring4.setMute(false);
+            ring5.setMute(false);
+            child1.setMute(false);
+            child2.setMute(false);
 
-                config.setParam("muted", false);
+            config.setParam("muted", false);
 
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
@@ -303,8 +310,8 @@ public class Sound {
                 ring3.setMute(true);
                 ring4.setMute(true);
                 ring5.setMute(true);
-
-
+                child1.setMute(true);
+                child2.setMute(true);
 
                 // set muted to true in config
                 config.setParam("muted", true);
@@ -320,6 +327,8 @@ public class Sound {
                 ring3.setMute(false);
                 ring4.setMute(false);
                 ring5.setMute(false);
+                child1.setMute(false);
+                child2.setMute(false);
 
                 // set muted to false in config
                 config.setParam("muted", false);
