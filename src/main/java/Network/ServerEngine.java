@@ -30,6 +30,7 @@ public class ServerEngine extends Thread implements Network {
 
     // Thread, der den Austausch der GameStates bearbeitet
     private RequestHandler requestHandler;
+
     private GameState gameState;
     private NetworkController networkController;
 
@@ -273,6 +274,7 @@ public class ServerEngine extends Thread implements Network {
     }
 
     public void setGameState(GameState gameState) {
+
         this.gameState = gameState;
     }
 
@@ -287,6 +289,11 @@ public class ServerEngine extends Thread implements Network {
             requestHandler.interrupt();
             requestHandler = null;
         }
+    }
+
+    @Override
+    public GameState getGameState() {
+        return gameState;
     }
 
 }

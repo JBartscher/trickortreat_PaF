@@ -71,7 +71,10 @@ public class NetworkController extends GameController {
             gameState = newGameState;
             gameState.setEventTransmitted(false);
             gameState.setEvent(event);
-        } else {
+        } else{
+            if(gameState.getEvent() != null) {
+                System.out.println("KOMISCHER AUFRUFF!");
+            }
             gameState = newGameState;
             gameState.setEvent(null);
             gameState.setEventTransmitted(true);
@@ -93,6 +96,9 @@ public class NetworkController extends GameController {
      * @param o
      * @param type
      */
+
+
+    public Event sendedEvent;
     public void changeGameStateObject (Object o, Event.EventType type) {
 
         /**
@@ -118,16 +124,25 @@ public class NetworkController extends GameController {
 
         if(!gameState.isEventTransmitted()) {
             type = Message.Type.EVENT;
-            System.out.println("Inner: OBJEKT:" + gameState.getEvent().getObject());
         } else {
             type = Message.Type.GAMESTATE;
+
         }
 
         try {
-            output.writeObject(Message.deepCopy(new Message(type, gameState)));
-            output.flush();
-            clearAllEvents();
-            networkEngine.setGameState(gameState);
+                Message msg = Message.deepCopy(new Message(type, gameState));
+                output.writeObject(msg);
+                output.flush();
+
+                if(msg.getGameState().getEvent() == null && gameState.getEvent() != null) {
+                    changeGameStateObject(gameState.getEvent().getObject(), gameState.getEvent().getType());
+                } else {
+                    clearAllEvents();
+                }
+
+                networkEngine.setGameState(gameState);
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,7 +152,7 @@ public class NetworkController extends GameController {
     /**
      * clear all events after sending the events to the other player
      */
-    public void clearAllEvents () {
+    synchronized public void clearAllEvents () {
         gameState.setEvent(null);
         gameState.setEventTransmitted(true);
     }
@@ -200,7 +215,6 @@ public class NetworkController extends GameController {
                 Platform.runLater( () -> {
                     game.getLauncher().getMainMenu().resumeGame(game);
                 });
-
 
                 break;
             /**
@@ -286,11 +300,7 @@ public class NetworkController extends GameController {
                 if(t.getNumberOfPlayerInside() > 0 ) {
                     game.getMap().getMap()[29][31][1].setTileNr(120);
                 }
-
-
                 break;
-
-
         }
     }
 
@@ -302,7 +312,6 @@ public class NetworkController extends GameController {
     @Override
     public void update(Observable o, Object arg) {
         super.update(o, arg);
-
 
         Event.EventType eventType;
 

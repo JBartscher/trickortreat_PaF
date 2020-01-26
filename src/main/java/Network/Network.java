@@ -13,4 +13,7 @@ public interface Network {
      */
     public void setGameState(GameState gameState);
 
+
+    public GameState getGameState();
+
 }

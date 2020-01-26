@@ -191,6 +191,11 @@ public class ClientEngine extends Thread implements Network {
         this.gameState = gameState;
     }
 
+    @Override
+    public GameState getGameState() {
+        return gameState;
+    }
+
     public Game getGame() { return game; }
 
 }
