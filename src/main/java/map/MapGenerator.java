@@ -424,7 +424,9 @@ public class MapGenerator {
 
         transferQueue.add(house);
 
-        // put the right district to the house object
+        /**
+         * put the right district to the house
+         */
         try {
             District districtOfHouse = districtManager.getDistrict(house);
             System.out.println(districtOfHouse);
@@ -452,8 +454,6 @@ public class MapGenerator {
                 }
 
                 if (tileNr == 34 || tileNr == 45 || tileNr == 54 || tileNr == 65 || tileNr == 70 || tileNr == 74 || tileNr == 85 || tileNr == 110 || tileNr == 224) {
-
-                    //nr = "DD";
                     doorPoints.add(new Point(x, y + 1));
                 }
             }
@@ -512,7 +512,7 @@ public class MapGenerator {
 
             drawStreet(targets);
         } else {
-            System.out.println("KEIN PFAD GEFUNDEN!");
+            //System.out.println("KEIN PFAD GEFUNDEN!");
         }
     }
 
@@ -523,9 +523,6 @@ public class MapGenerator {
      * @return
      */
     private boolean buildableWithDeko(int yTotal, int xTotal) {
-
-        //if ((xTotal <= 1 && yTotal <= 1) || (xTotal >= 58 && yTotal >= 58)) return false;
-
         return gameMap.getMap()[yTotal][xTotal][1].getTileNr() == 0;
     }
 
