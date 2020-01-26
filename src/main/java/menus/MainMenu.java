@@ -128,6 +128,7 @@ public class MainMenu {
         localMenuData = Arrays.asList(new Pair<String, Runnable>("Play the Game", () -> {
 
                 gameLauncher.startGame(gameMode, null, movementTypePlayer1, movementTypePlayer2);
+                GameMenu.setRightButtons();
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
                 
@@ -149,6 +150,7 @@ public class MainMenu {
         hostMenuData = Arrays.asList(new Pair<String, Runnable>("Start the Game", () -> {
 
                 new ServerEngine(gameLauncher, stage, movementTypePlayer1);
+                GameMenu.setRightButtons();
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
 
@@ -171,6 +173,7 @@ public class MainMenu {
 
                 setHostname();
                 Sound.playMenu();
+                GameMenu.setRightButtons();
 
 
             }), new Pair<String, Runnable>("Set Controls", () -> {
@@ -201,6 +204,12 @@ public class MainMenu {
             }
 
         }), new Pair<String, Runnable>("Back to Main menu", () -> {
+
+
+            if(soundOnBefore) {
+                Sound.unmuteSound();
+
+            }
 
                     Sound.playMenu();
                     root.setOpacity(1.0);
@@ -541,7 +550,7 @@ public class MainMenu {
     private Parent createContent() {
 
         addBackground();
-        addTitle("Trick or Treat V. 0.5");
+        addTitle("Trick or Treat V. 1.0");
         loadData();
         
         addLine(lineX, lineY, lineHeight);
