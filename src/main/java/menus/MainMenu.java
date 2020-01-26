@@ -69,6 +69,7 @@ public class MainMenu {
     private RadioButton enabled = new RadioButton("ENABLED");
     private RadioButton disabled = new RadioButton("DISABLED");
     private Button buttonOk = new Button("OK");
+    private Button buttonConnect = new Button("CONNECT TO SERVER");
     private ToggleGroup group = new ToggleGroup();
     private ToggleGroup groupTwo = new ToggleGroup();
     private TextField textFieldServer = new TextField(ip);
@@ -469,19 +470,18 @@ public class MainMenu {
         controlsBox.setEffect(lighting);
         controlsBox.setAlignment(Pos.CENTER);
         textFieldServer.setAlignment(Pos.CENTER);
-        controlsBox.getChildren().addAll(textFieldServer, buttonOk);
-        buttonOk.setText("CONNECT TO SERVER");
+        controlsBox.getChildren().addAll(textFieldServer, buttonConnect);
         
         initScene(controlsBox, 200, 110);
 
-        buttonOk.setOnAction((e) -> {
+        buttonConnect.setOnAction((e) -> {
             ip = textFieldServer.getText();
             if(ip.length() > 0) {
                 Sound.playMenu();
                 controlsStage.close();
                 new ClientEngine(gameLauncher, stage, movementTypePlayer1, ip);
             } else {
-                textFieldServer.setText("ERROR - Enter AN IP!");
+                textFieldServer.setText("ERROR - Enter IP please!");
             }
         });
     }
