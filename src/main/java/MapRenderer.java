@@ -87,7 +87,6 @@ public class MapRenderer {
         }
 
 
-
         /**
          * Singleton GameMenu-JavaFx Group, welche alle InGameMenu Elemente hält, und so nicht in jeder draw() neu initialisiert werden muss
          */
