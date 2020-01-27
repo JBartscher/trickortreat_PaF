@@ -33,8 +33,8 @@ public class GingerbreadHouse extends BigHouse {
      */
     public GingerbreadHouse(int x , int y, int tileWidth, int tileHeight) {
         super(x, y, tileWidth, tileHeight);
-        GingerbreadHouse.PosX = x;
-        GingerbreadHouse.PosY = y;
+        GingerbreadHouse.PosX = y;
+        GingerbreadHouse.PosY = x;
         System.out.println( " x: "+GingerbreadHouse.PosX + " y: "+ GingerbreadHouse.PosY);
         tileset = TileCollection.getGingerbreadHouseUnvisitedTiles();
     }
