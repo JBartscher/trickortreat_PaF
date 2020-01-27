@@ -261,9 +261,7 @@ public class MapGenerator {
                     /**
                      * replace the old House with a gingerBreadHouse-object
                      */
-                    GingerbreadHouse gingerbreadHouse = GingerbreadHouse.getInstance();
-                    gingerbreadHouse.setX(house.getX());
-                    gingerbreadHouse.setY(house.getY());
+                    GingerbreadHouse gingerbreadHouse = new GingerbreadHouse(house.getX(), house.getY(), BigHouse.BIG_HOUSE_WIDTH, BigHouse.BIG_HOUSE_HEIGHT);
                     // assign to sector, transferQueue and ensure that no other witchhouse is placed
                     gameMap.getMapSector().addMapObject(gingerbreadHouse);
                     transferQueue.add(gingerbreadHouse);

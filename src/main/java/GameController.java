@@ -87,8 +87,8 @@ public class GameController implements Observer {
 
         game.setWitch(new Witch());
 
-        game.getWitch().setxPos(GingerbreadHouse.getInstance().getY() * Tile.TILE_SIZE + Tile.TILE_SIZE);
-        game.getWitch().setyPos(GingerbreadHouse.getInstance().getX() * Tile.TILE_SIZE + 2 * Tile.TILE_SIZE);
+        game.getWitch().setxPos(GingerbreadHouse.PosX * Tile.TILE_SIZE + Tile.TILE_SIZE);
+        game.getWitch().setyPos(GingerbreadHouse.PosY * Tile.TILE_SIZE + 2 * Tile.TILE_SIZE);
         game.getWitch().setHomeX(game.getWitch().getxPos());
         game.getWitch().setHomeY(game.getWitch().getyPos());
 
@@ -140,8 +140,9 @@ public class GameController implements Observer {
             /**
              * the object is the GingerbreadHouse singleton so we use it instead of obj variable
              */
-            GingerbreadHouse.getInstance().repaintAfterVisit();
-            GingerbreadHouse.getInstance().updateMap();
+            ((GingerbreadHouse) o).repaintAfterVisit();
+            ((GingerbreadHouse) o).updateMap();
+
         } else if (o instanceof House) {
             House h = (House) o;
             h.repaintAfterVisit();
@@ -153,6 +154,7 @@ public class GameController implements Observer {
     public void startGameLoop() {
         this.gameLoop.start();
     }
+
     protected void stopGameLoop() {
         this.gameLoop.stop();
     }
@@ -188,6 +190,7 @@ public class GameController implements Observer {
                          */
                         if (game.getGameTime() < 30000 && !Game.DRAMATIC) {
                             Game.DRAMATIC = true;
+                            System.out.println(game.getWitch().getHomePos());
                             Sound.playCountdown();
                         }
                     }
@@ -210,7 +213,7 @@ public class GameController implements Observer {
 
     }
 
-   public void shutdownConnections() {
+    public void shutdownConnections() {
         if (game.gameMode == Game.GameMode.REMOTE) {
             if (game.gameController.getNetworkRole() == NetworkController.NetworkRole.SERVER) {
                 ServerEngine serverEngine = ((ServerEngine) ((NetworkController) game.gameController).getNetworkEngine());

@@ -139,7 +139,8 @@ public class Game {
 
         for(MapObject o : map.getMapSector().getAllContainingMapObjects()) {
             if(o instanceof GingerbreadHouse) {
-                GingerbreadHouse.setInstance((GingerbreadHouse)o);
+                System.out.println(o);
+                // TODO GingerbreadHouse.setInstance((GingerbreadHouse)o);
             }
         }
 

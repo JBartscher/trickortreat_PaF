@@ -23,10 +23,7 @@ public class HouseFactory implements Factory<House> {
         } else if (type.equalsIgnoreCase("big")) {
             return new BigHouse(0, 0, BigHouse.BIG_HOUSE_WIDTH, BigHouse.BIG_HOUSE_HEIGHT);
         } else if (type.equalsIgnoreCase("witch")) {
-            /**
-             * singleton
-             */
-            return GingerbreadHouse.getInstance();
+            return new GingerbreadHouse(0, 0, BigHouse.BIG_HOUSE_WIDTH, BigHouse.BIG_HOUSE_HEIGHT);
         }
 
         return null; //type not matching

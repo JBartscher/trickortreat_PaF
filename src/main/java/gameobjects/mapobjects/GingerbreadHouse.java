@@ -9,46 +9,31 @@ import main.java.map.TileCollection;
 /**
  * represents the house of the npc
  */
-public class GingerbreadHouse extends House implements Singleton {
+public class GingerbreadHouse extends BigHouse {
 
     /**
      * Singleton
      */
-    static GingerbreadHouse instance = null;
+    // static GingerbreadHouse instance = null;
+    public static int PosX = 0;
+    public static int PosY = 0;
 
     /**
      * boolean whether the house is holding a child
      */
     private boolean hasChild;
 
-    /**
-     * private constructor to ensure the Singleton is not instantiated in any other places.
-     *
+
+     /**
      * @param tileWidth  width - see BigHouse.BIG_HOUSE_WIDTH
      * @param tileHeight height - see BigHouse.BIG_HOUSE_HEIGHT
      */
-    private GingerbreadHouse(int tileWidth, int tileHeight) {
-        super(0, 0, tileWidth, tileHeight);
+    public GingerbreadHouse(int x , int y, int tileWidth, int tileHeight) {
+        super(x, y, tileWidth, tileHeight);
+        GingerbreadHouse.PosX = x;
+        GingerbreadHouse.PosY = y;
+        System.out.println( " x: "+GingerbreadHouse.PosX + " y: "+ GingerbreadHouse.PosY);
         tileset = TileCollection.getGingerbreadHouseUnvisitedTiles();
-    }
-
-    /**
-     * unlike the other houses this object is designed as a singleton.
-     * This is done to ensure that the witch can choose the house as starting point and spawn point
-     * without the map generator having to know how or when the witch object is created.
-     * <p>
-     * It is crucial that the MapGenerator corrects the x,y and if applicable: the width and height of the object,
-     * because they are given only DEFAULT values.
-     *
-     * @return an Instance of the GingerbreadHouse
-     * @see GingerbreadHouse#setX(int) <-- correct value in MapGenerator
-     * @see GingerbreadHouse#setY(int) <-- correct value in MapGenerator
-     */
-    public static GingerbreadHouse getInstance() {
-        if (GingerbreadHouse.instance == null) {
-            instance = new GingerbreadHouse(BigHouse.BIG_HOUSE_WIDTH, BigHouse.BIG_HOUSE_HEIGHT);
-        }
-        return GingerbreadHouse.instance;
     }
 
     /**
@@ -60,7 +45,7 @@ public class GingerbreadHouse extends House implements Singleton {
     public void setDistrict(District district) {
         super.setDistrict(district);
 
-        GingerbreadHouse.getInstance().tileset = district.getGingerbreadHouseUnvisitedTileset();
+        this.tileset = district.getGingerbreadHouseUnvisitedTileset();
     }
 
     /**
@@ -109,15 +94,29 @@ public class GingerbreadHouse extends House implements Singleton {
     @Override
     public void repaintAfterVisit() {
         if (hasChild) {
-            GingerbreadHouse.getInstance().tileset = TileCollection.getGingerbreadHouseVisitedTiles();
+            this.tileset = TileCollection.getGingerbreadHouseVisitedTiles();
         } else {
-            GingerbreadHouse.getInstance().tileset = TileCollection.getGingerbreadHouseUnvisitedTiles();
+            this.tileset = TileCollection.getGingerbreadHouseUnvisitedTiles();
         }
     }
 
-    public static void setInstance(GingerbreadHouse instance) {
-        GingerbreadHouse.instance = instance;
+    @Override
+    public void setX(int x) {
+        super.setX(x);
+        GingerbreadHouse.PosX = x;
+        System.out.println(GingerbreadHouse.PosX);
     }
+
+    @Override
+    public void setY(int y) {
+        super.setY(y);
+        GingerbreadHouse.PosY = y;
+        System.out.println(GingerbreadHouse.PosY);
+    }
+
+    // public static void setInstance(GingerbreadHouse instance) {
+    //    GingerbreadHouse.instance = instance;
+    // }
 
 }
 
