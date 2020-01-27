@@ -100,10 +100,10 @@ public class GameOver extends Observable {
         imageViewPlayer2.setScaleY(2);
         GraphicsUtility.setImageProperties(imageViewPlayer2, Window.WIDTH / 4 * 3, Window.HEIGHT - 350);
 
-        Text textPlayer1 = new Text("SPIELER 1");
+        Text textPlayer1 = new Text("PLAYER 1");
         GraphicsUtility.setTextProperties(textPlayer1, "-fx-font: 40 arial;", Color.WHITE, Window.WIDTH / 4 - 110, Window.HEIGHT - 430);
 
-        Text textPlayer2 = new Text("SPIELER 2");
+        Text textPlayer2 = new Text("PLAYER 2");
         GraphicsUtility.setTextProperties(textPlayer2, "-fx-font: 40 arial;", Color.WHITE, Window.WIDTH / 4 * 3 - 70, Window.HEIGHT - 430);
 
         ImageView imageViewCandy1 = new ImageView(GraphicsUtility.getCandyImage());

@@ -135,7 +135,7 @@ public class GameMenu implements Singleton {
      * @param i Integer candy
      */
     private void updatePlayerCandyScore(int i) {
-        candyTextPlayer.setText(String.format("Spieler 1 - Candy: %d", i));
+        candyTextPlayer.setText(String.format("Player 1 - Candy: %d", i));
     }
 
     /**
@@ -144,7 +144,7 @@ public class GameMenu implements Singleton {
      * @param i Integer candy
      */
     private void updateOtherPlayerCandyScore(int i) {
-        candyTextOtherPlayer.setText(String.format("Spieler 2 - Candy: %d", i));
+        candyTextOtherPlayer.setText(String.format("Player 2 - Candy: %d", i));
     }
 
     /**

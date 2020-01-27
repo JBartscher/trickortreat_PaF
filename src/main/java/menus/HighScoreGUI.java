@@ -42,7 +42,7 @@ public class HighScoreGUI {
 
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
-        stage.setTitle("HIGHSCORE - LISTE");
+        stage.setTitle("HIGHSCORE");
         stage.initModality(Modality.APPLICATION_MODAL);
         ListView<HighScoreItem> highScoreItemListView = new ListView<>();
 
@@ -74,7 +74,7 @@ public class HighScoreGUI {
              * add highscore items when size of the current list is lower than 10 elements
              */
             while (highScores.size() < 10) {
-                highScores.add(new HighScoreItem("LEER", 0));
+                highScores.add(new HighScoreItem("EMPTY", 0));
             }
 
             /**
@@ -88,7 +88,7 @@ public class HighScoreGUI {
                 labelTitle.setTextFill(Color.WHITE);
                 labelTitle.setStyle("-fx-font-size: 2.5em ;");
 
-                Label labelScore = new Label("Spieler " + (index + 1) + " ist auf der Highscore-Liste! SCORE: " + score);
+                Label labelScore = new Label("Player " + (index + 1) + " got a new Highscore! SCORE: " + score);
                 labelScore.setTextFill(Color.WHITE);
                 labelScore.setStyle("-fx-font-size: 2.0em ;");
                 //labelScore.setContentDisplay(ContentDisplay.CENTER);
@@ -101,7 +101,7 @@ public class HighScoreGUI {
                 }
 
                 TextField textFieldInput = new TextField("");
-                textFieldInput.setPromptText(("Geben Sie Ihren Namen ein und drücken Sie Enter"));
+                textFieldInput.setPromptText(("Please enter your name and press enter"));
                 textFieldInput.requestFocus();
                 textFieldInput.setStyle("-fx-font-size: 2em ;");
 
@@ -116,7 +116,7 @@ public class HighScoreGUI {
                 textFieldInput.setOnAction( (e) -> {
                     String eingabe = textFieldInput.getText();
                     if(eingabe.length() == 0) {
-                        textFieldInput.setText("ERROR - Geben Sie einen Namen ein!");
+                        textFieldInput.setText("ERROR - Please enter your name!");
                     } else {
                         highScores.add( new HighScoreItem(eingabe, score));
                         while(highScores.size() > 10) {
