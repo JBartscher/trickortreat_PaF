@@ -301,14 +301,18 @@ public class NetworkController extends GameController {
                  * update data of gingerbread house: graphics, hasChild:bool
                  */
                 g.setHasChild((receivedHouse.isHasChild()));
+                g.setChildren(receivedHouse.getChildren());
                 g.repaintAfterVisit();
                 g.updateMap();
 
-                t.setHasKey(true);
-                t.repaintAfterVisit();
-                t.updateMap();
-                if(t.getNumberOfPlayerInside() > 0 ) {
-                    game.getMap().getMap()[29][31][1].setTileNr(120);
+                if(g.isHasChild()) {
+
+                    t.setHasKey(true);
+                    t.repaintAfterVisit();
+                    t.updateMap();
+                    if (t.getNumberOfPlayerInside() > 0) {
+                        game.getMap().getMap()[29][31][1].setTileNr(120);
+                    }
                 }
 
                 break;
