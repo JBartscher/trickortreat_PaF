@@ -24,7 +24,6 @@ public class GameMenu implements Singleton {
     private static final Image imageCandy = new Image(GraphicsUtility.class.getResourceAsStream("candy.png"));
 
     public static Image imagePaused = new Image(GraphicsUtility.class.getResourceAsStream("paused2.png"));
-    //public static Image imagePlay = new Image(GraphicsUtility.class.getResourceAsStream("play2.png"));
     public static Image imageMuted = new Image(GraphicsUtility.class.getResourceAsStream("muted2.png"));
     public static Image imageUnmuted = new Image(GraphicsUtility.class.getResourceAsStream("unmuted2.png"));
 
@@ -41,8 +40,8 @@ public class GameMenu implements Singleton {
     private static ImageView imageCandyOtherPlayer = new ImageView(imageCandy);
 
 
-    private Text candyTextPlayer = new Text("Spieler 1 - Candy: " + 0);
-    private Text candyTextOtherPlayer = new Text("Spieler 2 - Candy: " + 0);
+    private Text candyTextPlayer = new Text("Player 1 - Candy: " + 0);
+    private Text candyTextOtherPlayer = new Text("Player 2 - Candy: " + 0);
     private Text timerText = new Text("");
 
     /**
