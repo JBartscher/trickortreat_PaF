@@ -5,6 +5,7 @@ LPC Base Assets
     Manuel Riecke (AKA MrBeast)
     Daniel Armstrong (AKA HughSpectrum)
     https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+    https://www.rpgmakerweb.com/products/programs/rpg-maker-mv
 
 halloweenpack_10.31.2019
     http://finalbossblues.com
