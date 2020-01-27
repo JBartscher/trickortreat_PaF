@@ -302,6 +302,7 @@ public class NetworkController extends GameController {
                  */
                 g.setHasChild((receivedHouse.isHasChild()));
                 g.setChildren(receivedHouse.getChildren());
+                g.setLastVisitType(receivedHouse.getLastVisitType());
                 g.repaintAfterVisit();
                 g.updateMap();
 

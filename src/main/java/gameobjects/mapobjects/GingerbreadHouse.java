@@ -24,6 +24,14 @@ public class GingerbreadHouse extends BigHouse {
     private boolean hasChild;
 
     private int children = 0;
+    public enum LastVisitType {
+        KIDNAPPED, FREED, VISITED
+    }
+
+
+    private LastVisitType lastVisitType;
+
+
 
     /**
      * private constructor to ensure the Singleton is not instantiated in any other places.
@@ -37,6 +45,7 @@ public class GingerbreadHouse extends BigHouse {
         GingerbreadHouse.PosY = x;
         System.out.println( " x: "+GingerbreadHouse.PosX + " y: "+ GingerbreadHouse.PosY);
         tileset = TileCollection.getGingerbreadHouseUnvisitedTiles();
+        lastVisitType = LastVisitType.VISITED;
     }
 
     /**
@@ -66,11 +75,15 @@ public class GingerbreadHouse extends BigHouse {
 
             children--;
             if(children == 0) hasChild = false;
+            lastVisitType = LastVisitType.FREED;
 
         } else if (!player.hasKey()) {
             player.setChildrenCount(player.getChildrenCount() - 1);
             children++;
             hasChild = true;
+            lastVisitType = LastVisitType.KIDNAPPED;
+        } else {
+            lastVisitType = LastVisitType.VISITED;
         }
 
         player.setProtectedTicks(25);
@@ -131,6 +144,14 @@ public class GingerbreadHouse extends BigHouse {
 
     public void setChildren(int children) {
         this.children = children;
+    }
+
+    public LastVisitType getLastVisitType() {
+        return lastVisitType;
+    }
+
+    public void setLastVisitType(LastVisitType lastVisitType) {
+        this.lastVisitType = lastVisitType;
     }
 
 }
