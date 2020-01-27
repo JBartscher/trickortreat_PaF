@@ -1,0 +1,88 @@
+# Sprites
+
+LPC Base Assets
+    Lanea Zimmerman (AKA Sharm)
+    Stephen Challener (AKA Redshrike)
+    Charles Sanchez (AKA CharlesGabriel)
+    Manuel Riecke (AKA MrBeast)
+    Daniel Armstrong (AKA HughSpectrum)
+    https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+    https://www.rpgmakerweb.com/products/programs/rpg-maker-mv
+
+halloweenpack_10.31.2019
+    http://finalbossblues.com
+    http://timefantasy.net
+    https://finalbossblues.itch.io
+    https://finalbossblues.itch.io/halloween-graphics/devlog/107589/halloween-2019-update
+    https://finalbossblues.itch.io/halloween-graphics/purchase
+
+GothicVania-town-files
+    https://ansimuz.itch.io/gothicvania-town
+    Artwork created by Luis Zuno (@ansimuz)
+    License for Everyone. This piece is under a CC-BY-3.0 License http://creativecommons.org/licenses/by/3.0/ You can copy, modify, distribute and perform the work, even for commercial purposes, as long as you give appropiate credit. You are not require to credit this work if you are or had been a Patreon Supporter at https://www.patreon.com/ansimuz
+
+Stadtzentrum und Dekorationen
+	https://opengameart.org/content/lpc-water-fountain
+	https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+	https://opengameart.org/content/lpc-animated-water-and-fire
+	https://forums.rpgmakerweb.com/index.php?threads/whtdragons-tilesets-addons-fixes-and-more.60504/
+
+Bearbeitete House Sprites (basierend auf den oberen Sprites Sets)
+    Jasper Bartscher, Marcel Pawlowski
+    https://bartscher.io
+    License for Everyone. This piece is under a CC-BY-3.0 License http://creativecommons.org/licenses/by/3.0/ You can copy, modify, distribute and perform the work, even for commercial purposes, as long as you give appropiate credit. You are not require to credit this work if you are or had been a Patreon Supporter at https://www.patreon.com/ansimuz
+
+# Sounds
+
+countdown.mp3
+	https://freesoundeffects.com/free-track/witch-466442/
+	https://freemusicarchive.org/music/Haunted_Corpse/Dirges_for_the_Undead/Haunted_Corpse_-_Dirges_for_the_Undead_-_12_A_Ghost_in_the_Fog_1746
+	bearbeitet von Marcel Pawlowski
+
+child.wav
+	https://freesound.org/people/estefaniabonnin/sounds/219864/
+
+child2.wav
+	https://freesound.org/people/estefaniabonnin/sounds/219867/
+
+poison.mp3
+	https://www.guitarbackingtrack.com/play/alice_cooper/poison_(2).htm
+	bearbeitet von Marcel Pawlowski
+
+menu.wav
+	https://freesound.org/people/GameAudio/sounds/220183/
+
+menu2.wav
+	https://freesound.org/people/GameAudio/sounds/220198/
+
+music.wav
+	https://www.looperman.com/loops/detail/185175/halloween-type-melody-140bpm-rap-synth-loop
+
+music2.wav
+	https://www.looperman.com/loops/detail/169805/dread-dark-kalimba-scope-synth-loop-165bpm-trap-bells-loop
+
+gameover.mp3
+	http://www.orangefreesounds.com/you-lose-game-over/
+
+ring.mp3
+	http://soundbible.com/1466-Doorbell.html
+
+ring2.mp3
+	http://soundbible.com/165-Door-Bell.html
+
+ring3.mp3
+	http://soundbible.com/1462-Two-Tone-Doorbell.html
+
+ring4.wav
+	https://freesound.org/people/jwheeler91/sounds/442280/
+
+ring5.wav
+	https://freesound.org/people/baujahr66/sounds/157250/
+
+keys.wav
+	https://freesound.org/people/jrssandoval/sounds/68139/
+
+free.mp3
+	http://www.orangefreesounds.com/wooden-door-opening-sound-effect/
+	https://freesound.org/people/UncleSigmund/sounds/30995/
+	bearbeitet von Marcel Pawlowski
