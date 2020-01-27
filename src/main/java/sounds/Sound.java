@@ -52,7 +52,7 @@ public class Sound {
      * https://freesound.org/people/baujahr66/sounds/157250/
      * keys.wav
      * https://freesound.org/people/jrssandoval/sounds/68139/
-     * free.wav
+     * free.mp3
      * http://www.orangefreesounds.com/wooden-door-opening-sound-effect/
      * https://freesound.org/people/UncleSigmund/sounds/30995/
      */
