@@ -50,10 +50,10 @@ public class SoundDecorator extends HouseDecorator {
             Sound.playCooper();
         } else if (house instanceof GingerbreadHouse) {
 
-            if(((GingerbreadHouse) house).isHasChild() && !player.hasKey()) {
+            if(((GingerbreadHouse) house).getLastVisitType() == GingerbreadHouse.LastVisitType.KIDNAPPED) {
                 System.out.println("play kids scream Sound!");
                 Sound.playChild();
-            } else {
+            } else if(((GingerbreadHouse) house).getLastVisitType() == GingerbreadHouse.LastVisitType.FREED) {
                 Sound.playFree();
             }
             Sound.playRing();
