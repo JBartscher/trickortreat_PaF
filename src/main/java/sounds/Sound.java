@@ -3,7 +3,6 @@ package main.java.sounds;
 import main.java.configuration.Configuration;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -289,6 +288,7 @@ public class Sound {
      * unmute all sounds
      */
     public static void unmuteSound() {
+
         try {
 
             music.setMute(false);
@@ -310,7 +310,6 @@ public class Sound {
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
-
     }
     
     /**
@@ -340,22 +339,7 @@ public class Sound {
 
             } else {
 
-                music.setMute(false);
-                countdown.setMute(false);
-                cooper.setMute(false);
-                gameover.setMute(false);
-                ring1.setMute(false);
-                ring2.setMute(false);
-                ring3.setMute(false);
-                ring4.setMute(false);
-                ring5.setMute(false);
-                child1.setMute(false);
-                child2.setMute(false);
-                key.setMute(false);
-                free.setMute(false);
-
-                // set muted to false in config
-                config.setParam("muted", false);
+                unmuteSound();
             }
 
         } catch (NoClassDefFoundError ex) {
