@@ -11,11 +11,10 @@ public class MenuTitle extends Pane {
     private Text text;
 
     public MenuTitle(String name, int size) {
-        String spread = "";
-        for (char c : name.toCharArray()) {
-            spread += c + " ";
-        }
 
+        String spread = "";
+
+        for (char c : name.toCharArray()) spread += c + " ";
 
         text = new Text(spread);
         text.setFont(Font.loadFont(MainMenu.class.getResource("Penumbra-HalfSerif-Std_35114.ttf").toExternalForm(), size));

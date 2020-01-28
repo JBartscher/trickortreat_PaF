@@ -5,7 +5,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Pos;import javafx.stage.StageStyle;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import main.java.*;
@@ -86,6 +87,11 @@ public class MainMenu {
     private Separator separator = new Separator();
     private static boolean soundOnBefore;
 
+    /**
+     * constructor, inits light and button styles
+     * @param stage
+     * @param gameLauncher
+     */
     public MainMenu(Stage stage, GameLauncher gameLauncher) {
 
         this.stage = stage;
@@ -93,12 +99,15 @@ public class MainMenu {
 
         light.setAzimuth(0);
         lighting.setSurfaceScale(5.0);
-        buttonOk.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0;" +
-        "-fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
+        buttonOk.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0; -fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
+        buttonConnect.setStyle("-fx-padding: 5 22 5 22; -fx-border-color: #e2e2e2; fx-border-width: 2; -fx-background-radius: 0; -fx-background-color: #1d1d1d; -fx-text-fill: #d8d8d8; -fx-background-insets: 0 0 0 0, 1, 2;");
 
         setDefaultControls();
     }
 
+    /**
+     * data for all menus
+     */
     private void loadData() {
 
         menuData = Arrays.asList(new Pair<String, Runnable>("Play local", () -> {
@@ -196,40 +205,35 @@ public class MainMenu {
 
 
         pausedMenu = Arrays.asList(new Pair<String, Runnable>("Resume", () -> {
+
             resumeGame(gameLauncher.getGame());
 
             if(gameLauncher.getGame().gameMode == GameMode.REMOTE) {
                 NetworkController networkController = (NetworkController)gameLauncher.getGame().getGameController();
                 networkController.changeGameStateObject("", Event.EventType.UNPAUSED);
-
             }
 
         }), new Pair<String, Runnable>("Back to Main menu", () -> {
 
+            if(soundOnBefore) Sound.unmuteSound();
 
-            if(soundOnBefore) {
-                Sound.unmuteSound();
+            Sound.playMenu();
+            root.setOpacity(1.0);
+            title.getText().setText("Game menu");
+            initMenu(menuData, 0);
 
-            }
-
-                    Sound.playMenu();
-                    root.setOpacity(1.0);
-                    title.getText().setText("Game menu");
-                    initMenu(menuData, 0);
-
-                    if(gameMode == GameMode.REMOTE) {
-                        ((NetworkController)gameLauncher.getGame().getGameController()).shutDownNetwork();
-                    }
+            if(gameMode == GameMode.REMOTE) ((NetworkController)gameLauncher.getGame().getGameController()).shutDownNetwork();
 
         }), new Pair<String, Runnable>("Exit Game", () -> {
-            if(gameMode == GameMode.REMOTE) {
-                ((NetworkController)gameLauncher.getGame().getGameController()).shutDownNetwork();
-            }
 
+            if(gameMode == GameMode.REMOTE) ((NetworkController)gameLauncher.getGame().getGameController()).shutDownNetwork();
             Platform.exit();
         }));
     }
 
+    /**
+     * set default controls from config
+     */
     private void setDefaultControls() {
 
         switch ((String) config.getParam("movementTypePlayer1")) {
@@ -261,6 +265,10 @@ public class MainMenu {
         }
     }
 
+    /**
+     * set controls modal depending on gamemode, call from menu data
+     * @param gameMode
+     */
     private void setControls(GameMode gameMode) {
 
         initStage();
@@ -428,6 +436,9 @@ public class MainMenu {
         });
     }
 
+    /**
+     * set audio modal, called from menu data
+     */
     private void setAudio() {
 
         initStage();
@@ -463,6 +474,9 @@ public class MainMenu {
         });
     }
 
+    /**
+     * set audio modal, call from menu data
+     */
     private void setHostname() {
 
         initStage();
@@ -486,6 +500,11 @@ public class MainMenu {
         });
     }
 
+    /**
+     * removes old menu and adds new
+     * @param data
+     * @param height
+     */
     private void initMenu(List<Pair<String, Runnable>> data, int height) {
 
         removeMenu(menuBox);
@@ -499,38 +518,9 @@ public class MainMenu {
         startAnimation(menuBox);
     }
 
-    public void showPausedMenu(Scene gameScene) {
-
-        this.gameScene = gameScene;
-        initMenu(pausedMenu, 95);
-        //scene = new Scene(createContent());
-        title.getText().setText("");
-        root.setOpacity(0.7);
-
-        addTitle("PAUSED");
-
-        soundOnBefore = !((Boolean)config.getParam("muted")).booleanValue();
-        if(soundOnBefore) {
-            Sound.muteSound();
-            GameMenu.setRightButtons();
-        }
-
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void resumeGame(Game game) {
-
-        game.paused = false;
-        stage.setScene(gameScene);
-
-        if(soundOnBefore) {
-            Sound.unmuteSound();
-            GameMenu.setRightButtons();
-
-        }
-    }
-
+    /**
+     * inits stage, box and button group
+     */
     private void initStage() {
 
         controlsStage = new Stage();
@@ -540,25 +530,17 @@ public class MainMenu {
         controlsStage.initStyle(StageStyle.UNDECORATED);
     }
 
+    /**
+     * inits scene and adds to stage
+     * @param box
+     * @param width
+     * @param height
+     */
     private void initScene(VBox box, int width, int height) {
 
         Scene controlsScene = new Scene(box, width, height);
         controlsStage.setScene(controlsScene);
         controlsStage.show();
-    }
-
-    private Parent createContent() {
-
-        addBackground();
-        addTitle("Trick or Treat V. 1.0");
-        loadData();
-        
-        addLine(lineX, lineY, lineHeight);
-        addMenu(lineX + 5, lineY + 5, menuData, menuBox);
-
-        startAnimation(menuBox);
-
-        return root;
     }
 
     private void addBackground() {
@@ -585,38 +567,6 @@ public class MainMenu {
         root.getChildren().add(title);
     }
 
-    private void addLine(double x, double y, int height) {
-
-        line = new Line(x, y, x, y + height);
-        line.setStrokeWidth(3);
-        line.setStroke(Color.color(1, 1, 1, 0.75));
-        line.setEffect(new DropShadow(5, Color.BLACK));
-        line.setScaleY(0);
-
-        root.getChildren().add(line);
-    }
-
-    private void startAnimation(VBox box) {
-
-        ScaleTransition st = new ScaleTransition(Duration.seconds(1), line);
-
-        st.setToY(1);
-        st.setOnFinished(e -> {
-
-            for (int i = 0; i < box.getChildren().size(); i++) {
-                Node n = box.getChildren().get(i);
-
-                TranslateTransition tt = new TranslateTransition(Duration.seconds(1 + i * 0.15), n);
-                tt.setToX(0);
-                tt.setOnFinished(e2 -> n.setClip(null));
-                tt.play();
-            }
-
-        });
-
-        st.play();
-    }
-
     private void addMenu(double x, double y, List<Pair<String, Runnable>> type, VBox box) {
 
         box.setTranslateX(x);
@@ -639,6 +589,17 @@ public class MainMenu {
         root.getChildren().add(box);
     }
 
+    private void addLine(double x, double y, int height) {
+
+        line = new Line(x, y, x, y + height);
+        line.setStrokeWidth(3);
+        line.setStroke(Color.color(1, 1, 1, 0.75));
+        line.setEffect(new DropShadow(5, Color.BLACK));
+        line.setScaleY(0);
+
+        root.getChildren().add(line);
+    }
+
     private void removeMenu(VBox box) {
 
         root.getChildren().remove(box);
@@ -649,11 +610,91 @@ public class MainMenu {
         root.getChildren().remove(line);
     }   
 
+    private void startAnimation(VBox box) {
+
+        ScaleTransition st = new ScaleTransition(Duration.seconds(1), line);
+
+        st.setToY(1);
+        st.setOnFinished(e -> {
+
+            for (int i = 0; i < box.getChildren().size(); i++) {
+                Node n = box.getChildren().get(i);
+
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(1 + i * 0.15), n);
+                tt.setToX(0);
+                tt.setOnFinished(e2 -> n.setClip(null));
+                tt.play();
+            }
+
+        });
+
+        st.play();
+    }
+
+    /**
+     * creates content - adds background, title, data, line, menu and starts animation
+     * @return
+     */
+    private Parent createContent() {
+
+        addBackground();
+        addTitle("Trick or Treat");
+        loadData();
+        
+        addLine(lineX, lineY, lineHeight);
+        addMenu(lineX + 5, lineY + 5, menuData, menuBox);
+
+        startAnimation(menuBox);
+
+        return root;
+    }
+
+    /**
+     * shows main menu, call from GameOver and GameLauncher
+     */
     public void showMainMenu() {
 
         if(scene == null) scene = new Scene(createContent());
         stage.setTitle("Trick or Treat");
         stage.setScene(scene);
         stage.show();
+    }
+
+    /**
+     * shows pause menu, call from pause button in MovementManager
+     * @param gameScene
+     */
+    public void showPausedMenu(Scene gameScene) {
+
+        this.gameScene = gameScene;
+        initMenu(pausedMenu, 95);
+        title.getText().setText("");
+        root.setOpacity(0.7);
+
+        addTitle("PAUSED");
+
+        soundOnBefore = !((Boolean)config.getParam("muted")).booleanValue();
+        if(soundOnBefore) {
+            Sound.muteSound();
+            GameMenu.setRightButtons();
+        }
+
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * hides pause menu, call from pause menu data
+     * @param game
+     */
+    public void resumeGame(Game game) {
+
+        game.paused = false;
+        stage.setScene(gameScene);
+
+        if(soundOnBefore) {
+            Sound.unmuteSound();
+            GameMenu.setRightButtons();
+        }
     }
 }
