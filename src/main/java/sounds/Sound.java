@@ -3,7 +3,6 @@ package main.java.sounds;
 import main.java.configuration.Configuration;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -20,41 +19,7 @@ public class Sound {
     private final static Configuration<Object> config = new Configuration<Object>();
 
     /**
-     * read filepathes from config parameters, sources:
-     * countdown.mp3
-     * https://freesoundeffects.com/free-track/witch-466442/
-     * https://freemusicarchive.org/music/Haunted_Corpse/Dirges_for_the_Undead/Haunted_Corpse_-_Dirges_for_the_Undead_-_12_A_Ghost_in_the_Fog_1746
-     * child.wav
-     * https://freesound.org/people/estefaniabonnin/sounds/219864/
-     * child2.wav
-     * https://freesound.org/people/estefaniabonnin/sounds/219867/
-     * poison.mp3
-     * https://www.guitarbackingtrack.com/play/alice_cooper/poison_(2).htm
-     * menu.wav
-     * https://freesound.org/people/GameAudio/sounds/220183/
-     * menu2.wav
-     * https://freesound.org/people/GameAudio/sounds/220198/
-     * music.wav
-     * https://www.looperman.com/loops/detail/185175/halloween-type-melody-140bpm-rap-synth-loop
-     * music2.wav
-     * https://www.looperman.com/loops/detail/169805/dread-dark-kalimba-scope-synth-loop-165bpm-trap-bells-loop
-     * gameover.mp3
-     * http://www.orangefreesounds.com/you-lose-game-over/
-     * ring.mp3
-     * http://soundbible.com/1466-Doorbell.html
-     * ring2.mp3
-     * http://soundbible.com/165-Door-Bell.html
-     * ring3.mp3
-     * http://soundbible.com/1462-Two-Tone-Doorbell.html
-     * ring4.wav
-     * https://freesound.org/people/jwheeler91/sounds/442280/
-     * ring5.wav
-     * https://freesound.org/people/baujahr66/sounds/157250/
-     * keys.wav
-     * https://freesound.org/people/jrssandoval/sounds/68139/
-     * free.mp3
-     * http://www.orangefreesounds.com/wooden-door-opening-sound-effect/
-     * https://freesound.org/people/UncleSigmund/sounds/30995/
+     * read filepathes from config parameters
      */
 
     private final static MediaPlayer music = new MediaPlayer(new Media(new File("src/main/java/sounds/music.wav").toURI().toString()));
@@ -323,6 +288,7 @@ public class Sound {
      * unmute all sounds
      */
     public static void unmuteSound() {
+
         try {
 
             music.setMute(false);
@@ -344,7 +310,6 @@ public class Sound {
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
         }
-
     }
     
     /**
@@ -374,22 +339,7 @@ public class Sound {
 
             } else {
 
-                music.setMute(false);
-                countdown.setMute(false);
-                cooper.setMute(false);
-                gameover.setMute(false);
-                ring1.setMute(false);
-                ring2.setMute(false);
-                ring3.setMute(false);
-                ring4.setMute(false);
-                ring5.setMute(false);
-                child1.setMute(false);
-                child2.setMute(false);
-                key.setMute(false);
-                free.setMute(false);
-
-                // set muted to false in config
-                config.setParam("muted", false);
+                unmuteSound();
             }
 
         } catch (NoClassDefFoundError ex) {
