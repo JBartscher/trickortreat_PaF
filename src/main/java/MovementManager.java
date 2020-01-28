@@ -725,11 +725,12 @@ public class MovementManager implements EventHandler<InputEvent> {
                      * call the visit method on the house object
                      */
                     if (h.intersects(p)) {
-                        if ((entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse)) {
-
+                        if (visitible(entity, h, obj)) {
                             HouseDecorator houseDecorator = new SoundDecorator(h);
-                            if (houseDecorator.getDecoratedHouse() instanceof SmallHouse || houseDecorator.getDecoratedHouse() instanceof BigHouse)
+                            if ( (houseDecorator.getDecoratedHouse().getClass() == SmallHouse.class || houseDecorator.getDecoratedHouse().getClass() == BigHouse.class) ) {
+
                                 houseDecorator = new CandyDecorator(houseDecorator);
+                            }
 
                             if(entity instanceof Player && ((Player) entity).getProtectedTicks() > 0 ) return;
                             houseDecorator.visit((Player) entity);
@@ -744,6 +745,13 @@ public class MovementManager implements EventHandler<InputEvent> {
                 }
             }
         }
+    }
+
+
+    private boolean visitible(Entity entity, House h, MapObject obj) {
+
+        return (entity instanceof Player && h.isUnvisited() || (entity instanceof Player && obj instanceof Mansion && entity == ((Mansion) h).insidePlayer) || (entity instanceof Player && obj instanceof TownHall) || entity instanceof Player && obj instanceof GingerbreadHouse);
+
     }
 
     /**
