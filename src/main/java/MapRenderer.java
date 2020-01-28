@@ -90,12 +90,7 @@ public class MapRenderer {
         /**
          * Singleton GameMenu-JavaFx Group, welche alle InGameMenu Elemente hält, und so nicht in jeder draw() neu initialisiert werden muss
          */
-
-        gc.setGlobalAlpha(0.15);
-        gc.setFill(Color.DARKBLUE);
-        gc.fillRect(0, Window.HEIGHT * 0.1, Window.WIDTH, Window.HEIGHT * 0.9);
-        gc.setGlobalAlpha(1.0);
-
+        
         GameMenu.getInstance().updateTimeText(calculateTime(game));
         GameMenu.getInstance().addGameMenuToScene(root);
     }
